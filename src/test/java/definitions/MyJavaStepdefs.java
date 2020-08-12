@@ -2,14 +2,26 @@ package definitions;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MyJavaStepdefs {
+    // Global Variable Section for Java Steps
+    //  Max 10 unique lists
+    //  Max 20 items in each list
+    Integer gArrayCnt = -1;
+    String[][] gArray = new String[10][20];
+    String[] gArrayName = new String[20];
+    Integer[] gArrayLastItem = new Integer[20];
+    ArrayList<Integer> gArrList = new ArrayList<Integer>(Arrays.asList(3,9,14,8,3,10));
+
     @Given("I say {string} test name {string}")
     public void iSaytestname(String message, String name) {
+        System.out.println("     ");
         System.out.println("=============================================");
         System.out.println("     " + message);
         System.out.println("     Test Name:" + name);
@@ -52,6 +64,8 @@ public class MyJavaStepdefs {
             default:
                 throw new IllegalStateException("**** This function is unsupported: " + strFunc + " ****");
         }
+        System.out.println("     ");
+        System.out.println("     ");
     }
 
     @And("I work with Arrays")
@@ -60,6 +74,7 @@ public class MyJavaStepdefs {
         int[] nums = {5, 3, 5, 8, 10, 12};
         nums[0] = 7;
         int i = 0;
+        System.out.println("     ");
         System.out.println("     " + "=============================================");
         System.out.println("     " + "     Dump Arrays");
         System.out.println("     " + "=============================================");
@@ -67,6 +82,7 @@ public class MyJavaStepdefs {
             System.out.println("     " +"Array nums index " + i + " is " + nums[i] + "     " +"Array fruits index " + i + " is " + fruits[i]);
         }
 
+        System.out.println("     ");
         System.out.println("     " + "=============================================");
         System.out.println("     " + "     Sort Arrays");
         System.out.println("     " + "=============================================");
@@ -80,11 +96,142 @@ public class MyJavaStepdefs {
         listOfNums.add(99);
         listOfNums.add(8);
         listOfNums.add(20);
+        System.out.println("     ");
         System.out.println("     " + "=============================================");
         System.out.println("     " + "     List");
         System.out.println("     " + "=============================================");
         for (int j : listOfNums) {
             System.out.println("     " + "List has " + j);
         }
+        System.out.println("     ");
+        System.out.println("     ");
+    }
+
+    @And("I create shopping list {string} with {int} items")
+    public void iCreateShoppingListWithItems(String arrayName, int itemCnt) {
+        int i;
+        gArrayCnt = gArrayCnt + 1;               // First list created is list 0
+        if (gArrayCnt < 10) {
+            gArrayName[gArrayCnt] = arrayName;       // Store user's list name here
+            gArrayLastItem[gArrayCnt] = 0;           // New Array so last item stored is at index 0
+
+            // Initialize Array for N items
+            System.out.println(itemCnt + " item array " + gArrayCnt + " with name: " + gArrayName[gArrayCnt] + " created.");
+            for (i = 1; i <= itemCnt; i++) {
+                gArray[gArrayCnt][itemCnt] = "";     // not null
+            }
+        } else {
+            // oops, code only supports 10 unique list names
+            System.out.println("**** Error: Only 10 unique lists can be created! ****");
+        }
+    }
+
+    @When("I add item {string} to list {string}")
+    public void iAddItemToListSafeway(String itemName, String lArrayName) {
+        int lArrayIndex = 0;
+        int lLastItemIndex = 0;
+        lArrayIndex = findArrayNumberFromName(lArrayName);
+
+        // Found it! Add the item
+        if (lArrayIndex >= 0) {
+            lLastItemIndex = gArrayLastItem[lArrayIndex];      // Starts at 0, so this is where you store
+            gArray[lArrayIndex][lLastItemIndex] = itemName;
+            gArrayLastItem[lArrayIndex] = lLastItemIndex + 1;  // Increment Item Index for this array
+        } else {
+            // Cannot Continue!!!!
+            System.out.println("**** Error: No list " + lArrayName + " found! No item added! ****");
+        }
+    }
+
+    public int findArrayNumberFromName(String ArrayName) {
+        int lArrayIndex = -1;       // If not found, passes -1 as index.  8-(, how handle?
+        int li = 0;
+
+        // Only Search Arrays already created
+        for (li = 0; li <= gArrayCnt; li++) {
+            if (gArrayName[li].equals(ArrayName)) {
+                lArrayIndex = li;
+                break;
+            }
+        }
+        return lArrayIndex;
+    }
+
+    @Then("I check the items in list {string}")
+    public void iCheckTheItemsInList(String lArrayName) {
+        int li = 0;
+        int lArrayIndex = 0;
+        int lLastItemIndex = 0;
+        lArrayIndex = findArrayNumberFromName(lArrayName);
+
+        // Found array! Show the items
+        if (lArrayIndex >= 0) {
+            lLastItemIndex = gArrayLastItem[lArrayIndex];
+            System.out.println("     ");
+            System.out.println("     " + "=============================================");
+            System.out.println("     " + "     " + lArrayName + " List Contents");
+            System.out.println("     " + "=============================================");
+            for (li = 0; li < lLastItemIndex; li++) {
+                System.out.println("     " +"Item " + (li + 1) + ": " + gArray[lArrayIndex][li]);
+            }
+        } else {
+            // Cannot Continue!!!!
+            System.out.println("     ");
+            System.out.println("**** Error: No list " + lArrayName + " found! ****");
+        }
+    }
+
+    @Then("I check the {int} item in list {string}")
+    public void iCheckTheItemInList(int litemIndex, String lArrayName) {
+        int lArrayIndex = 0;
+        int lLastItemIndex = 0;
+        lArrayIndex = findArrayNumberFromName(lArrayName);
+
+        // Found array! Show the selected item
+        if (lArrayIndex >= 0) {
+            lLastItemIndex = gArrayLastItem[lArrayIndex];
+
+            if (litemIndex - 1 <= lLastItemIndex) {
+                System.out.println("     " + "=============================================");
+                System.out.println("     " + lArrayName + " item " + litemIndex + ": " + gArray[lArrayIndex][litemIndex-1]);
+            } else {
+                System.out.println("**** Error: list " + lArrayName + " does not contain this item! ****");
+            }
+        } else {
+            // Cannot Continue!!!!
+            System.out.println("**** Error: No list " + lArrayName + " found! ****");
+        }
+    }
+
+    @Given("I display dynamic list")
+    public void iCreateDynamicList() {
+        int litemIndex = 0;
+
+        System.out.println("     ");
+        System.out.println("     -----------------------------------------");
+        for (int element : gArrList) {
+            litemIndex++;
+            System.out.println("     Dynamic list item " + litemIndex + ": " + element);
+        }
+        System.out.println("     -----------------------------------------");
+        System.out.println("     ");
+    }
+
+    @When("I get item {int} from the dynamic list")
+    public void iGetItemFromTheDynamicList(int litemIndex) {
+        int dispIndex = 0;
+        // for (int element : gArrList) {
+        //    dispIndex++;
+        //    System.out.println("     Dynamic list item " + dispIndex + ": " + element);
+        // }
+        System.out.println("     -----------------------------------------");
+        System.out.println("     Dynamic list item " + litemIndex + ": " + gArrList.get(litemIndex-1));
+        System.out.println("     -----------------------------------------");
+        System.out.println("     ");
+    }
+
+    @Given("I add new item {int} to the dynamic list")
+    public void iAddNewItemToTheDynamicList(int elementValue) {
+        gArrList.add(elementValue);
     }
 }
