@@ -5,6 +5,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -233,5 +234,25 @@ public class MyJavaStepdefs {
     @Given("I add new item {int} to the dynamic list")
     public void iAddNewItemToTheDynamicList(int elementValue) {
         gArrList.add(elementValue);
+    }
+
+    @Then("I check if number {int} is positive")
+    public void iCheckIfNumberIsPositive(Integer userNumber) {
+        String dispAnswer = "unknown";
+        if (userNumber > 0) {
+            dispAnswer = "positive";
+        } else {
+            if (userNumber < 0) {
+                dispAnswer = "negative";
+            } else {
+                dispAnswer = "exactly zero";
+            }
+        }
+        System.out.println("     " + userNumber + " is " + dispAnswer);
+    }
+
+    @Then("I display day of the week number {int}")
+    public void iDisplayDayOfTheWeekNumber(int userDOW) {
+        System.out.println("     Day number " + userDOW + " is " + DayOfWeek.of(userDOW).toString());
     }
 }
