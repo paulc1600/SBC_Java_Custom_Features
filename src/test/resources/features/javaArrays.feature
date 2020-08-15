@@ -55,3 +55,6 @@ Feature: Java Arrays Feature
     Then I display dynamic list
     Then I get item 7 from the dynamic list
 
+  @javaMap
+  Scenario: Work with Map
+    Given I work with maps

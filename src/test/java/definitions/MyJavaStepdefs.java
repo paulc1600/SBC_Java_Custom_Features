@@ -6,9 +6,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
 import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MyJavaStepdefs {
     // Global Variable Section for Java Steps
@@ -254,5 +252,24 @@ public class MyJavaStepdefs {
     @Then("I display day of the week number {int}")
     public void iDisplayDayOfTheWeekNumber(int userDOW) {
         System.out.println("     Day number " + userDOW + " is " + DayOfWeek.of(userDOW).toString());
+    }
+
+    @Given("I work with maps")
+    public void iWorkWithMaps() {
+        Map<String, String> user = new HashMap<>();
+        user.put("username", "jdoe");
+        user.put("email", "jdoe@nonet.com");
+        user.put("password", "123456");
+        System.out.println(user);
+        String newEmail = user.get("email");
+        newEmail = newEmail + "goober";
+        user.put("email", newEmail);
+        System.out.println(user);
+
+        Map<String, String> admin = new LinkedHashMap<>();
+        admin.put("username", "bigAdmin");
+        admin.put("email", "admin@nonet.com");
+        admin.put("password", "admin123456");
+        System.out.println(admin);
     }
 }
