@@ -267,9 +267,93 @@ public class MyJavaStepdefs {
         System.out.println(user);
 
         Map<String, String> admin = new LinkedHashMap<>();
-        admin.put("username", "bigAdmin");
+        admin.put("userName", "bigAdmin");
+        admin.put("firstName", "John");
+        admin.put("middleName", "George");
+        admin.put("lastName", "Geek");
         admin.put("email", "admin@nonet.com");
         admin.put("password", "admin123456");
         System.out.println(admin);
+        // Map Swap for homework 8/17/2020
+        String tempSwap;
+        tempSwap =  admin.get("middleName");
+        admin.put("middleName", admin.get("firstName"));
+        admin.put("firstName", tempSwap);
+        System.out.println(admin);
+    }
+
+    //  Write a method that returns true
+    //    if integer even and divisible by 5 or
+    //    if integer odd and divisible by 3.
+    @Then("I write the Team {int} coding challenge")
+    public void iWriteTheTeamCodingChallenge(int userInt) {
+        boolean result = false;
+        if (((userInt % 2 == 0) && (userInt % 5 == 0)) || ((userInt%2 == 1) && (userInt%3 == 0))) {
+            result = true;
+        }
+        System.out.println(result);
+    }
+
+    @Then("I make a killing on the stock market")
+    public void iMakeAKillingOnTheStockMarket() {
+        int[] sPrices = {7, 1, 5, 3, 6, 4, 4};
+
+    }
+
+    @Then("I make a killing on the stock market with {int}, {int}, {int}, {int}, {int}, {int}, and {int}")
+    public void iMakeAKillingOnTheStockMarketWithAnd(int p0, int p1, int p2, int p3, int p4, int p5, int p6) {
+        int[] sPrices = new int[]{0, 0, 0, 0, 0, 0, 0};
+        sPrices[0] = p0;
+        sPrices[1] = p1;
+        sPrices[2] = p2;
+        sPrices[3] = p3;
+        sPrices[4] = p4;
+        sPrices[5] = p5;
+        sPrices[6] = p6;
+
+        int buyDay = 0;
+        int sellDay = 0;
+        int profitLoss = 0;
+
+        // Find best day to buy
+        int lowPrice = 99999;
+        for (int d = 0; d < sPrices.length; d++) {
+            if (sPrices[d] <= lowPrice) {
+                buyDay = d;
+                lowPrice = sPrices[d];
+            }
+        }
+        // Crazy case where stock values are all in millions or low day is last day so cannot sell
+        if ((lowPrice != 999999) && (buyDay != sPrices.length - 1)) {
+            // Was good day to buy. Find sell day with max profit
+            for (int s = buyDay+1; s < sPrices.length; s++) {
+                if (sPrices[s] - sPrices[buyDay] >= profitLoss) {
+                    sellDay = s;
+                    profitLoss = sPrices[s] - sPrices[buyDay];
+                }
+            }
+            // Did we have any profit
+            if (profitLoss > 0) {
+                System.out.println("============================================");
+                System.out.println("        Stock Report this Week              ");
+                System.out.println("============================================");
+                System.out.println(" Daily Prices: " + Arrays.toString(sPrices));
+                System.out.println(" You bought on day " + (buyDay+1) + " for $" + sPrices[buyDay]);
+                System.out.println(" You sold on day " + (sellDay+1) + " for $" + sPrices[sellDay]);
+                System.out.println(" Your profit / loss was $" + profitLoss);
+            } else {
+                System.out.println("============================================");
+                System.out.println("        Stock Report this Week              ");
+                System.out.println("============================================");
+                System.out.println(" Daily Prices: " + Arrays.toString(sPrices));
+                System.out.println("***** Error: Bad luck. No profit. Try again another week!");
+            }
+        } else {
+            System.out.println("============================================");
+            System.out.println("        Stock Report this Week              ");
+            System.out.println("============================================");
+            System.out.println(" Daily Prices: " + Arrays.toString(sPrices));
+            System.out.println("***** Error: No good day to buy stocks. Try Bonds!");
+        }
     }
 }
