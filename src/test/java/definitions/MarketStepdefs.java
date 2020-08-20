@@ -35,15 +35,19 @@ public class MarketStepdefs  {
     // ===========================================================================
     @Given("I go to {string} page")
     public void iGoToPage(String page) {
-        if (page.equalsIgnoreCase("quote")) {
-            tePageURL = "https://skryabin.com/market/quote.html";
-        } else if (page.equalsIgnoreCase("google")) {
-            tePageURL = "https://www.google.com/";
-        } else if (page.equalsIgnoreCase("yahoo")) {
-            tePageURL = "https://www.yahoo.com/";
-        } else {
-            tePageURL = page;
+        switch (page) {
+            case "quote": tePageURL = "https://skryabin.com/market/quote.html";
+                break;
+            case "google": tePageURL = "https://www.google.com/";
+                break;
+            case "yahoo": tePageURL = "https://www.yahoo.com/";
+                break;
+            case "usps": tePageURL = "https://www.usps.com/";
+                break;
+            default:
+                tePageURL = page;
         }
+
         System.out.println("\n   Navigate: Open URL");
         getDriver().get(tePageURL);
         // Test Results of switching to this page
