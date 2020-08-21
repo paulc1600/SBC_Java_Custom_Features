@@ -4,6 +4,8 @@ import cucumber.api.java.en.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static support.TestContext.getDriver;
 
@@ -153,7 +155,7 @@ public class uspsStepdefs {
         // --------------------------------------------------------------
         // Did he get to shipping page? -- wait for page to appear
         String xpZipCodeLink = "//h2[contains(@class,'center')]//a[contains(text(),'ZIP Code')]";
-        Thread.sleep(4000);
+        Thread.sleep(2000);
         // new WebDriverWait(getDriver(), 10, 200).until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.xpath(xpZipCodeLink))));
         trPageURL = getDriver().getCurrentUrl();
         assertThat(trPageURL).containsIgnoringCase("https://www.usps.com/ship/");
@@ -161,13 +163,13 @@ public class uspsStepdefs {
         // --------------------------------------------------------------
         // Did he get to Zip Look Up page 1? -- wait until "find by address" link is displayed
         String xpFindByAddressLink = "//a[contains(text(),'Find by Address')]";
-        Thread.sleep(4000);
+        Thread.sleep(2000);
         // new WebDriverWait(getDriver(), 10, 200).until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.xpath(xpFindByAddressLink))));
         getDriver().findElement(By.xpath(xpFindByAddressLink)).click();
         // --------------------------------------------------------------
         // Did he get to Zip Look Up page 2? -- wait until "street address" text field is displayed
         String xpStreetAddr = "//input[@id='tAddress']";
-        Thread.sleep(4000);
+        Thread.sleep(2000);
         // new WebDriverWait(getDriver(), 10, 200).until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.xpath(xpStreetAddr))));
         trPageTitle = getDriver().getTitle();
         assertThat(trPageTitle).containsIgnoringCase("Zip Code");
@@ -199,7 +201,6 @@ public class uspsStepdefs {
                 break;
         }
         new Select(getDriver().findElement(By.xpath("//select[@id='tState']"))).selectByVisibleText(stateString);
-        getDriver().findElement(By.xpath("//a[@id='zip-by-address']")).click();
         // Set Test Data from Gherkin parameters above and display
         tdAddress = formAddress;
         tdCity = formCity;
@@ -224,7 +225,7 @@ public class uspsStepdefs {
         // isThisWebElementNotInViewport(elFindButton, "Find Button");
         // whatIsWebElementState(elCompanyInput, "Company Name Input");
         // whatIsWebElementState(elFindButton, "Find Button");
-        Thread.sleep(8000);
+        Thread.sleep(1000);
         elFindButton.click();
     }
 
@@ -235,10 +236,10 @@ public class uspsStepdefs {
         Point elLocation = myElement.getLocation();
         int topPixLocation = elLocation.getY();
         trPageURL = getDriver().getCurrentUrl();
-        System.out.println("\n" + " ------ DEBUG: " + trPageURL);
-        System.out.println(" ------ DEBUG: Element with label: " + elementLabel);
-        System.out.println(" ------ DEBUG: Y Position was:       " + topPixLocation);
-        System.out.println(" ------ DEBUG: Browser Height:       " + teBrowserHeight);
+        // System.out.println("\n" + " ------ DEBUG: " + trPageURL);
+        // System.out.println(" ------ DEBUG: Element with label: " + elementLabel);
+        // System.out.println(" ------ DEBUG: Y Position was:       " + topPixLocation);
+        // System.out.println(" ------ DEBUG: Browser Height:       " + teBrowserHeight);
         if (topPixLocation >= teBrowserHeight) {
             // Beyond viewport dimension -- Selenium may not be able to interact!
             // So scroll down to it ...
@@ -253,11 +254,11 @@ public class uspsStepdefs {
     public void whatIsWebElementState(WebElement myElement, String elementLabel) {
         boolean isVisible = myElement.isDisplayed();
         boolean isPresent = myElement.isEnabled();
-        System.out.println("\n" + " ------ DEBUG: " + trPageURL);
-        System.out.println(" ------ DEBUG: Element with label: " + elementLabel);
-        System.out.println(" ------ DEBUG: Enabled:       " + isPresent);
-        System.out.println(" ------ DEBUG: Displayed:       " + isVisible);
-        System.out.println(" ------ DEBUG: Has size:       " + myElement.getSize());
+        // System.out.println("\n" + " ------ DEBUG: " + trPageURL);
+        // System.out.println(" ------ DEBUG: Element with label: " + elementLabel);
+        // System.out.println(" ------ DEBUG: Enabled:       " + isPresent);
+        // System.out.println(" ------ DEBUG: Displayed:       " + isVisible);
+        // System.out.println(" ------ DEBUG: Has size:       " + myElement.getSize());
 
         // Element Not visible to WebDriver -- try to fix
 
@@ -274,30 +275,44 @@ public class uspsStepdefs {
             }
         }
     }
-    // ===========================================================================
-    //   Wait Element Visible
-    // ===========================================================================
-    public void waitsElementVisible(WebElement myElement, String elementLabel) {
-        // WebDriverWait(getDriver(), 10).until(getDriver().element_to_be_clickable((By.CSS_SELECTOR, 'button.dismiss')));
-        // myElement.click();
-    }
 
     // ---------------------------------------------------------------------------
     //  Validate Zip Code Lookup Results
     // ---------------------------------------------------------------------------
     @Then("I validate {string} zip code exists in the result")
-    public void iValidateZipCodeExistsInTheResult(String correctZip) {
-        String resultXpath = "//div[@class='zipcode-result-address']/p/strong)]";
-        WebElement elFoundZip = getDriver().findElement(By.xpath(resultXpath));
-        String foundZip = elFoundZip.getText();
-        System.out.println(" ------ DEBUG: All Zip Results: " + foundZip);
+    public void iValidateZipCodeExistsInTheResult(String correctZip) throws InterruptedException {
+        Thread.sleep(4000);
+        String resultXpath = "//div[@class='zipcode-result-address']/p/strong";
+        List<WebElement> elFoundZipList = getDriver().findElements(By.xpath(resultXpath));
+        // Unpack list of ZipCodes
+        // Need way more code to cross-reference addresses to carrier route and pick correct 9 digit value
+        // System.out.println(" ------ DEBUG: Results Count: " + elFoundZipList.size());
+        String finalZipFound = "";
+        if (elFoundZipList.size() > 1) {
+            // No carrier routes greater than 1000 mailboxes???
+            String[] foundZip = new String[1000];
+            int arrIndex = 0;
 
-        // Error path code if bad zip, no result box, unexpected format results, multiple results??
+            for (WebElement oneZip : elFoundZipList) {
+                // System.out.println(" ------ DEBUG: Zip Results("+ arrIndex +"): " + oneZip.getText());
+                // Cheating -- just strip carrier route and were al good
+                if (oneZip.getText().length() >= 5) {
+                    foundZip[arrIndex] = oneZip.getText().substring(0,5);
+                }
+                arrIndex++;
+            }
+            finalZipFound = foundZip[0];
+        } else {
+            WebElement elFoundZip = getDriver().findElement(By.xpath(resultXpath));
+            finalZipFound = elFoundZip.getText().substring(0,5);
+        }
+
+        // Error path code if bad zip, no result box, unexpected format results??
         System.out.println("------------------------------------------------");
         System.out.println(" Expected Zip Code: " + correctZip);
-        System.out.println(" Found Zip Code:    " + foundZip);
+        System.out.println(" Found Zip Code:    " + finalZipFound);
         System.out.println("------------------------------------------------");
-        assertThat(foundZip).containsIgnoringCase(correctZip);
+        assertThat(finalZipFound).containsIgnoringCase(correctZip);
     }
 }
 
