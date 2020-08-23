@@ -34,3 +34,7 @@ Feature: Java Code Challenges Feature
     When I check if 55 is divisible by 2 and 5 then I get
     When I check if 1500 is divisible by 2 and 5 then I get
     When I check if 13 is divisible by 7 and 13 then I get
+
+  @CodeChallenge
+  Scenario: Find If Divisible 2
+    Then I test if 13 is divisible by 7 and 13 then I get

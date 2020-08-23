@@ -1,12 +1,18 @@
 package definitions;
 
-import cucumber.api.java.en.*;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 import static support.TestContext.getDriver;
 
 public class uspsStepdefs {
@@ -16,18 +22,18 @@ public class uspsStepdefs {
     String tePortMode = "default";
     Integer teBrowserWidth = 1440;
     Integer teBrowserHeight = 900;
-    String  tePageURL = "";
-    String  tePageTitle = "";
-    String  trPageURL = "";
-    String  trPageTitle = "";
-    String  trWindowHandle = "";
-    String  trPageSource = "";
+    String tePageURL = "";
+    String tePageTitle = "";
+    String trPageURL = "";
+    String trPageTitle = "";
+    String trWindowHandle = "";
+    String trPageSource = "";
     // =============================================
     //  Create test data variables
     // =============================================
-    String  tdAddress = "";
-    String  tdCity = "";
-    String  tdState = "";
+    String tdAddress = "";
+    String tdCity = "";
+    String tdState = "";
 
     // ===========================================================================
     @Given("I go to my {string} page")
@@ -89,8 +95,8 @@ public class uspsStepdefs {
         if (browserSize.equalsIgnoreCase("phone") ||
                 browserSize.equalsIgnoreCase("desktop")) {
             // Gherkin wants to change size, so browser changes to the set dimension
-            Dimension newBrowserSize = new Dimension(teBrowserWidth,teBrowserHeight);
-            getDriver().manage().window().setPosition(new Point(0,0));
+            Dimension newBrowserSize = new Dimension(teBrowserWidth, teBrowserHeight);
+            getDriver().manage().window().setPosition(new Point(0, 0));
             getDriver().manage().window().setSize(newBrowserSize);
         }
     }
@@ -153,24 +159,16 @@ public class uspsStepdefs {
         // Mail & Ship Navigation Link at top of page
         getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Ship')]")).click();
         // --------------------------------------------------------------
-        // Did he get to shipping page? -- wait for page to appear
         String xpZipCodeLink = "//h2[contains(@class,'center')]//a[contains(text(),'ZIP Code')]";
-        Thread.sleep(2000);
-        // new WebDriverWait(getDriver(), 10, 200).until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.xpath(xpZipCodeLink))));
         trPageURL = getDriver().getCurrentUrl();
         assertThat(trPageURL).containsIgnoringCase("https://www.usps.com/ship/");
         getDriver().findElement(By.xpath(xpZipCodeLink)).click();
         // --------------------------------------------------------------
-        // Did he get to Zip Look Up page 1? -- wait until "find by address" link is displayed
         String xpFindByAddressLink = "//a[contains(text(),'Find by Address')]";
-        Thread.sleep(2000);
-        // new WebDriverWait(getDriver(), 10, 200).until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.xpath(xpFindByAddressLink))));
         getDriver().findElement(By.xpath(xpFindByAddressLink)).click();
         // --------------------------------------------------------------
-        // Did he get to Zip Look Up page 2? -- wait until "street address" text field is displayed
         String xpStreetAddr = "//input[@id='tAddress']";
         Thread.sleep(2000);
-        // new WebDriverWait(getDriver(), 10, 200).until(ExpectedConditions.not(ExpectedConditions.presenceOfElementLocated(By.xpath(xpStreetAddr))));
         trPageTitle = getDriver().getTitle();
         assertThat(trPageTitle).containsIgnoringCase("Zip Code");
     }
@@ -200,7 +198,10 @@ public class uspsStepdefs {
                 stateString = "CA - California";
                 break;
         }
-        new Select(getDriver().findElement(By.xpath("//select[@id='tState']"))).selectByVisibleText(stateString);
+        Select stateSelect = new Select(getDriver().findElement(By.xpath("//select[@id='tState']")));
+        stateSelect.selectByValue(formState);
+        // getDriver().findElement(By.xpath("//select[@id='tState']")).click();
+        // getDriver().findElement(By.xpath("//select[@id='tState']//option[@value='" + formState + "']"));
         // Set Test Data from Gherkin parameters above and display
         tdAddress = formAddress;
         tdCity = formCity;
@@ -262,7 +263,7 @@ public class uspsStepdefs {
 
         // Element Not visible to WebDriver -- try to fix
 
-        if (! isVisible) {
+        if (!isVisible) {
             switch (elementLabel) {
                 case "Find Button":
                     // Page -- https://tools.usps.com/zip-code-lookup.htm?byaddress
@@ -281,11 +282,11 @@ public class uspsStepdefs {
     // ---------------------------------------------------------------------------
     @Then("I validate {string} zip code exists in the result")
     public void iValidateZipCodeExistsInTheResult(String correctZip) throws InterruptedException {
-        Thread.sleep(4000);
+        // explicit wait for container is filled, parse zip codes to handle more than one
+        WebDriverWait wait = new WebDriverWait(getDriver(), 5);
         String resultXpath = "//div[@class='zipcode-result-address']/p/strong";
-        List<WebElement> elFoundZipList = getDriver().findElements(By.xpath(resultXpath));
+        List<WebElement> elFoundZipList = wait.until(presenceOfAllElementsLocatedBy(By.xpath(resultXpath)));
         // Unpack list of ZipCodes
-        // Need way more code to cross-reference addresses to carrier route and pick correct 9 digit value
         // System.out.println(" ------ DEBUG: Results Count: " + elFoundZipList.size());
         String finalZipFound = "";
         if (elFoundZipList.size() > 1) {
@@ -295,16 +296,16 @@ public class uspsStepdefs {
 
             for (WebElement oneZip : elFoundZipList) {
                 // System.out.println(" ------ DEBUG: Zip Results("+ arrIndex +"): " + oneZip.getText());
-                // Cheating -- just strip carrier route and were al good
+                // Cheating -- just strip carrier route and were all good
                 if (oneZip.getText().length() >= 5) {
-                    foundZip[arrIndex] = oneZip.getText().substring(0,5);
+                    foundZip[arrIndex] = oneZip.getText().substring(0, 5);
                 }
                 arrIndex++;
             }
             finalZipFound = foundZip[0];
         } else {
             WebElement elFoundZip = getDriver().findElement(By.xpath(resultXpath));
-            finalZipFound = elFoundZip.getText().substring(0,5);
+            finalZipFound = elFoundZip.getText().substring(0, 5);
         }
 
         // Error path code if bad zip, no result box, unexpected format results??
@@ -314,6 +315,252 @@ public class uspsStepdefs {
         System.out.println("------------------------------------------------");
         assertThat(finalZipFound).containsIgnoringCase(correctZip);
     }
+
+    // ===========================================================================
+    //
+    //                       Lite Version of Automation Code
+    //
+    // ---------------------------------------------------------------------------
+    //  Use Mouse Over to Reach Zip lookup Form
+    // ---------------------------------------------------------------------------
+    @When("I go to Lookup ZIP page by address \\(lite version)")
+    public void iGoToLookupZIPPageByAddressLiteVersion() {
+        // Mail & Ship Navigation Link at top of page, hover find Zip Lookup in sub-menu, click it
+        Actions actSubMenu = new Actions(getDriver());
+        WebElement mailAndShip = getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Ship')]"));
+        WebElement lookUpZip = getDriver().findElement(By.xpath("//ul[@class='tools']//a[contains(@href,'ZipLookup')]"));
+        actSubMenu.moveToElement(mailAndShip).moveToElement(lookUpZip).click().perform();
+        // Click "Find by Address" button
+        getDriver().findElement(By.xpath("//div[contains(@id,'zip-lookup')]//a[contains(text(),'by Address')]")).click();
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Use Mouse Over to Post Office Location lookup Form (Scen 4)
+    // ---------------------------------------------------------------------------
+    @When("I navigate to Find a Location page")
+    public void iNavigateToFindALocationPage() {
+        // Mail & Ship Navigation Link at top of page, hover find Zip Lookup in sub-menu, click it
+        Actions actSubMenu = new Actions(getDriver());
+        WebElement mailAndShip = getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Ship')]"));
+        WebElement findLocation = getDriver().findElement(By.xpath("//ul[@class='tools']//a[contains(@href,'location')]"));
+        actSubMenu.moveToElement(mailAndShip).moveToElement(findLocation).click().perform();
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Fill Out PO Locator Form (Scen 4)
+    // ---------------------------------------------------------------------------
+    @And("I filter by {string} location types, {string} services, {string} available services")
+    public void iFilterByLocationTypesServicesAvailableServices(String locType, String serviceType, String availService) {
+        // Can share / re-use action object
+        Actions actMySelect = new Actions(getDriver());
+        // Location Select: Depends on Gherkin to know correct selection list values (for PO & Services
+        //   Surprise! Can't use " new select" when element is anything but real HTML select (i.e. BUTTON)
+        WebElement elPoSelect = getDriver().findElement(By.xpath("//button[@id='post-offices-select']"));
+        elPoSelect.click();      // Open selection list
+        String xpathPoSelectOpt = "(//div[contains(@class,'dropdown')][contains(@class,'open')]//a[contains(text(),'" + locType + "')])[2]";
+        // Use common wait method for all button dropdown options
+        WebElement elPoSelectOpt = iWaitForElementWithXpath(xpathPoSelectOpt);
+        // Select actual option
+        actMySelect.moveToElement(elPoSelect).moveToElement(elPoSelectOpt).click().perform();
+
+        // Services Select: Depends on Gherkin to know correct selection list values
+        WebElement elServSelect = getDriver().findElement(By.xpath("//button[@id='service-type-select']"));
+        elServSelect.click();      // Open selection list
+        String xpathServSelectOpt = "//li[@id='pickupPo']/a[contains(text(),'" + serviceType + "')]";
+        // Use common wait method for all button dropdown options
+        WebElement elServSelectOpt = iWaitForElementWithXpath(xpathServSelectOpt);
+        // Select actual option
+        actMySelect.moveToElement(elServSelect).moveToElement(elServSelectOpt).click().perform();
+
+        // Available Services Select: Depends on Gherkin to know correct selection list values
+        WebElement elAvailSelect = getDriver().findElement(By.xpath("//button[@id='available-service-select']"));
+        elAvailSelect.click();
+        String xpathAvailSelectOpt = "//a[contains(text(),'" + availService + "')]";
+        // Use common wait method for all button dropdown options
+        WebElement elAvailSelectOpt = iWaitForElementWithXpath(xpathAvailSelectOpt);
+        // Select actual option
+        actMySelect.moveToElement(elAvailSelect).moveToElement(elAvailSelectOpt).click().perform();
+
+        // Search button submits completed form
+        getDriver().findElement(By.xpath("//a[@id='searchLocations']")).click();
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Patiently Wait For Any Identified Element (by Xpath) to appear
+    //     returns the element that appeared
+    // ---------------------------------------------------------------------------
+    @And("I wait for element with Xpath {string} to appear")
+    public WebElement iWaitForElementWithXpath(String thisXpathProvided) {
+        WebDriverWait waitToAppear = new WebDriverWait(getDriver(), 5);
+        By byThisXpath = By.xpath(thisXpathProvided);
+        WebElement elementNowVisible = waitToAppear.until(visibilityOfElementLocated(byThisXpath));
+        return elementNowVisible;
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Fill In Address into Modal Address Dialog Box (Scen 4)
+    // ---------------------------------------------------------------------------
+    @And("I provide data as {string} street, {string} city, {string} state")
+    public void iProvideDataAsStreetCityState(String street, String city, String state) {
+        // Open the modal address dialog form
+        getDriver().findElement(By.xpath("//input[@id='search-input']")).click();
+        // Use common wait method for entire Modal form
+        iWaitForElementWithXpath("//div[@id='address-modal']//div[@class='pickup-info']");
+        // Assume all 3 fields are visible if form is visible ...
+        getDriver().findElement(By.xpath("//input[@id='addressLineOne']")).sendKeys(street);
+        getDriver().findElement(By.xpath("//input[@id='cityOrZipCode']")).sendKeys(city);
+
+        // State box is selector -- not text input
+        Select stateSelect = new Select(getDriver().findElement(By.xpath("//select[@id='servicesStateSelect']")));
+        stateSelect.selectByValue(state);
+
+        // Find Results for entire form entries so far
+        getDriver().findElement(By.xpath("//a[contains(text(),'Results')]")).click();
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Examine Post Office Location Results and Get Phone Number (Scen 4)
+    // ---------------------------------------------------------------------------
+    @Then("I verify phone number is {string}")
+    public void iVerifyPhoneNumberIs(String phoneToVerify) {
+        // Use common wait method for entire result box
+        iWaitForElementWithXpath("//div[@id='resultBox']");
+        // Click On Expansion Arrow for top result box == nearest post office
+        getDriver().findElement(By.xpath("//div[@id='resultBox']/div[1]//span[@class='listArrow']")).click();
+        // Use common wait method for Post Office Details to be displayed
+        iWaitForElementWithXpath("//div[@id='po-location-detail']");
+        // get phone from details -- error path if no phone at all?
+        String actualPhone = getDriver().findElement(By.xpath("//div[@id='po-location-detail']//p[@class='ask-usps']")).getText();
+        assertThat(actualPhone).containsIgnoringCase(phoneToVerify);
+    }
+
+    // ---------------------------------------------------------------------------
+    //  From Main page go to Help Tab (Scen 3)
+    // ---------------------------------------------------------------------------
+    @When("I go to {string} tab")
+    public void iGoToTab(String providedTab) {
+        if (providedTab.equalsIgnoreCase("Help")) {
+            providedTab = "faq";
+        }
+        if (providedTab.equalsIgnoreCase("Postal Store")) {
+            providedTab = "store";
+        }
+        if (providedTab.equalsIgnoreCase("Track & Manage")) {
+            providedTab = "manage";
+        }
+        if (providedTab.equalsIgnoreCase("Mail & Ship")) {
+            providedTab = "ship";
+        }
+        String tabXpath = "//a[@class='menuitem'][contains(@href, '" + providedTab + "')]";
+        getDriver().findElement(By.xpath(tabXpath)).click();
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Perform Search (Scen 3)
+    // ---------------------------------------------------------------------------
+    @And("I perform {string} help search")
+    public void iPerformHelpSearch(String providedSearch) {
+        // Wait for web page with search box
+        WebElement helpSearchBox = iWaitForElementWithXpath("//input[@placeholder='Search for a topic']");
+        helpSearchBox.sendKeys(providedSearch);
+        // Click Magnifying Glass
+        getDriver().findElement(By.xpath("//button[contains(text(),'Search')]")).click();
+        // Wait until results box appears
+        iWaitForElementWithXpath("//div[@class='resultsWrapper']");
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Verify tha no Help On this Specific Topic (Scen 3)
+    // ---------------------------------------------------------------------------
+    @Then("I verify that no results of {string} available in help search")
+    public void iVerifyThatNoResultsOfAvailableInHelpSearch(String searchTopic) {
+        boolean testResult = false;
+        String searchResultXpath = "//div[@class='resultsWrapper']//div[@class='resultBody']";
+        testResult = iSearchMultiElementListsForText(searchResultXpath, searchTopic);
+        assertThat(testResult).isFalse();
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Verify that no Help On this Specific Topic (Scen 3)
+    // ---------------------------------------------------------------------------
+    @Then("I search multi element lists at xpath {string} for text {string}")
+    public boolean iSearchMultiElementListsForText(String elXpath, String searchText) {
+        WebDriverWait waitToFill = new WebDriverWait(getDriver(), 5);
+        List<WebElement> elResultsList = waitToFill.until(presenceOfAllElementsLocatedBy(By.xpath(elXpath)));
+        // Unpack list results
+        // System.out.println(" ------ DEBUG: Results Count: " + elFoundZipList.size());
+
+        Boolean searchSuccessful = false;
+        int searchHits = 0;
+
+        if (elResultsList.size() > 1) {
+            // Multiple Search Results -- at Most 100
+            String[] foundResult = new String[100];
+            int arrIndex = 0;
+
+            for (WebElement oneBody : elResultsList) {
+                if (oneBody.getText().contains(searchText)) {
+                    foundResult[arrIndex] = oneBody.getText();
+                    searchSuccessful = true;
+                    searchHits++;
+                    arrIndex++;
+                }
+            }
+        } else {
+            // Single Search Result
+            WebElement elResult = getDriver().findElement(By.xpath(elXpath));
+            if (elResult.getText().contains(searchText)) {
+                searchSuccessful = true;
+                searchHits++;
+            }
+        }
+        return searchSuccessful;
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Mouse Move over to Price Calculator (Scen 1)
+    // ---------------------------------------------------------------------------
+    @When("I go to Calculate Price Page")
+    public void iGoToCalculatePricePage() {
+        // Mail & Ship Navigation Link at top of page, hover find pRICE Calculator in sub-menu, click it
+        Actions actSubMenu = new Actions(getDriver());
+        WebElement mailAndShip = getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Ship')]"));
+        WebElement calcPrice = getDriver().findElement(By.xpath("//li[@class='tool-calc']//a[contains(text(),'Calculate')]"));
+        actSubMenu.moveToElement(mailAndShip).moveToElement(calcPrice).click().perform();
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Enter Price Calculation Parameters (Scenario 1)
+    // ---------------------------------------------------------------------------
+    @And("I select {string} with {string} shape")
+    public void iSelectWithShape(String country, String mailType) {
+        WebElement countryList = getDriver().findElement(By.xpath("//select[@name='CountryID']"));
+        countryList.sendKeys(country);
+
+        // Click on Postcard picture
+        // WebElement postcardImage = getDriver().findElement(By.xpath("//input[@value='" + mailType + "'][@type='submit']"));
+        WebElement postcardImage = getDriver().findElement(By.xpath("//input[@value='Postcard'][@type='submit']"));
+        Actions actPostcard = new Actions(getDriver());
+        actPostcard.moveToElement(postcardImage).click().perform();
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Price Price Calculation Form (Scen 1)
+    // ---------------------------------------------------------------------------
+    @And("I define {string} quantity")
+    public void iDefineQuantity(String quantity) {
+        //input[@placeholder='Quantity']
+        iWaitForElementWithXpath("//input[@placeholder='Quantity']");
+        getDriver().findElement(By.xpath("//input[@placeholder='Quantity']")).sendKeys(quantity);
+    }
+
+    // ---------------------------------------------------------------------------
+    //  Check Price Price Calculation results (Scen 1)
+    // ---------------------------------------------------------------------------
+    @Then("I calculate the price and validate cost is {string}")
+    public void iCalculateThePriceAndValidateCostIs(String expectedPrice) {
+        getDriver().findElement(By.xpath("//input[@value='Calculate'][@type='button']")).click();
+        String actualTotal = getDriver().findElement(By.xpath("//div[@id='total']")).getText();
+        assertThat(actualTotal).isEqualToIgnoringCase(expectedPrice);
+    }
 }
-
-

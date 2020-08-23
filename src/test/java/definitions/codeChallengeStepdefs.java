@@ -162,9 +162,10 @@ public class codeChallengeStepdefs {
     //    When I check if 3 is divisible by 5 then I get
     // --------------------------------------------------------------------------
     @When("I check if {int} is divisible by {int} and {int} then I get")
-    public void iCheckIfIsDivisibleByThenIGet(int targetNbr, int divByNbr1, int divByNbr2) {
+    public String iCheckIfIsDivisibleByThenIGet(int targetNbr, int divByNbr1, int divByNbr2) {
         boolean yesBy1 = false;
         boolean yesBy2 = false;
+        String rsltString = "";
 
         if (divByNbr1 != 0 && targetNbr % divByNbr1 == 0) {
             yesBy1 = true;
@@ -172,13 +173,27 @@ public class codeChallengeStepdefs {
         if (divByNbr2 != 0 && targetNbr % divByNbr2 == 0) {
             yesBy2 = true;
         }
-        if (yesBy1 && ! yesBy2) System.out.println("Yes, " + targetNbr + " is divisible by " + divByNbr1);
-        if (! yesBy1 && yesBy2) System.out.println("Yes, " + targetNbr + " is divisible by " + divByNbr2);
+
+        if (yesBy1 && ! yesBy2) {
+            System.out.println("Yes, " + targetNbr + " is divisible by " + divByNbr1);
+            rsltString = " is divisible by " + divByNbr1;
+        }
+        if (! yesBy1 && yesBy2) {
+            System.out.println("Yes, " + targetNbr + " is divisible by " + divByNbr2);
+            rsltString = " is divisible by " + divByNbr2;
+        }
         if (yesBy1 && yesBy2) {
             System.out.println("Yes, " + targetNbr + " is divisible by " + divByNbr1 + " and " + divByNbr2 + "\n");
+            rsltString = " is divisible by " + divByNbr1 + " and " + divByNbr2;
         }
         if (! yesBy1 && ! yesBy2) {
             System.out.println("No, " + targetNbr + " is NOT divisible by " + divByNbr1 + " or " + divByNbr2 + "\n");
         }
+        return rsltString;
+    }
+
+    @Then("I test if {int} is divisible by {int} and {int} then I get")
+    public void iTestIfIsDivisibleByAndThenIGet(int arg0, int arg1, int arg2) {
+        System.out.println(iCheckIfIsDivisibleByThenIGet(arg0, arg1, arg2));
     }
 }
