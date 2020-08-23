@@ -38,3 +38,17 @@ Feature: Java Code Challenges Feature
   @CodeChallenge
   Scenario: Find If Divisible 2
     Then I test if 13 is divisible by 7 and 13 then I get
+
+  @CodeChallengeDay8
+  Scenario: A function that prints all numbers from 0 up to n
+    Then I print numbers from 0 to 33
+    Then I print numbers from -22 to 9
+
+  @CodeChallengeDay8
+  Scenario: A function that prints all integer array
+    Then I print an integer array
+    Then I print all even numbers from integer array
+    Then I check if an array is empty
+    Then I check if array contains 24
+    Then I check if array contains 8
+    Then I build an array with numbers up to 20

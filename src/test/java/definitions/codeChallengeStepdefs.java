@@ -196,4 +196,140 @@ public class codeChallengeStepdefs {
     public void iTestIfIsDivisibleByAndThenIGet(int arg0, int arg1, int arg2) {
         System.out.println(iCheckIfIsDivisibleByThenIGet(arg0, arg1, arg2));
     }
+
+
+    @Then("I print numbers from {int} to {int}")
+    public void iPrintNumbersFromTo(int start, int end) {
+        int prtIndex = 1;
+        String display = "";
+        for (int n = start; n <= end; n++) {
+            if (n != end && prtIndex <= 10) {
+                display = display + n + ", ";
+                prtIndex++;
+            } else if (n != end && prtIndex > 10) {
+                display = display + n;
+                System.out.println(display);
+                prtIndex = 2;
+                display = "";
+            } else if (n == end) {
+                display = display + n + "\n";
+                System.out.println(display);
+            }
+        }
+    }
+
+    public void iPrintIntArrays(int[] arrayProvided, String myCmd, int oneValue) {
+        StringBuilder display = new StringBuilder();
+
+        if(arrayProvided.length != 0) {
+            for (int oneInt : arrayProvided) {
+                // System.out.println("Number : " + oneInt + " " + oneInt % 2 + " Cmd: " + myCmd);
+                if (myCmd.equals("even") && oneInt % 2 == 0) {
+                    display.append(oneInt).append(" ");
+                } else if (!myCmd.equals("even")) {
+                    display.append(oneInt).append(" ");
+                }
+            }
+            System.out.println(display);
+        } else {
+            System.out.println("................");
+        }
+
+        if (myCmd.equals("size")) {
+            if(arrayProvided.length == 0) {
+                System.out.println("array empty\n");
+            } else {
+                System.out.println("array not empty\n");
+            }
+        }
+    }
+
+    @Then("I print an integer array")
+    public void iPrintAnIntegerArray() {
+        System.out.println("I print an integer array");
+        int[] arrayOfInts = {-12, -14, -9, 0, 1, 2, 3, 4, 5, 21, 22, 23, 24, 25};
+        iPrintIntArrays(arrayOfInts, "all", 0);
+    }
+
+    @Then("I print all even numbers from integer array")
+    public void iPrintAllEvenNumbersFromIntegerArray() {
+        System.out.println("I print all even numbers from an integer array");
+        int[] arrayOfInts = {-12, -14, -9, 0, 1, 2, 3, 4, 5, 21, 22, 23, 24, 25};
+        iPrintIntArrays(arrayOfInts, "even", 0);
+    }
+
+    @Then("I check if an array is empty")
+    public void iCheckIfAnArrayIsEmpty() {
+        System.out.println("I check if an array is empty");
+        int[] arrayOfInts = {-12, -14, -9, 0, 1, 2, 3, 4, 5, 21, 22, 23, 24, 25};
+        iPrintIntArrays(arrayOfInts, "size", 0);
+        System.out.println("I check if an array is empty");
+        int[] arrayOfAir = {};
+        iPrintIntArrays(arrayOfAir, "size", 0);
+    }
+
+    @Then("I check if array contains {int}")
+    public void iCheckIfArrayContains(int intProvided) {
+        System.out.println("I check if a array contains " + intProvided);
+        Integer[] arrayOfInts = {-12, -14, -9, 0, 1, 2, 3, 4, 5, 21, 22, 23, 24, 25};
+        iPrintIntegerArrays(arrayOfInts, "find", intProvided);
+    }
+
+    public void iPrintIntegerArrays(Integer[] arrayProvided, String myCmd, int end) {
+        StringBuilder display = new StringBuilder();
+        List<Integer> listArray = Arrays.asList(arrayProvided);
+        int endPrint = 0;
+
+        if (arrayProvided.length != 0) {
+            if (myCmd.equalsIgnoreCase("fizz")) {
+                System.out.println("\n" + "I print out Fizz Buzz list");
+                endPrint = end;
+            } else {
+                System.out.println("\n" + "I print out array and look for element "+ end);
+                endPrint = arrayProvided.length;
+            }
+            int oneInt = 0;
+            for (int i = 0; i < endPrint; i++) {
+                // System.out.println("Number : " + oneInt + " " + oneInt % 2 + " Cmd: " + myCmd);
+                oneInt = arrayProvided[i];
+
+                boolean b3 = false;
+                boolean b5 = false;
+                boolean b35 = false;
+                boolean not35 = false;
+                if (myCmd.equalsIgnoreCase("fizz")) {
+                    if (oneInt % 3 == 0) b3 = true;
+                    if (oneInt % 5 == 0) b5 = true;
+                    if (b3 && b5) b35 = true;
+                    if (!b3 && !b5) not35 = true;
+
+                    if (not35) display.append(oneInt).append(" ");
+                    if (b3 && !b5) display.append("Fizz ");
+                    if (!b3 && b5) display.append("Buzz ");
+                    if (b35) display.append("FizzBuzz ");
+                    // System.out.println("Index i = " + i + " ==> " + display);
+                } else {
+                    display.append(oneInt).append(" ");
+                }
+            }
+            System.out.println(display);
+
+            if (myCmd.equalsIgnoreCase("find")) {
+                if(listArray.contains(end)){
+                    System.out.println("Array does contain " + end);
+                } else {
+                    System.out.println("Array does not contain " + end);
+                }
+            }
+        }
+    }
+
+    @Then("I build an array with numbers up to {int}")
+    public void iBuildAnArrayWithNumbersUpTo(int end) {
+        Integer [] myarray = new Integer[40];
+        for (int i = 1; i <= end; i++) {
+            myarray[i - 1] = i;
+        }
+        iPrintIntegerArrays(myarray, "fizz", end);
+    }
 }
