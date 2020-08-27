@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.By.xpath;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static support.TestContext.getDriver;
 
@@ -16,15 +17,17 @@ public class ATestToolBox {
     // =============================================
     //  Create test environment variables
     // =============================================
-    static String tePortMode = "default";
-    static Integer teBrowserWidth = 1440;
-    static Integer teBrowserHeight = 900;
-    static String  tePageURL = "";
-    static String  tePageTitle = "";
-    static String  trPageURL = "";
-    static String  trPageTitle = "";
-    static String trWindowHandle = "";
-    static String trPageSource = "";
+    public static String tePortMode = "default";
+    public static Integer teBrowserWidth = 1440;
+    public static Integer teBrowserHeight = 900;
+    public static String tePageURL = "";
+    public static String tePageTitle = "";
+    public static String trPageURL = "";
+    public static String trPageTitle = "";
+    public static String trWindowHandle = "";
+    public static String trPageSource = "";
+
+    public static int EXPTIMEOUT = 5;
 
     // ===========================================================================
     //   Test Environment -- Page Selector
@@ -271,7 +274,7 @@ public class ATestToolBox {
     //          (called from Gherkin)
     // ===========================================================================
     @And("Tool gets element state for {string} with label {string}")
-    public void ToolGetsWebElementState(WebElement myElement, String elementLabel) {
+    public static void ToolGetsWebElementState(WebElement myElement, String elementLabel) {
         boolean isVisible = myElement.isDisplayed();
         boolean isPresent = myElement.isEnabled();
         System.out.println("\n" + " ------ DEBUG: " + trPageURL);
@@ -279,6 +282,43 @@ public class ATestToolBox {
         System.out.println(" ------ DEBUG: Enabled:       " + myElement.isEnabled());
         System.out.println(" ------ DEBUG: Displayed:       " + myElement.isDisplayed());
         System.out.println(" ------ DEBUG: Has size:       " + myElement.getSize());
+    }
+
+    // ---------------------------------------------------------------------------
+    //   Tool: Wait for WebElement After X seconds
+    //      Parameters: xPath of nice element you want
+    //                  waitProvided = 0 (no explicit wait / just find element using project implicit wait in Hooks)
+    //                  waitProvided > 0 && <  300 (literal number seconds up to 5 minutes)
+    //                  waitProvided >= 300 (use framework default = EXPTIMEOUT)
+    //      Output:     WebElement after appears
+    //          (called from Gherkin)
+    // ---------------------------------------------------------------------------
+    @And("Tool wait for element with Xpath {string} to appear after {int} secs")
+    public static WebElement toolWaitForElementWithXpathAfterSecs(String thisXpathProvided, String waitType, int waitProvided) {
+        WebElement elementWanted;
+        if (waitProvided != 0) {
+            // Use one of two possible explicit waits (Gherkin or Framework constant)
+            if (waitProvided >= 300) { waitProvided = EXPTIMEOUT; }
+
+            WebDriverWait waitToAppear = new WebDriverWait(getDriver(), waitProvided);
+            By byThisXpath = By.xpath(thisXpathProvided);
+
+            switch (waitType) {
+                case "visible":
+                    elementWanted = waitToAppear.until(visibilityOfElementLocated(byThisXpath));
+                    break;
+                case "clickable":
+                    elementWanted = waitToAppear.until(elementToBeClickable(byThisXpath));
+                    break;
+                default:
+                    elementWanted = waitToAppear.until(visibilityOfElementLocated(byThisXpath));
+            }
+            return elementWanted;
+        } else {
+            // Use framework implicit wait only
+            elementWanted = getDriver().findElement(By.xpath(thisXpathProvided));
+            return elementWanted;
+        }
     }
 
     // ---------------------------------------------------------------------------

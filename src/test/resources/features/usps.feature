@@ -60,17 +60,31 @@ Feature: USPS Test Suite
     And I provide data as "4970 El Camino Real 110" street, "Los Altos" city, "CA" state
     Then I verify phone number is "800-275-8777"
 
-  @uspsScenario3
+  @uspsScenario5
   Scenario: Quadcopters delivery
     Given Tool that goes to the "usps" page
     When I go to "Help" tab
     And I perform "Quadcopters delivery" help search
     Then I verify that no results of "Quadcopters delivery" available in help search
 
-  @uspsScenario1
+  @uspsScenario6
   Scenario: Calculate price
     Given Tool that goes to the "usps" page
     When I go to Calculate Price Page
     And I select "Canada" with "Postcard" shape
     And I define "2" quantity
     Then I calculate the price and validate cost is "$2.40"
+
+  @uspsScenario9
+    Scenario: Every Door Direct Mail
+    Given Tool that goes to the "usps" page
+    When Tool to change resolution to "default"
+    And Tool to print all page details "without" source
+    Given Tool to get "usps" test data from source "default"
+    # ------------------------------------------------------
+    When I go to "Every Door Direct Mail" under "Business"
+    And I search for "4970 El Camino Real, Los Altos, CA 94022"
+    And I click "Show Table" on the map
+    When I click "Select All" on the table
+    And I close modal window
+    Then I verify that summary of all rows of Cost column is equal Approximate Cost in Order Summary

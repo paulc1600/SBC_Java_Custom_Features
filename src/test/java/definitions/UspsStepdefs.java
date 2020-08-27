@@ -3,10 +3,7 @@ package definitions;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -286,6 +283,9 @@ public class UspsStepdefs {
         if (providedTab.equalsIgnoreCase("Mail & Ship")) {
             providedTab = "ship";
         }
+        if (providedTab.equalsIgnoreCase("Business")) {
+            providedTab = "business";
+        }
         String tabXpath = "//a[@class='menuitem'][contains(@href, '" + providedTab + "')]";
         getDriver().findElement(By.xpath(tabXpath)).click();
     }
@@ -397,5 +397,123 @@ public class UspsStepdefs {
         getDriver().findElement(By.xpath("//input[@value='Calculate'][@type='button']")).click();
         String actualTotal = getDriver().findElement(By.xpath("//div[@id='total']")).getText();
         assertThat(actualTotal).isEqualToIgnoringCase(expectedPrice);
+    }
+
+    // ---------------------------------------------------------------------------
+    //  I go to "Every Door Direct Mail" under "Business" (Scen 9)
+    // ---------------------------------------------------------------------------
+    @When("I go to {string} under {string}")
+    public void iGoToUnder(String tabName, String linkName) {
+        // Business Link at top of page, hover find "Every Door Direct Mail" in sub-menu, click it
+        Actions actSubMenu = new Actions(getDriver());
+        WebElement businessTab = getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Business')]"));
+        WebElement everyDoor = getDriver().findElement(By.xpath("//ul[@class='tools']//a[contains(@href,'routeSearch')]"));
+        actSubMenu.moveToElement(businessTab).moveToElement(everyDoor).click().perform();
+        System.out.println(" Navigate to Tab: " + tabName);
+        System.out.println(" Link Name:       " + linkName);
+    }
+
+    // ---------------------------------------------------------------------------
+    //   I search for "4970 El Camino Real, Los Altos, CA 94022"  (Scen 9)
+    // ---------------------------------------------------------------------------
+    @And("I search for {string}")
+    public void iSearchFor(String providedAddress) {
+        WebElement searchBox = toolWaitForElementWithXpath("//input[@id='address']");
+        searchBox.sendKeys(providedAddress);
+        // Do the search with magnifying glass
+        Actions actSearch = new Actions(getDriver());
+        String mglassXpath = "//button[@type='submit'][contains(@class,'search')]";
+        WebElement magGlass = toolWaitForElementWithXpathAfterSecs(mglassXpath, "clickable", 10);
+        actSearch.moveToElement(magGlass).click().perform();
+    }
+
+    // ---------------------------------------------------------------------------
+    //   I click "Show Table" on the map  (Scen 9)
+    // ---------------------------------------------------------------------------
+    @And("I click {string} on the map")
+    public void iClickOnTheMap(String buttonName) {
+        // Check for overlay by "Route Type" box (it's not always "there")
+        try {
+            String routeBox = "//div[contains(@class,'route-type')]/a[@class='close']";
+            WebElement routeBoxElement = toolWaitForElementWithXpathAfterSecs(routeBox, "clickable", 5);
+            routeBoxElement.click();
+        }
+        catch (WebDriverException e) {
+            System.out.println("Route Box element not selectable so do not click.");
+        }
+        // No route box -- click through to show table
+        // String tableButtonXpath = "//a[@class='route-table-toggle']";  -- hidden label intercepts click
+        String tableButtonXpath = "//span[@class='toggle-icon']";
+        WebElement mapTableButton = toolWaitForElementWithXpathAfterSecs(tableButtonXpath, "clickable", 10);
+        mapTableButton.click();
+    }
+
+    // ---------------------------------------------------------------------------
+    //   I click "Select All" on the table (Scen 9)
+    // ---------------------------------------------------------------------------
+    @When("I click {string} on the table")
+    public void iClickOnTheTable(String selectorText) {
+        String linkSelectAll = "//a[@class='totalsArea'][contains(text(),'" + selectorText + "')]";
+        WebElement linkTableAll = toolWaitForElementWithXpathAfterSecs(linkSelectAll, "visible", 10);
+        linkTableAll.click();
+    }
+
+    // ---------------------------------------------------------------------------
+    //   I close modal window (Scen 9)
+    // ---------------------------------------------------------------------------
+    @And("I close modal window")
+    public void iCloseModalWindow() {
+        String doneButtonXpath = "//div[@id='modal-box']//button[@id='dropOffDone']";
+        WebElement doneButton = toolWaitForElementWithXpathAfterSecs(doneButtonXpath, "clickable", 10);
+        doneButton.click();
+    }
+
+    // ---------------------------------------------------------------------------
+    //   I verify that summary of all rows of Cost column is equal
+    //   Approximate Cost in Order Summary                             (Scen 9)
+    // ---------------------------------------------------------------------------
+    @Then("I verify that summary of all rows of Cost column is equal Approximate Cost in Order Summary")
+    public void iVerifyThatSummaryOfAllRowsOfCostColumnIsEqualApproximateCostInOrderSummary() {
+        String foundNbrStr = "";
+        float foundNbr = 0.0f;
+        double THRESHOLD = .01;
+
+        // explicit wait for route table container to be filled
+        WebDriverWait wait = new WebDriverWait(getDriver(), 5);
+        String resultXpath = "//div[@class='dojoxGridScrollbox']//table//tr//td[8]";
+        List<WebElement> elFoundCosts = wait.until(presenceOfAllElementsLocatedBy(By.xpath(resultXpath)));
+        // Unpack list of Costs
+        if (elFoundCosts.size() > 1) {
+            int arrIndex = 0;
+
+            for (WebElement oneCost : elFoundCosts) {
+                // strip just numerical part
+                if (oneCost.getText().length() >= 3) {
+                    foundNbrStr = oneCost.getText().substring(1, oneCost.getText().length());
+                    System.out.println(" ------ DEBUG: Cost Results(" + arrIndex + "): " + foundNbrStr);
+                    foundNbr = foundNbr + Float.parseFloat(foundNbrStr);
+                }
+                arrIndex++;
+            }
+        }
+        String expectedTotal = getDriver().findElement(By.xpath("//span[@class='approx-cost']")).getText();
+        float expectedNbr = Float.parseFloat(expectedTotal);
+
+        // Show me anyway, I'm curious
+        System.out.println("================================================");
+        System.out.println(" Expected Value:   " + expectedNbr);
+        System.out.println(" Actual Value:     " + foundNbr);
+        // Nice compare that checks for near equal floating point
+        Boolean checkThreshCompare = false;
+        if (Math.abs(expectedNbr - foundNbr) < THRESHOLD) {
+            checkThreshCompare = true;
+            System.out.println(" Compare?     " + checkThreshCompare);
+            System.out.println("================================================");
+        } else {
+            checkThreshCompare = false;
+            System.out.println(" Compare?     " + checkThreshCompare);
+            System.out.println("================================================");
+        }
+        org.junit.Assert.assertEquals(checkThreshCompare, true);
     }
 }
