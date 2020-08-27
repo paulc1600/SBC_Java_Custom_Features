@@ -3,10 +3,10 @@ Feature: Market Quote Test Suite
 
   @marketIntro
   Scenario: Test Browser Navigation
-    Given I go to "quote" page
-    And I print page details
-    And I go to "google" page
-    And I print page details
+    Given Tool that goes to the "quote" page
+    And Tool to print page details
+    And Tool that goes to the "google" page
+    And Tool to print page details
     And I go back and forward, then refresh
 
   @marketSmoke
@@ -15,9 +15,9 @@ Feature: Market Quote Test Suite
     #  Test Environment Set Up
     #     Pages: quote, google (TBD), yahoo (TBD)
     #     Test Data: default, <Windows .CSV file name> (TBD), random generated (TBD)
-    Given I go to "quote" page
-    When I change resolution to "desktop"
-    Given I get "quote" test data from source "default"
+    Given Tool that goes to the "quote" page
+    When Tool to change resolution to "desktop"
+    Given Tool to get "quote" test data from source "default"
     Then I display test environment set up
     # ------------------------------------------------------
     When I fill out required fields
@@ -31,9 +31,9 @@ Feature: Market Quote Test Suite
     #  Test Environment Set Up
     #     Pages: quote, google (TBD), yahoo (TBD)
     #     Test Data: default, <Windows .CSV file name> (TBD), random generated (TBD)
-    Given I go to "quote" page
-    When I change resolution to "phone"
-    Given I get "quote" test data from source "default"
+    Given Tool that goes to the "quote" page
+    When Tool to change resolution to "phone"
+    Given Tool to get "quote" test data from source "default"
     Then I display test environment set up
     # ------------------------------------------------------
     When I fill out required fields
@@ -47,8 +47,8 @@ Feature: Market Quote Test Suite
     #  Test Environment Set Up
     #     Pages: quote, google (TBD), yahoo (TBD)
     #     Test Data: default, <Windows .CSV file name> (TBD), random generated (TBD)
-    Given I go to "quote" page
-    Given I get "quote" test data from source "default"
+    Given Tool that goes to the "quote" page
+    Given Tool to get "quote" test data from source "default"
     Then I display test environment set up
     # ------------------------------------------------------
     But I clear "quote" page field "email"
@@ -60,8 +60,8 @@ Feature: Market Quote Test Suite
   Scenario: Perform Email Field Valid Checking
     # ------------------------------------------------------
     #  Test Environment Set Up
-    Given I go to "quote" page
-    Given I get "quote" test data from source "default"
+    Given Tool that goes to the "quote" page
+    Given Tool to get "quote" test data from source "default"
     Then I display test environment set up
     # ------------------------------------------------------
     But I clear "quote" page field "email"
@@ -84,12 +84,12 @@ Feature: Market Quote Test Suite
   Scenario: Verify Appearance of 3rd Party Alert
     # ------------------------------------------------------
     #  Test Environment Set Up
-    Given I go to "quote" page
-    Given I get "quote" test data from source "default"
+    Given Tool that goes to the "quote" page
+    Given Tool to get "quote" test data from source "default"
     Then I display test environment set up
     # ------------------------------------------------------
     When I fill out required fields
-    And I create and handle 3rd party alert
+    And Tool to handle 3rd party alert at "//button[@id='thirdPartyButton']" with a "accept"
     And I submit the form
     Then I verify required fields
 
@@ -97,11 +97,11 @@ Feature: Market Quote Test Suite
   Scenario: Verify Dismiss of 3rd Party Alert
     # ------------------------------------------------------
     #  Test Environment Set Up
-    Given I go to "quote" page
-    Given I get "quote" test data from source "default"
+    Given Tool that goes to the "quote" page
+    Given Tool to get "quote" test data from source "default"
     Then I display test environment set up
     # ------------------------------------------------------
     When I fill out required fields
-    And I create and dismiss 3rd party alert
+    And Tool to handle 3rd party alert at "//button[@id='thirdPartyButton']" with a "dismiss"
     And I submit the form
     Then I verify required fields

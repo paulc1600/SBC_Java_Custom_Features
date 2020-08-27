@@ -1,155 +1,30 @@
 package definitions;
 
 import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
+import static definitions.ATestToolBox.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static support.TestContext.getDriver;
 
-public class uspsStepdefs {
-    // =============================================
-    //  Create test environment variables
-    // =============================================
-    String tePortMode = "default";
-    Integer teBrowserWidth = 1440;
-    Integer teBrowserHeight = 900;
-    String tePageURL = "";
-    String tePageTitle = "";
-    String trPageURL = "";
-    String trPageTitle = "";
-    String trWindowHandle = "";
-    String trPageSource = "";
+public class UspsStepdefs {
     // =============================================
     //  Create test data variables
     // =============================================
     String tdAddress = "";
     String tdCity = "";
     String tdState = "";
-
-    // ===========================================================================
-    @Given("I go to my {string} page")
-    public void iGoToMyPage(String page) {
-        switch (page) {
-            case "quote":
-                tePageURL = "https://skryabin.com/market/quote.html";
-                tePageTitle = "Quote";
-                break;
-            case "google":
-                tePageURL = "https://www.google.com/";
-                tePageTitle = "Google";
-                break;
-            case "yahoo":
-                tePageURL = "https://www.yahoo.com/";
-                tePageTitle = "Yahoo";
-                break;
-            case "usps":
-                tePageURL = "https://www.usps.com/";
-                tePageTitle = "USPS";
-                break;
-            default:
-                tePageURL = page;
-        }
-
-        System.out.println("\n   Navigate: Open URL");
-        getDriver().get(tePageURL);
-        // Test Results of switching to this page
-        trPageTitle = getDriver().getTitle();
-        trPageURL = getDriver().getCurrentUrl();
-        trWindowHandle = getDriver().getWindowHandle();
-        trPageSource = getDriver().getPageSource();
-    }
-
-    // ===========================================================================
-    //   Determine (default) or Set the Browser Viewport Size
-    // ===========================================================================
-    @When("I change my resolution to {string}")
-    public void iChangeMyResolutionTo(String browserSize) {
-        switch (browserSize) {
-            case "phone":
-                teBrowserWidth = 400;
-                teBrowserHeight = 768;
-                tePortMode = browserSize;
-                break;
-            case "desktop":
-                teBrowserWidth = 1024;
-                teBrowserHeight = 768;
-                tePortMode = browserSize;
-                break;
-            default:
-                // Default means leave it alone = whatever size the environment sets = typically MAX
-                Dimension browserActualSize = getDriver().manage().window().getSize();
-                teBrowserHeight = browserActualSize.getHeight();
-                teBrowserWidth = browserActualSize.getWidth();
-                tePortMode = "default";
-                break;
-        }
-        if (browserSize.equalsIgnoreCase("phone") ||
-                browserSize.equalsIgnoreCase("desktop")) {
-            // Gherkin wants to change size, so browser changes to the set dimension
-            Dimension newBrowserSize = new Dimension(teBrowserWidth, teBrowserHeight);
-            getDriver().manage().window().setPosition(new Point(0, 0));
-            getDriver().manage().window().setSize(newBrowserSize);
-        }
-    }
-
-    // ===========================================================================
-    @Given("I get my {string} test data from source {string}")
-    public void iGetTestDataFromSource(String page, String tdSource) {
-        if (page.equalsIgnoreCase("quote")) {
-            // Not implemented in this step file
-        } else if (page.equalsIgnoreCase("google")) {
-            // Not implemented yet
-        } else if (page.equalsIgnoreCase("yahoo")) {
-            // Not implemented yet
-        } else if (page.equalsIgnoreCase("usps")) {
-            switch (tdSource) {
-                case "default":
-                    // Variables are already set to defaults when step file called
-                    break;
-                case "file":
-                    // Override defaults from test data file (not implemented)
-                    break;
-                default:
-                    throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
-            }
-        } else {
-            throw new RuntimeException("Unsupported page: " + page);
-        }
-    }
-
-    // ---------------------------------------------------------------------------
-    @And("I print all page details {string} source")
-    public void iPrintAllPageDetailsWithSource(String srcFlag) {
-        // trPageTitle = getDriver().getTitle();
-        // trPageURL = getDriver().getCurrentUrl();
-        System.out.println("================================================");
-        System.out.println(" URL:   " + trPageURL);
-        System.out.println(" Title: " + trPageTitle);
-        System.out.println(" Port Mode: " + tePortMode);
-        System.out.println(" Browser Size: " + teBrowserWidth + " x " + teBrowserHeight);
-        System.out.println(" Handle: " + trWindowHandle);
-        if (srcFlag.equalsIgnoreCase("with")) {
-            System.out.println("================================================");
-            System.out.println("                 Page Source                    ");
-            System.out.println("------------------------------------------------");
-            System.out.println(trPageSource);
-            System.out.println("================================================");
-            System.out.println("               End Page Source                  ");
-        }
-        System.out.println("------------------------------------------------\n");
-        if (!tePageTitle.equals("")) {
-            assertThat(trPageTitle).containsIgnoringCase(tePageTitle);
-        }
-    }
 
     // ---------------------------------------------------------------------------
     //  Navigate to Zip Code Look Up Form on USPS Website
@@ -249,34 +124,6 @@ public class uspsStepdefs {
         }
     }
 
-    // ===========================================================================
-    //   What Is WebElement State
-    // ===========================================================================
-    public void whatIsWebElementState(WebElement myElement, String elementLabel) {
-        boolean isVisible = myElement.isDisplayed();
-        boolean isPresent = myElement.isEnabled();
-        // System.out.println("\n" + " ------ DEBUG: " + trPageURL);
-        // System.out.println(" ------ DEBUG: Element with label: " + elementLabel);
-        // System.out.println(" ------ DEBUG: Enabled:       " + isPresent);
-        // System.out.println(" ------ DEBUG: Displayed:       " + isVisible);
-        // System.out.println(" ------ DEBUG: Has size:       " + myElement.getSize());
-
-        // Element Not visible to WebDriver -- try to fix
-
-        if (!isVisible) {
-            switch (elementLabel) {
-                case "Find Button":
-                    // Page -- https://tools.usps.com/zip-code-lookup.htm?byaddress
-                    // Click on Company above?
-                    getDriver().findElement(By.xpath("//input[@id='tCompany']")).click();
-                    break;
-                default:
-                    // when needed, it will appear here
-                    break;
-            }
-        }
-    }
-
     // ---------------------------------------------------------------------------
     //  Validate Zip Code Lookup Results
     // ---------------------------------------------------------------------------
@@ -359,7 +206,7 @@ public class uspsStepdefs {
         elPoSelect.click();      // Open selection list
         String xpathPoSelectOpt = "(//div[contains(@class,'dropdown')][contains(@class,'open')]//a[contains(text(),'" + locType + "')])[2]";
         // Use common wait method for all button dropdown options
-        WebElement elPoSelectOpt = iWaitForElementWithXpath(xpathPoSelectOpt);
+        WebElement elPoSelectOpt = toolWaitForElementWithXpath(xpathPoSelectOpt);
         // Select actual option
         actMySelect.moveToElement(elPoSelect).moveToElement(elPoSelectOpt).click().perform();
 
@@ -368,7 +215,7 @@ public class uspsStepdefs {
         elServSelect.click();      // Open selection list
         String xpathServSelectOpt = "//li[@id='pickupPo']/a[contains(text(),'" + serviceType + "')]";
         // Use common wait method for all button dropdown options
-        WebElement elServSelectOpt = iWaitForElementWithXpath(xpathServSelectOpt);
+        WebElement elServSelectOpt = toolWaitForElementWithXpath(xpathServSelectOpt);
         // Select actual option
         actMySelect.moveToElement(elServSelect).moveToElement(elServSelectOpt).click().perform();
 
@@ -377,24 +224,12 @@ public class uspsStepdefs {
         elAvailSelect.click();
         String xpathAvailSelectOpt = "//a[contains(text(),'" + availService + "')]";
         // Use common wait method for all button dropdown options
-        WebElement elAvailSelectOpt = iWaitForElementWithXpath(xpathAvailSelectOpt);
+        WebElement elAvailSelectOpt = toolWaitForElementWithXpath(xpathAvailSelectOpt);
         // Select actual option
         actMySelect.moveToElement(elAvailSelect).moveToElement(elAvailSelectOpt).click().perform();
 
         // Search button submits completed form
         getDriver().findElement(By.xpath("//a[@id='searchLocations']")).click();
-    }
-
-    // ---------------------------------------------------------------------------
-    //  Patiently Wait For Any Identified Element (by Xpath) to appear
-    //     returns the element that appeared
-    // ---------------------------------------------------------------------------
-    @And("I wait for element with Xpath {string} to appear")
-    public WebElement iWaitForElementWithXpath(String thisXpathProvided) {
-        WebDriverWait waitToAppear = new WebDriverWait(getDriver(), 5);
-        By byThisXpath = By.xpath(thisXpathProvided);
-        WebElement elementNowVisible = waitToAppear.until(visibilityOfElementLocated(byThisXpath));
-        return elementNowVisible;
     }
 
     // ---------------------------------------------------------------------------
@@ -405,7 +240,7 @@ public class uspsStepdefs {
         // Open the modal address dialog form
         getDriver().findElement(By.xpath("//input[@id='search-input']")).click();
         // Use common wait method for entire Modal form
-        iWaitForElementWithXpath("//div[@id='address-modal']//div[@class='pickup-info']");
+        toolWaitForElementWithXpath("//div[@id='address-modal']//div[@class='pickup-info']");
         // Assume all 3 fields are visible if form is visible ...
         getDriver().findElement(By.xpath("//input[@id='addressLineOne']")).sendKeys(street);
         getDriver().findElement(By.xpath("//input[@id='cityOrZipCode']")).sendKeys(city);
@@ -424,11 +259,11 @@ public class uspsStepdefs {
     @Then("I verify phone number is {string}")
     public void iVerifyPhoneNumberIs(String phoneToVerify) {
         // Use common wait method for entire result box
-        iWaitForElementWithXpath("//div[@id='resultBox']");
+        toolWaitForElementWithXpath("//div[@id='resultBox']");
         // Click On Expansion Arrow for top result box == nearest post office
         getDriver().findElement(By.xpath("//div[@id='resultBox']/div[1]//span[@class='listArrow']")).click();
         // Use common wait method for Post Office Details to be displayed
-        iWaitForElementWithXpath("//div[@id='po-location-detail']");
+        toolWaitForElementWithXpath("//div[@id='po-location-detail']");
         // get phone from details -- error path if no phone at all?
         String actualPhone = getDriver().findElement(By.xpath("//div[@id='po-location-detail']//p[@class='ask-usps']")).getText();
         assertThat(actualPhone).containsIgnoringCase(phoneToVerify);
@@ -461,12 +296,12 @@ public class uspsStepdefs {
     @And("I perform {string} help search")
     public void iPerformHelpSearch(String providedSearch) {
         // Wait for web page with search box
-        WebElement helpSearchBox = iWaitForElementWithXpath("//input[@placeholder='Search for a topic']");
+        WebElement helpSearchBox = toolWaitForElementWithXpath("//input[@placeholder='Search for a topic']");
         helpSearchBox.sendKeys(providedSearch);
         // Click Magnifying Glass
         getDriver().findElement(By.xpath("//button[contains(text(),'Search')]")).click();
         // Wait until results box appears
-        iWaitForElementWithXpath("//div[@class='resultsWrapper']");
+        toolWaitForElementWithXpath("//div[@class='resultsWrapper']");
     }
 
     // ---------------------------------------------------------------------------
@@ -550,7 +385,7 @@ public class uspsStepdefs {
     @And("I define {string} quantity")
     public void iDefineQuantity(String quantity) {
         //input[@placeholder='Quantity']
-        iWaitForElementWithXpath("//input[@placeholder='Quantity']");
+        toolWaitForElementWithXpath("//input[@placeholder='Quantity']");
         getDriver().findElement(By.xpath("//input[@placeholder='Quantity']")).sendKeys(quantity);
     }
 

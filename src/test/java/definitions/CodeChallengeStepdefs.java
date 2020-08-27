@@ -6,7 +6,7 @@ import cucumber.api.java.en.When;
 
 import java.util.*;
 
-public class codeChallengeStepdefs {
+public class CodeChallengeStepdefs {
     @Then("I make a killing on the stock market")
     public void iMakeAKillingOnTheStockMarket() {
         int[] sPrices = {7, 1, 5, 3, 6, 4, 4};

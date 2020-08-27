@@ -6,7 +6,7 @@ import org.openqa.selenium.support.ui.Select;
 
 import static support.TestContext.getDriver;
 
-public class quoteSmokeDefs {
+public class QuoteSmokeDefs {
     @Then("I select option {string} from element with xpath {string}")
     public void iSelectOptionFromElementWithXpath(String option, String xpath) {
         new Select(getDriver().findElement(By.xpath(xpath))).selectByVisibleText(option);

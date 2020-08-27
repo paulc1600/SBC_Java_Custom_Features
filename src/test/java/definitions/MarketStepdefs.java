@@ -4,6 +4,7 @@ import cucumber.api.java.en.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
 
+import static definitions.ATestToolBox.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static support.TestContext.getDriver;
 
@@ -33,108 +34,14 @@ public class MarketStepdefs  {
     String tdGender = "male";
 
     // ===========================================================================
-    @Given("I go to {string} page")
-    public void iGoToPage(String page) {
-        switch (page) {
-            case "quote": tePageURL = "https://skryabin.com/market/quote.html";
-                break;
-            case "google": tePageURL = "https://www.google.com/";
-                break;
-            case "yahoo": tePageURL = "https://www.yahoo.com/";
-                break;
-            case "usps": tePageURL = "https://www.usps.com/";
-                break;
-            default:
-                tePageURL = page;
-        }
-
-        System.out.println("\n   Navigate: Open URL");
-        getDriver().get(tePageURL);
-        // Test Results of switching to this page
-        trPageTitle = getDriver().getTitle();
-        trPageURL = getDriver().getCurrentUrl();
-    }
-
-    // ===========================================================================
-    @Given("I get {string} test data from source {string}")
-    public void iGetTestDataFromSource(String page, String tdSource) {
-        if (page.equalsIgnoreCase("quote")) {
-            switch (tdSource) {
-                case "default":
-                    // Variables are already set to defaults when step file called
-                    break;
-                case "file":
-                    // Override defaults from test data file (not implemented)
-                    break;
-                default:
-                    throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
-            }
-        } else if (page.equalsIgnoreCase("google")) {
-            // Not implemented yet
-        } else if (page.equalsIgnoreCase("yahoo")) {
-            // Not implemented yet
-        } else {
-            throw new RuntimeException("Unsupported page: " + page);
-        }
-    }
-
-    // ===========================================================================
-    @When("I change resolution to {string}")
-    public void iChangeResolutionTo(String browserSize) {
-        switch (browserSize) {
-            case "phone":
-                teBrowserWidth = 400;
-                teBrowserHeight = 768;
-                tePortMode = browserSize;
-                break;
-            case "desktop":
-                teBrowserWidth = 1024;
-                teBrowserHeight = 768;
-                tePortMode = browserSize;
-                break;
-            default:
-                // Use default values
-                tePortMode = "default";
-                teBrowserWidth = 1440;
-                teBrowserHeight = 900;
-                break;
-        }
-        Dimension myBrowserSize = new Dimension(teBrowserWidth,teBrowserHeight);
-        //Resize current window to the set dimension
-        getDriver().manage().window().setPosition(new Point(0,0));
-        getDriver().manage().window().setSize(myBrowserSize);
-    }
-
-    // ===========================================================================
     //  Display Test Environment and Test Data Used to Console
     // ===========================================================================
     @Then("I display test environment set up")
     public void iDisplayTestEnvironmentSetUp() {
-        iPrintPageDetails();
-        iPrintBrowserSize();
-        System.out.println("=====================================");
-        System.out.println(" Form values to be input ... ");
-        System.out.println("=====================================");
+        ATestToolBox.toolToDisplayTestEnvironmentSetUp();
+        System.out.println("       Test Environment Variables               ");
+        System.out.println("================================================");
         iDisplayTestDataVariables1();
-    }
-
-    // ---------------------------------------------------------------------------
-    @And("I print page details")
-    public void iPrintPageDetails() {
-        // trPageTitle = getDriver().getTitle();
-        // trPageURL = getDriver().getCurrentUrl();
-        System.out.println("================================================");
-        System.out.println(" URL:   " + trPageURL);
-        System.out.println(" Title: " + trPageTitle);
-        System.out.println("================================================");
-    }
-
-    // ---------------------------------------------------------------------------
-    @And("I print browser size")
-    public void iPrintBrowserSize() {
-        System.out.println(" Port Mode: " + tePortMode);
-        System.out.println(" Browser Size: " + teBrowserWidth + " x " + teBrowserHeight);
-        System.out.println("================================================");
     }
 
     // ===========================================================================
@@ -167,21 +74,21 @@ public class MarketStepdefs  {
         // Test Results of switching to this page
         trPageTitle = getDriver().getTitle();
         trPageURL = getDriver().getCurrentUrl();
-        iPrintPageDetails();
+        toolToPrintPageDetails();
 
         System.out.println("\n   Navigate: Forward");
         getDriver().navigate().forward();
         // Test Results of switching to this page
         trPageTitle = getDriver().getTitle();
         trPageURL = getDriver().getCurrentUrl();
-        iPrintPageDetails();
+        toolToPrintPageDetails();
 
         System.out.println("\n   Navigate: Refresh");
         getDriver().navigate().refresh();
         // Test Results of switching to this page
         trPageTitle = getDriver().getTitle();
         trPageURL = getDriver().getCurrentUrl();
-        iPrintPageDetails();
+        toolToPrintPageDetails();
     }
 
     // ===========================================================================
@@ -256,7 +163,7 @@ public class MarketStepdefs  {
         // Date of Birth
         WebElement elDateOfBirth = getDriver().findElement(By.xpath("//input[@name='dateOfBirth']"));
         // In phone mode, element needs scrolling first
-        if (tePortMode == "phone" && isWebElementNotInViewport(elDateOfBirth)) {
+        if (tePortMode.equals("phone") && toolChecksWebElementNotInViewport(elDateOfBirth)) {
             ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView(true);", elDateOfBirth);
         }
         elDateOfBirth.sendKeys(tdDateOfBirth);
@@ -268,7 +175,7 @@ public class MarketStepdefs  {
         //        click on element with xpath "//option[contains(text(),'United States of America')]"
         WebElement elCountry = getDriver().findElement(By.xpath("//select[@name='countryOfOrigin']"));
         // In phone mode, element needs scrolling first
-        if (tePortMode == "phone" && isWebElementNotInViewport(elCountry)) {
+        if (tePortMode.equals("phone") && isWebElementNotInViewport(elCountry)) {
             ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView(true);", elCountry);
         }
         new Select(elCountry).selectByVisibleText(tdCountry);
@@ -279,7 +186,7 @@ public class MarketStepdefs  {
         WebElement elFemaleRadio = getDriver().findElement(By.xpath("//input[@name='gender'][@value='female']"));
         // Only check one radio button, since they are side by side and have same location from top
         // In phone mode, element needs scrolling first
-        if (tePortMode == "phone" && isWebElementNotInViewport(elMaleRadio)) {
+        if (tePortMode.equals("phone") && isWebElementNotInViewport(elMaleRadio)) {
             ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView(true);", elMaleRadio);
         }
         // Done with optional scrolling, now click one you need to click on
@@ -293,7 +200,7 @@ public class MarketStepdefs  {
         //  Address
         WebElement elPostalAddress = getDriver().findElement(By.xpath("//textarea[@id='address']"));
         // In phone mode, element needs scrolling first
-        if (tePortMode == "phone" && isWebElementNotInViewport(elPostalAddress)) {
+        if (tePortMode.equals("phone") && isWebElementNotInViewport(elPostalAddress)) {
             ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView(true);", elPostalAddress);
         }
         elPostalAddress.sendKeys(tdAddress);
@@ -556,15 +463,6 @@ public class MarketStepdefs  {
         getDriver().findElement(By.xpath("//button[@id='thirdPartyButton']")).click();
         // Go away Mr. Alert
         getDriver().switchTo().alert().accept();
-        // Try going back to first window
-        getDriver().switchTo().window(getDriver().getWindowHandles().iterator().next());
-    }
-
-    @And("I create and dismiss 3rd party alert")
-    public void iCreateAndDismissRdPartyAlert() {
-        getDriver().findElement(By.xpath("//button[@id='thirdPartyButton']")).click();
-        // Go away Mr. Alert
-        getDriver().switchTo().alert().dismiss();
         // Try going back to first window
         getDriver().switchTo().window(getDriver().getWindowHandles().iterator().next());
     }
