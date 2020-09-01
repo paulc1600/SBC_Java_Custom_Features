@@ -1,0 +1,17 @@
+name: Administrator
+address: 4970 El Camino Real
+zip: "94022"
+email: mail@example.com
+phone: "1234567890"
+state: CA
+city: LOS ALTOS
+dname: Mr. John J Goodenough
+daddress: 3051 Ocala Ave
+dzip: "95148"
+demail: nobody@nonet.com
+dphone: "4561237890"
+dstate: CA
+dcity: San Jose
+weight: "2"
+pkgtype: UPS Express Box - Small
+description: Engraved Photo Frame

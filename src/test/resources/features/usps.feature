@@ -50,6 +50,20 @@ Feature: USPS Test Suite
     And I submit the zip lookup by address form
     Then I validate "94102" zip code exists in the result
 
+  # Code courtesy of Viacheslav (Slava) Skryabin 04/01/2011
+  @uspsScenario2
+  Scenario: Verify location
+    Given Tool that goes to the "usps" page
+    When Tool to change resolution to "default"
+    Given Tool to get "usps" test data from source "default"
+    # ------------------------------------------------------
+    When I perform "Free Boxes" search
+    And I set "Mail & Ship" in filters
+    Then I verify that "7" results found
+    When I select "Priority Mail | USPS" in results
+    And I click "Ship Now" button
+    Then I validate that Sign In is required
+
   @uspsScenario4
   Scenario: Phone number of the nearest Mail Pickup (Scen 4)
     Given Tool that goes to the "usps" page
@@ -77,14 +91,14 @@ Feature: USPS Test Suite
 
   @uspsScenario9
     Scenario: Every Door Direct Mail
-    Given Tool that goes to the "usps" page
-    When Tool to change resolution to "default"
-    And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
-    # ------------------------------------------------------
-    When I go to "Every Door Direct Mail" under "Business"
-    And I search for "4970 El Camino Real, Los Altos, CA 94022"
-    And I click "Show Table" on the map
-    When I click "Select All" on the table
-    And I close modal window
-    Then I verify that summary of all rows of Cost column is equal Approximate Cost in Order Summary
+      Given Tool that goes to the "usps" page
+      When Tool to change resolution to "default"
+      And Tool to print all page details "without" source
+      Given Tool to get "usps" test data from source "default"
+      # ------------------------------------------------------
+      When I go to "Every Door Direct Mail" under "Business"
+      And I search for "4970 El Camino Real, Los Altos, CA 94022"
+      And I click "Show Table" on the map
+      When I click "Select All" on the table
+      And I close modal window
+      Then I verify that summary of all rows of Cost column is equal Approximate Cost in Order Summary

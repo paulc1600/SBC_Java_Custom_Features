@@ -5,6 +5,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -384,7 +385,6 @@ public class UspsStepdefs {
     // ---------------------------------------------------------------------------
     @And("I define {string} quantity")
     public void iDefineQuantity(String quantity) {
-        //input[@placeholder='Quantity']
         toolWaitForElementWithXpath("//input[@placeholder='Quantity']");
         getDriver().findElement(By.xpath("//input[@placeholder='Quantity']")).sendKeys(quantity);
     }
@@ -397,6 +397,84 @@ public class UspsStepdefs {
         getDriver().findElement(By.xpath("//input[@value='Calculate'][@type='button']")).click();
         String actualTotal = getDriver().findElement(By.xpath("//div[@id='total']")).getText();
         assertThat(actualTotal).isEqualToIgnoringCase(expectedPrice);
+    }
+
+    // ---------------------------------------------------------------------------
+    //   When I perform "Free Boxes" search                         (Scen 2)
+    // ---------------------------------------------------------------------------
+    @When("I perform {string} search")
+    public void iPerformSearch(String SearchParm) {
+        WebElement searchMenu = getDriver().findElement(By.xpath("//li[contains(@class, 'nav-search')]"));
+        WebElement searchInput = getDriver().findElement(By.xpath("//input[@id='global-header--search-track-search']"));
+        getActions()
+                .moveToElement(searchMenu)
+                .sendKeys(searchInput, SearchParm)
+                .sendKeys(Keys.ENTER)
+                .perform();
+    }
+
+    // ---------------------------------------------------------------------------
+    //   I set "Mail & Ship" in filters                            (Scen 2)
+    // ---------------------------------------------------------------------------
+    @And("I set {string} in filters")
+    public void iSetInFilters(String filterLink) {
+        WebElement spinner = getDriver().findElement(By.xpath("//div[@class='white-spinner-container']"));
+        WebElement filterElement = getDriver().findElement(By.xpath("//a[@class='dn-attr-a'][@title='" + filterLink + "']"));
+        getExecutor().executeScript("arguments[0].click();", filterElement);
+        getWait().until(ExpectedConditions.invisibilityOf(spinner));
+    }
+
+    // ---------------------------------------------------------------------------
+    //   Then I verify that "7" results found                           (Scen 2)
+    // ---------------------------------------------------------------------------
+    @Then("I verify that {string} results found")
+    public void iVerifyThatResultsFound(String totalResultsStr) {
+        WebDriverWait waitResults = getWait(5);
+        WebElement hdText = toolWaitForElementWithXpathAfterSecs("//span[@id='searchResultsHeading']", "visible", 5);
+        assert(hdText.getText().contains(totalResultsStr + " results"));
+
+        int nbrTotalResults = Integer.parseInt(totalResultsStr);
+        List<WebElement> elSearchResults = waitResults.until(presenceOfAllElementsLocatedBy(By.xpath("//ul[@id='records']//li")));
+        assertThat(elSearchResults.size()).isEqualTo(nbrTotalResults);
+    }
+
+    // ---------------------------------------------------------------------------
+    //   When I select "Priority Mail | USPS" in results               (Scen 2)
+    // ---------------------------------------------------------------------------
+    @When("I select {string} in results")
+    public void iSelectInResults(String selectedResult) {
+        getDriver().findElement(By.xpath("//span[text()='" + selectedResult + "']")).click();
+    }
+
+    // ---------------------------------------------------------------------------
+    //   I click "Ship Now" button                                    (Scen 2)
+    // ---------------------------------------------------------------------------
+    @And("I click {string} button")
+    public void iClickButton(String btnName) throws InterruptedException {
+        int numOfWin = getDriver().getWindowHandles().size();
+        while (getDriver().getWindowHandles().size() < numOfWin + 1) {
+            getDriver().findElement(By.xpath("//a[contains(text(),'" + btnName + "')]")).click();
+            Thread.sleep(100);
+        }
+    }
+
+    // ---------------------------------------------------------------------------
+    //   I validate that Sign In is required                          (Scen 2)
+    // ---------------------------------------------------------------------------
+    @Then("I validate that Sign In is required")
+    public void iValidateThatSignInIsRequired() {
+        String originalWindow = getDriver().getWindowHandle();
+        // switch to new window
+        for (String handle : getDriver().getWindowHandles()) {
+            getDriver().switchTo().window(handle);
+        }
+
+        getWait(10).until(ExpectedConditions.titleContains("Sign In"));
+        getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@id='username']")));
+        getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@id='password']")));
+
+        // switch back
+        getDriver().switchTo().window(originalWindow);
     }
 
     // ---------------------------------------------------------------------------

@@ -52,3 +52,35 @@ Feature: Java Code Challenges Feature
     Then I check if array contains 24
     Then I check if array contains 8
     Then I build an array with numbers up to 20
+
+  @CodeChallengeDay10a
+  Scenario: Smart Two Integer Classification
+    Then I receive 21 and 7 which are divisible by 5
+    Then I receive 25 and 5 which are divisible by 5
+    Then I receive 10 and 5 which are divisible by 5
+    Then I receive 15 and 10 which are divisible by 5
+    Then I receive 15 and 25 which are divisible by 5
+    Then I receive 19 and 20 which are divisible by 5
+    Then I receive 0 and -5 which are divisible by 5
+
+  @CodeChallengeDay10b
+  Scenario: Test TwoIntegerSum Class
+    Then I verify that 21 and 7 are really 28
+    Then I verify that 251 and 6 are really 257
+    Then I verify that 0 and 0 are really 0
+    Then I verify that -125 and -5 are really -130
+    Then I verify that 1000000 and 9000000 are really 10000000
+
+  @CodeChallengeDay10d
+  Scenario:  Reverse every third character of a string
+    Then I reverse every third char in string "WebDriver"
+    Then I reverse every third char in string ".eberineroeb riseriebhriter ebdrieertebpriyerrebcrinereeb riIer"
+    Then I reverse every third char in string "124126128124126128124129"
+
+  @CodeChallengeDay10e
+  Scenario: Yoda Speaks
+    Then Hum "I will keep my counsel" Yoda said
+    Then Hum "I am strong with the force" Yoda said
+    Then Hum "I must meditate" Yoda said
+    Then Hum "Great disturbance" Yoda said
+

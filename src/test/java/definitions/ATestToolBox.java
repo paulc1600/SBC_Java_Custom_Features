@@ -1,11 +1,15 @@
 package definitions;
 
 import cucumber.api.java.en.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.By.xpath;
@@ -26,8 +30,39 @@ public class ATestToolBox {
     public static String trPageTitle = "";
     public static String trWindowHandle = "";
     public static String trPageSource = "";
+    public static String tdFileName = "";
+    public static Map<String, Object> upsData = null;
+    public static Map<String, String> stateData = null;
 
     public static int EXPTIMEOUT = 5;
+
+    // ***************************************************************************
+    //   getWait()  ===>  new wait constructor = default 5 sec
+    // ***************************************************************************
+    public static WebDriverWait getWait() {
+        return getWait(5);
+    }
+
+    // ***************************************************************************
+    //   getWait(int sec)  ===>  new wait constructor
+    // ***************************************************************************
+    public static WebDriverWait getWait(int timeout) {
+        return new WebDriverWait(getDriver(), timeout);
+    }
+
+    // ***************************************************************************
+    //   getActions()  ===>  new Action constructor
+    // ***************************************************************************
+    public static Actions getActions() {
+        return new Actions(getDriver());
+    }
+
+    // ***************************************************************************
+    //   getExecutor()  ===>  Javascript Executor
+    // ***************************************************************************
+    public static JavascriptExecutor getExecutor() {
+        return (JavascriptExecutor) getDriver();
+    }
 
     // ===========================================================================
     //   Test Environment -- Page Selector
@@ -51,6 +86,11 @@ public class ATestToolBox {
             case "usps":
                 tePageURL = "https://www.usps.com/";
                 tePageTitle = "USPS";
+                break;
+            case "ups":
+                tePageURL = " https://www.ups.com/us/en/Home.page";
+                tePageTitle = "Global Shipping & Logistics Services | UPS - United States";
+                tdFileName = "dataUPS";
                 break;
             case "unit converter":
                 tePageURL = "https://www.unitconverters.net/";
@@ -101,6 +141,24 @@ public class ATestToolBox {
                     break;
                 case "file":
                     // Override defaults from test data file (not implemented)
+                    break;
+                default:
+                    throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
+            }
+        } else if (page.equalsIgnoreCase("ups")) {
+            switch (tdSource) {
+                case "default":
+                    // Variables are already set to defaults when step file called
+                    break;
+                case "file":
+                    // Override defaults from test data file -- uses tdFileName = "dataUPS";
+                    upsData = getData(tdFileName);
+                    stateData = getStrData("dataStateNames");
+                    System.out.println("================================================");
+                    System.out.println(" Test Data Source is: " + tdSource);
+                    System.out.println(" Active File: " + tdFileName + " on upsData()");
+                    System.out.println(" Active File: " + "dataStateNames" + " on stateData()");
+                    System.out.println("------------------------------------------------");
                     break;
                 default:
                     throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
@@ -174,8 +232,6 @@ public class ATestToolBox {
     // ===========================================================================
     @And("Tool to print page details")
     public static void toolToPrintPageDetails() {
-        // trPageTitle = getDriver().getTitle();
-        // trPageURL = getDriver().getCurrentUrl();
         System.out.println("================================================");
         System.out.println(" URL:   " + trPageURL);
         System.out.println(" Title: " + trPageTitle);
@@ -286,10 +342,12 @@ public class ATestToolBox {
 
     // ---------------------------------------------------------------------------
     //   Tool: Wait for WebElement After X seconds
-    //      Parameters: xPath of nice element you want
-    //                  waitProvided = 0 (no explicit wait / just find element using project implicit wait in Hooks)
-    //                  waitProvided > 0 && <  300 (literal number seconds up to 5 minutes)
-    //                  waitProvided >= 300 (use framework default = EXPTIMEOUT)
+    //      Parameters: (1) xPath of nice element you want
+    //                  (2) waitType     = visible, clickable
+    //                  (3) waitProvided = 0 (no explicit wait / just find element using project
+    //                                        implicit wait in Hooks)
+    //                      waitProvided > 0 && <  300 (literal number seconds up to 5 minutes)
+    //                      waitProvided >= 300 (use framework default = EXPTIMEOUT)
     //      Output:     WebElement after appears
     //          (called from Gherkin)
     // ---------------------------------------------------------------------------
@@ -300,7 +358,7 @@ public class ATestToolBox {
             // Use one of two possible explicit waits (Gherkin or Framework constant)
             if (waitProvided >= 300) { waitProvided = EXPTIMEOUT; }
 
-            WebDriverWait waitToAppear = new WebDriverWait(getDriver(), waitProvided);
+            WebDriverWait waitToAppear = getWait(waitProvided);
             By byThisXpath = By.xpath(thisXpathProvided);
 
             switch (waitType) {
@@ -329,9 +387,53 @@ public class ATestToolBox {
     // ---------------------------------------------------------------------------
     @And("Tool wait for element with Xpath {string} to appear")
     public static WebElement toolWaitForElementWithXpath(String thisXpathProvided) {
-        WebDriverWait waitToAppear = new WebDriverWait(getDriver(), 5);
+        WebDriverWait waitToAppear = getWait(10);
         By byThisXpath = By.xpath(thisXpathProvided);
         WebElement elementNowVisible = waitToAppear.until(visibilityOfElementLocated(byThisXpath));
         return elementNowVisible;
+    }
+
+    // ---------------------------------------------------------------------------
+    //   Tool getData: Get key value pairs from resources/data yml file
+    //      Parameters: name of yml file = dataUPS.yml
+    //      Output:     yml stream
+    //       ====> use getData()  when need to read strings or ints from yml
+    //       ====> use getStrData()  when know you only read strings from yml
+    //          (called from Gherkin)
+    // ---------------------------------------------------------------------------
+    public static Map<String, Object> getData(String fileName) {
+        String path2file = System.getProperty("user.dir") + "/src/test/resources/data/" + fileName + ".yml";
+        File fileTD = new File(path2file);
+        FileInputStream stream = null;
+
+        try {
+            stream = new FileInputStream(fileTD);
+        }
+        catch (FileNotFoundException exception) {
+            System.err.println(exception.getMessage());
+        }
+        return new Yaml().load(stream);
+    }
+
+    // ---------------------------------------------------------------------------
+    //   Tool getStrData: Get key value pairs from resources/data yml file
+    //      Parameters: name of yml file = dataUPS.yml
+    //      Output:     yml stream
+    //       ====> use getData()  when need to read strings or ints from yml
+    //       ====> use getStrData()  when know you only read strings from yml
+    //          (called from Gherkin)
+    // ---------------------------------------------------------------------------
+    public static Map<String, String> getStrData(String fileName) {
+        String path2file = System.getProperty("user.dir") + "/src/test/resources/data/" + fileName + ".yml";
+        File fileTD = new File(path2file);
+        FileInputStream stream = null;
+
+        try {
+            stream = new FileInputStream(fileTD);
+        }
+        catch (FileNotFoundException exception) {
+            System.err.println(exception.getMessage());
+        }
+        return new Yaml().load(stream);
     }
 }

@@ -1,10 +1,13 @@
 package definitions;
 
+import aut.TwoIntegerSum;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
 import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CodeChallengeStepdefs {
     @Then("I make a killing on the stock market")
@@ -331,5 +334,102 @@ public class CodeChallengeStepdefs {
             myarray[i - 1] = i;
         }
         iPrintIntegerArrays(myarray, "fizz", end);
+    }
+
+    // ==========================================================================
+    //                 D A Y     10     --    T E S T S
+    // --------------------------------------------------------------------------
+    //  Scenario: Smart Two Integer Classification
+    //     @CodeChallengeDay10a
+    // --------------------------------------------------------------------------
+    @Then("I receive {int} and {int} which are divisible by 5")
+    public void iReceiveAndAndPrintSum(int int0, int int1) {
+        System.out.println("=====================================");
+        // Categorize Input 0
+        if (int0%5 == 0 && int0 >= 1 && int0 <= 10) {
+            System.out.println("Operand " + int0 + " is in the range of 1 to 10");
+        }
+        if (int0%5 == 0 && int0 >= 10 && int0 <= 20) {
+            System.out.println("Operand " + int0 + " is in the range of 10 to 20");
+        }
+        if (int0%5 != 0){
+            System.out.println("Operand " + int0 + " is not a multiple of 5");
+        }
+
+        // Categorize Input 1
+        if (int1%5 == 0 && int1 >= 1 && int1 <= 10) {
+            System.out.println("Operand " + int1 + " is in the range of 1 to 10");
+        }
+        if (int1%5 == 0 && int1 >= 10 && int1 <= 20) {
+            System.out.println("Operand " + int1 + " is in the range of 10 to 20");
+        }
+        if (int1%5 != 0){
+            System.out.println("Operand " + int1 + " is not a multiple of 5");
+        }
+        System.out.println("----------------------------------");
+    }
+
+    // --------------------------------------------------------------------------
+    //  Scenario: Test TwoIntegerSum Class
+    //     @CodeChallengeDay10b
+    //     Requires:  import aut.TwoIntegerSum;
+    // --------------------------------------------------------------------------
+    /*   public class TwoIntegerSum {
+            static public int fint = 0;
+            static public int sint = 0;
+
+            public static int main() {
+                int mySum = fint + sint;
+                System.out.println("TIS: The sum of " + fint + " and " + sint + " = " + mySum);
+                return mySum;
+            }
+        }
+    */
+    // --------------------------------------------------------------------------
+    @Then("I verify that {int} and {int} are really {int}")
+    public void iVerifyThatAndAreReally(int tdFint, int tdSint, int expValue) {
+        TwoIntegerSum.fint = tdFint;
+        TwoIntegerSum.sint = tdSint;
+        int codeResult = TwoIntegerSum.main();
+        System.out.println("TC: Expected sum is " + expValue);
+        assertThat(codeResult).isEqualTo(expValue);
+    }
+
+    // --------------------------------------------------------------------------
+    //  Scenario: Yoda Speaks
+    //     @CodeChallengeDay10e
+    // --------------------------------------------------------------------------
+    @Then("Hum {string} Yoda said")
+    public void humYodaSaid(String phrase) {
+        String arrPhrase[]= phrase.split(" ");
+        String yodaPhrase = "";
+        int arrSize = arrPhrase.length;
+
+        for (int word = arrSize-1; word >= 0; word--) {
+             yodaPhrase = yodaPhrase + " " + arrPhrase[word];
+        }
+        System.out.println("Yoda says: " + yodaPhrase);
+    }
+
+    // --------------------------------------------------------------------------
+    //  Scenario: Reverse every third character of a string
+    //     @CodeChallengeDay10d
+    // --------------------------------------------------------------------------
+    @Then("I reverse every third char in string {string}")
+    public void iReverseEveryThirdCharInString(String strProvided) {
+        String reversedStr = "";
+        String c = "";
+        int i = 0;
+        int ssize = strProvided.length();
+
+        for (i = ssize-1; i >= 0; i--) {
+            if (i < ssize - 1 && i%3 == 0)  {
+                reversedStr = reversedStr + strProvided.charAt(i);
+            }
+        }
+        System.out.println("============================");
+        System.out.println("Original = " + strProvided);
+        System.out.println("Reversed = " + reversedStr);
+        System.out.println("============================\n");
     }
 }
