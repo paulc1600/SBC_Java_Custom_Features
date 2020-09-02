@@ -1,5 +1,6 @@
 package definitions;
 
+import aut.TopTwoIntegers;
 import aut.TwoIntegerSum;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -431,5 +432,139 @@ public class CodeChallengeStepdefs {
         System.out.println("Original = " + strProvided);
         System.out.println("Reversed = " + reversedStr);
         System.out.println("============================\n");
+    }
+
+    // --------------------------------------------------------------------------
+    //  Scenario: Find largest two values in int array
+    //     @CodeChallengeDay11a
+    // --------------------------------------------------------------------------
+    @Then("I find the two top numbers in an integer array")
+    public void iFindTheTwoTopNumbersInAnIntegerArray() {
+        Integer[] testIntegers = {23, 20, 15, 8, 7, 1, 4, 5, 30, 2, 24};
+        Integer[] testResults = new Integer[2];
+
+        // Pass array to AUT & get results
+        TopTwoIntegers.myArray = testIntegers;
+        testResults = TopTwoIntegers.main();       // Sort and find in here
+        System.out.println("TC: Test result #1 " + testResults[0]);
+        System.out.println("TC: Test result #2 " + testResults[1]);
+        System.out.println("-------------------------------------");
+        Integer[] testIntegers2 = {-23, 0, 8, 4, -1, 9, -44, 0};
+        TopTwoIntegers.myArray = testIntegers2;
+        testResults = TopTwoIntegers.main();       // Sort and find in here
+        System.out.println("TC: Test result #1 " + testResults[0]);
+        System.out.println("TC: Test result #2 " + testResults[1]);
+        System.out.println("-------------------------------------");
+    }
+
+    // --------------------------------------------------------------------------
+    //  Scenario: Find if array has duplicates
+    //     @CodeChallengeDay11b
+    // --------------------------------------------------------------------------
+    @Then("I find if an array contains duplicates")
+    public void iFindIfAnArrayContainsDuplicates() {
+        Integer[] testIntegers = {8, 20, 15, 8, 7, 1, 8, 5, 20, 2, 15};
+
+        // Pass array to AUT & get results
+        aut.FindArrayDuplicates.myArray = testIntegers;
+        aut.FindArrayDuplicates.main();       // Check in here
+        System.out.println("-------------------------------------");
+        Integer[] testIntegers2 = {8, 3, 15, 7, 7, 15, 6, 6, 15, 3, 6};
+
+        // Pass array to AUT & get results
+        aut.FindArrayDuplicates.myArray = testIntegers2;
+        aut.FindArrayDuplicates.main();       // Check in here
+        System.out.println("-------------------------------------");
+    }
+
+    // --------------------------------------------------------------------------
+    //  Scenario: Find if word is palindrome
+    //     @CodeChallengeDay11c
+    // --------------------------------------------------------------------------
+    @Then("I determine if word {string} is a palindrome")
+    public void iDetermineIfWordIsAPalindrome(String wordProvided) {
+        String reversedStr = "";
+        int i = 0;
+        int ssize = wordProvided.length();
+
+        for (i = ssize; i >= 0; i--) {
+            if (i < ssize)  {
+                reversedStr = reversedStr + wordProvided.charAt(i);
+            }
+        }
+
+        if (reversedStr.equalsIgnoreCase(wordProvided)) {
+            System.out.println("Yes, word " + wordProvided + " is a palindrome.");
+        } else {
+            System.out.println("Nope, word " + wordProvided + " is NOT a palindrome.");
+            System.out.println("Original word = " + wordProvided);
+            System.out.println("Word reversed = " + reversedStr);
+        }
+        System.out.println("-----------------------------------");
+    }
+
+    // --------------------------------------------------------------------------
+    //  Scenario: Counts the number of unique characters in a string
+    //     @CodeChallengeDay11d
+    // --------------------------------------------------------------------------
+    @Then("I count the number of each character in string {string}")
+    public void iCountTheNumberOfEachCharacterInString(String providedString) {
+        Map<String, Integer> stringIntegerMap = new HashMap<>();
+        stringIntegerMap.put("a", 0);
+        stringIntegerMap.put("b", 0);
+        stringIntegerMap.put("c", 0);
+        stringIntegerMap.put("d", 0);
+        stringIntegerMap.put("e", 0);
+        stringIntegerMap.put("f", 0);
+        stringIntegerMap.put("g", 0);
+        stringIntegerMap.put("h", 0);
+        stringIntegerMap.put("i", 0);
+        stringIntegerMap.put("j", 0);
+        stringIntegerMap.put("k", 0);
+        stringIntegerMap.put("l", 0);
+        stringIntegerMap.put("m", 0);
+        stringIntegerMap.put("n", 0);
+        stringIntegerMap.put("o", 0);
+        stringIntegerMap.put("p", 0);
+        stringIntegerMap.put("q", 0);
+        stringIntegerMap.put("r", 0);
+        stringIntegerMap.put("s", 0);
+        stringIntegerMap.put("t", 0);
+        stringIntegerMap.put("u", 0);
+        stringIntegerMap.put("v", 0);
+        stringIntegerMap.put("w", 0);
+        stringIntegerMap.put("x", 0);
+        stringIntegerMap.put("y", 0);
+        stringIntegerMap.put("z", 0);
+        Map<String, Integer> charResults = new HashMap<>(stringIntegerMap);
+
+        // Count those characters up
+        String usedString = providedString.toLowerCase();
+        int tmp = 0;
+        for (int i = 0; i < usedString.length(); i++){
+            char c = usedString.charAt(i);
+            String cx = String.valueOf(c);
+            // Thank you Internet: https://www.techiedelight.com/check-string-contains-alphanumeric-characters-java/
+            if (cx.matches("^[a-z]*$")) {
+                // System.out.println("i = " + i + " c = " + c + " cx = " + cx);
+                // Updated appropriate key
+                tmp = charResults.get(cx);
+                tmp++;
+                charResults.put(cx, tmp);
+            }
+        }
+
+        // Print Hashmap out
+        System.out.println("Provided String = " + providedString);
+        Integer theValue = 0;
+        for (Map.Entry<String, Integer> entry : charResults.entrySet()) {
+            theValue = entry.getValue();
+            if (theValue > 0) {
+                System.out.print(entry.getKey() + ":" + theValue.toString() + "  ");
+            }
+        }
+        System.out.print("\n");
+        System.out.print("--------------------------------------------");
+        System.out.print("\n");
     }
 }

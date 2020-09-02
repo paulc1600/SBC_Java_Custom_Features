@@ -84,3 +84,31 @@ Feature: Java Code Challenges Feature
     Then Hum "I must meditate" Yoda said
     Then Hum "Great disturbance" Yoda said
 
+  @CodeChallengeDay11
+  @CodeChallengeDay11a
+  Scenario: Array Two Largest Values
+    Then I find the two top numbers in an integer array
+
+  @CodeChallengeDay11
+  @CodeChallengeDay11b
+  Scenario: Does array contain duplicates
+    Then I find if an array contains duplicates
+
+  @CodeChallengeDay11
+  @CodeChallengeDay11c
+  Scenario: Finds if word is a palindrome
+    Then I determine if word "kayak" is a palindrome
+    Then I determine if word "Radar" is a palindrome
+    Then I determine if word "whatever" is a palindrome
+    Then I determine if word "Anna" is a palindrome
+    Then I determine if word "O" is a palindrome
+    Then I determine if word "1234321" is a palindrome
+
+  @CodeChallengeDay11
+  @CodeChallengeDay11d
+  Scenario: Counts the number of each character in a string
+    Then I count the number of each character in string "A String"
+    Then I count the number of each character in string "jjjj aaaa zzzz bbbb jjjj"
+    Then I count the number of each character in string "My radar is not like your radar!"
+    Then I count the number of each character in string "The quick brown fox jumped over the lazy dog."
+    Then I count the number of each character in string "She loves you, Yeah! Yeah! Yeah!"

@@ -524,6 +524,9 @@ public class UspsStepdefs {
         String tableButtonXpath = "//span[@class='toggle-icon']";
         WebElement mapTableButton = toolWaitForElementWithXpathAfterSecs(tableButtonXpath, "clickable", 10);
         mapTableButton.click();
+        // Slava wait until progress spinner visible
+        // then wait until progress spinner goes invisible
+        // and then used Java Click
     }
 
     // ---------------------------------------------------------------------------
@@ -534,6 +537,7 @@ public class UspsStepdefs {
         String linkSelectAll = "//a[@class='totalsArea'][contains(text(),'" + selectorText + "')]";
         WebElement linkTableAll = toolWaitForElementWithXpathAfterSecs(linkSelectAll, "visible", 10);
         linkTableAll.click();
+        // Slava did not wait. Just found and click
     }
 
     // ---------------------------------------------------------------------------
@@ -544,6 +548,7 @@ public class UspsStepdefs {
         String doneButtonXpath = "//div[@id='modal-box']//button[@id='dropOffDone']";
         WebElement doneButton = toolWaitForElementWithXpathAfterSecs(doneButtonXpath, "clickable", 10);
         doneButton.click();
+        // Slava did not wait. Just found and click
     }
 
     // ---------------------------------------------------------------------------
