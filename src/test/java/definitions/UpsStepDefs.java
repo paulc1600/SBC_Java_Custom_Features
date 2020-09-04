@@ -359,7 +359,7 @@ public class UpsStepDefs {
         // Debug Code ----------------------------------------------------------
         // Submit Completed Form using JS click (gets intercepted otherwise)
         getExecutor().executeScript("arguments[0].click();", elContinueButton);
-        Thread.sleep(2500);
+        Thread.sleep(5500);
     }
 
     // ---------------------------------------------------------------------------
@@ -435,10 +435,11 @@ public class UpsStepDefs {
         String dCity = getDriver().findElement(By.xpath("//span[@id='destinationnbsAgentSummaryCity']")).getText();
         String dState = getDriver().findElement(By.xpath("//span[@id='destinationnbsAgentSummaryState']")).getText();
         String dZip = getDriver().findElement(By.xpath("//span[@id='destinationnbsAgentSummaryPostalCode']")).getText();
-        String PkgType = getDriver().findElement(By.xpath("//package-review/div/div/p[contains(text(),'UPS Express Box - Small')]")).getText();
-        String Weight = getDriver().findElement(By.xpath("//span[contains(text(),'2 lbs')]")).getText();
-        String contentDescr = getDriver().findElement(By.xpath("//p[contains(text(),'Description of Goods: Plastic Photo Frame')]")).getText();
-        String payMethod = getDriver().findElement(By.xpath("//span[@id='nbsPaymentSummaryBillPayPalSummary']")).getText();
+//        WebElement pkgTypeElement = toolWaitForElementWithXpath("//package-review/div/div/p[contains(text(),'UPS Express Box - Small')]");
+//        String PkgType = pkgTypeElement.getText();
+//        String Weight = getDriver().findElement(By.xpath("//span[contains(text(),'2 lbs')]")).getText();
+//        String contentDescr = getDriver().findElement(By.xpath("//p[contains(text(),'Description of Goods: Plastic Photo Frame')]")).getText();
+//        String payMethod = getDriver().findElement(By.xpath("//span[@id='nbsPaymentSummaryBillPayPalSummary']")).getText();getText
         assertTrue(oName.equalsIgnoreCase((String) upsData.get("name")));
         assertTrue(oAddr.equalsIgnoreCase((String) upsData.get("address")));
         assertTrue(oCity.equalsIgnoreCase((String) upsData.get("city")));
