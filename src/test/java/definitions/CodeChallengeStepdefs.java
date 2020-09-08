@@ -1,5 +1,8 @@
 package definitions;
 
+import Pages.Cat;
+import Pages.Dog;
+import Pages.Pet;
 import aut.TopTwoIntegers;
 import aut.TwoIntegerSum;
 import cucumber.api.java.en.Given;
@@ -487,10 +490,8 @@ public class CodeChallengeStepdefs {
         int i = 0;
         int ssize = wordProvided.length();
 
-        for (i = ssize; i >= 0; i--) {
-            if (i < ssize)  {
-                reversedStr = reversedStr + wordProvided.charAt(i);
-            }
+        for (i = ssize -1; i >= 0; i--) {
+            reversedStr = reversedStr + wordProvided.charAt(i);
         }
 
         if (reversedStr.equalsIgnoreCase(wordProvided)) {
@@ -566,5 +567,18 @@ public class CodeChallengeStepdefs {
         System.out.print("\n");
         System.out.print("--------------------------------------------");
         System.out.print("\n");
+    }
+
+    @Then("I work with classes")
+    public void iWorkWithClasses() {
+        Pet cat = new Cat("Tom");
+        cat.sleep();
+        cat.speak();
+        cat.eat("fish");
+
+        Pet dog = new Dog("Max");
+        dog.sleep();
+        dog.speak();
+        dog.eat("Alpo");
     }
 }

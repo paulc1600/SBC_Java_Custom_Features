@@ -112,3 +112,7 @@ Feature: Java Code Challenges Feature
     Then I count the number of each character in string "My radar is not like your radar!"
     Then I count the number of each character in string "The quick brown fox jumped over the lazy dog."
     Then I count the number of each character in string "She loves you, Yeah! Yeah! Yeah!"
+
+  @CodeOop1
+  Scenario: Create Cat Instance
+    Then I work with classes
