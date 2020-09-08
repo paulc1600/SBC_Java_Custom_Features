@@ -13,8 +13,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.By.xpath;
-import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 import static support.TestContext.getDriver;
 
 public class ATestToolBox {
@@ -340,17 +339,18 @@ public class ATestToolBox {
         System.out.println(" ------ DEBUG: Has size:       " + myElement.getSize());
     }
 
-    // ---------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------
     //   Tool: Wait for WebElement After X seconds
     //      Parameters: (1) xPath of nice element you want
-    //                  (2) waitType     = visible, clickable
+    //                  (2) waitType     = visible, clickable, allfull
     //                  (3) waitProvided = 0 (no explicit wait / just find element using project
     //                                        implicit wait in Hooks)
     //                      waitProvided > 0 && <  300 (literal number seconds up to 5 minutes)
     //                      waitProvided >= 300 (use framework default = EXPTIMEOUT)
-    //      Output:     WebElement after appears
+    //      Output:     WebElement after appears (for single element)
+    //                  null                     (for type allfull -- NOT RETURN LIST ... yet)
     //          (called from Gherkin)
-    // ---------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------
     @And("Tool wait for element with Xpath {string} to appear after {int} secs")
     public static WebElement toolWaitForElementWithXpathAfterSecs(String thisXpathProvided, String waitType, int waitProvided) {
         WebElement elementWanted;
@@ -367,6 +367,10 @@ public class ATestToolBox {
                     break;
                 case "clickable":
                     elementWanted = waitToAppear.until(elementToBeClickable(byThisXpath));
+                    break;
+                case "allfull":
+                    waitToAppear.until(presenceOfAllElementsLocatedBy(byThisXpath));
+                    elementWanted = null;
                     break;
                 default:
                     elementWanted = waitToAppear.until(visibilityOfElementLocated(byThisXpath));
