@@ -13,6 +13,7 @@ import java.util.List;
 
 import static definitions.ATestToolBox.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static support.TestContext.getDriver;
 
@@ -268,7 +269,7 @@ public class UspsStepdefs {
     }
 
     // ---------------------------------------------------------------------------
-    //  From Main page go to Help Tab (Scen 3)
+    //  From Main page go to Help Tab            (Scen 3) and (@uspsScenario12-3)
     // ---------------------------------------------------------------------------
     @When("I go to {string} tab")
     public void iGoToTab(String providedTab) {
@@ -438,23 +439,40 @@ public class UspsStepdefs {
         assertThat(elSearchResults.size()).isEqualTo(nbrTotalResults);
     }
 
-    // ---------------------------------------------------------------------------
-    //   When I select "Priority Mail | USPS" in results               (Scen 2)
-    // ---------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------
+    //   When I select "Priority Mail | USPS" in results        (Scen 2 and @uspsScenario12-6)
+    // ----------------------------------------------------------------------------------------
     @When("I select {string} in results")
     public void iSelectInResults(String selectedResult) {
-        getDriver().findElement(By.xpath("//span[text()='" + selectedResult + "']")).click();
+        WebElement resultIWant = null;
+        // Wait until all search results "fill in"
+        toolWaitForElementWithXpathAfterSecs("//span[contains(@transid,'gadget')]", "allfull", 10);
+        // Then find results you want (while avoiding intercepted click)
+        resultIWant = getDriver().findElement(By.xpath("//span[contains(text(),'" + selectedResult + "')]"));
+        try {
+            // If not intercepted, then it just works
+            resultIWant.click();
+        }
+        catch (WebDriverException ElementClickInterceptedException) {
+            // If intercepted, use Javascript Super-Powers!
+            getExecutor().executeScript("arguments[0].click();", resultIWant);
+        }
     }
 
     // ---------------------------------------------------------------------------
-    //   I click "Ship Now" button                                    (Scen 2)
+    //   I click "Ship Now" button                (Scen 2 and @uspsScenario12-6)
     // ---------------------------------------------------------------------------
     @And("I click {string} button")
     public void iClickButton(String btnName) throws InterruptedException {
-        int numOfWin = getDriver().getWindowHandles().size();
-        while (getDriver().getWindowHandles().size() < numOfWin + 1) {
-            getDriver().findElement(By.xpath("//a[contains(text(),'" + btnName + "')]")).click();
-            Thread.sleep(100);
+        String buttonXpath = "//a[contains(text(),'" + btnName + "')]";
+        WebElement clickableElement = toolWaitForElementWithXpathAfterSecs(buttonXpath, "clickable", 10);
+        try {
+            // If not intercepted, then it just works
+            clickableElement.click();
+        }
+        catch (WebDriverException ElementClickInterceptedException) {
+            // If intercepted, use Javascript Super-Powers!
+            getExecutor().executeScript("arguments[0].click();", clickableElement);
         }
     }
 
@@ -477,18 +495,66 @@ public class UspsStepdefs {
         getDriver().switchTo().window(originalWindow);
     }
 
-    // ---------------------------------------------------------------------------
-    //  I go to "Every Door Direct Mail" under "Business" (Scen 9)
-    // ---------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------
+    //  I go to "Every Door Direct Mail" under "Business"
+    //                                   (Scen 9)  (@uspsScenario12-3) (@uspsScenario12-7)
+    // -------------------------------------------------------------------------------------
     @When("I go to {string} under {string}")
-    public void iGoToUnder(String tabName, String linkName) {
-        // Business Link at top of page, hover find "Every Door Direct Mail" in sub-menu, click it
-        Actions actSubMenu = new Actions(getDriver());
-        WebElement businessTab = getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Business')]"));
-        WebElement everyDoor = getDriver().findElement(By.xpath("//ul[@class='tools']//a[contains(@href,'routeSearch')]"));
-        actSubMenu.moveToElement(businessTab).moveToElement(everyDoor).click().perform();
+    public void iGoToUnder(String linkName, String tabName) {
+        // Show Provided Gherkin Parms
         System.out.println(" Navigate to Tab: " + tabName);
         System.out.println(" Link Name:       " + linkName);
+
+        // Business Link at top of page, hover find "Every Door Direct Mail" in sub-menu, click it
+        WebElement elementTab = null;
+        WebElement elementLink = null;
+
+        // Pick a Tab
+        switch (tabName) {
+            case "Mail & Ship":
+                elementTab = getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Mail & Ship')]"));
+                elementTab.click();
+                break;
+            case "Track & Manage":
+                // Only PO Boxes supported at this time
+                elementTab = getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Track & Manage')]"));
+                elementTab.click();
+                if (linkName.equalsIgnoreCase("PO Boxes")) {
+                    WebElement poBoxButton = getDriver().findElement(By.xpath("//a[contains(text(),'Reserve a PO Box')]"));
+                    //This will scroll the page till the element is found
+                    getExecutor().executeScript("arguments[0].scrollIntoView();", poBoxButton);
+                    getExecutor().executeScript("arguments[0].click();", poBoxButton);
+                } else {
+                    throw new RuntimeException("Unsupported USPS link name: " + linkName);
+                }
+                break;
+            case "Postal Store":
+                elementTab = getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Postal Store')]"));
+                elementTab.click();
+
+                // Only Stamps supported at this time
+                if (linkName.equalsIgnoreCase("Stamps")) {
+                    elementLink = toolWaitForElementWithXpathAfterSecs("//a/div/span[text()='Stamps']", "clickable", 10);
+                    elementLink.click();
+                } else {
+                    throw new RuntimeException("Unsupported USPS link name: " + linkName);
+                }
+                break;
+            case "Business":
+                elementTab = getDriver().findElement(By.xpath("//a[@class='menuitem'][contains(text(),'Business')]"));
+                elementTab.click();
+
+                // Only "Every Door Direct Mail" supported
+                if (linkName.equalsIgnoreCase("Every Door Direct Mail")) {
+                    elementLink = toolWaitForElementWithXpathAfterSecs("//ul[@class='tools']//a[contains(@href,'routeSearch')]", "clickable", 10);
+                    elementLink.click();
+                } else {
+                    throw new RuntimeException("Unsupported USPS link name: " + linkName);
+                }
+                break;
+            default:
+                throw new RuntimeException("Unsupported USPS tab name: " + tabName);
+        }
     }
 
     // ---------------------------------------------------------------------------
@@ -598,5 +664,326 @@ public class UspsStepdefs {
             System.out.println("================================================");
         }
         org.junit.Assert.assertEquals(checkThreshCompare, true);
+    }
+
+    // ---------------------------------------------------------------------------
+    //    And I enter "12345" into store search           (@uspsScenario12-3)
+    // ---------------------------------------------------------------------------
+    @And("I enter {string} into store search")
+    public void iEnterIntoStoreSearch(String searchProvided) {
+        // Enter the Postal Store search here
+        WebElement storeSrchBox = toolWaitForElementWithXpathAfterSecs("//input[@id='store-search']", "clickable", 5);
+        storeSrchBox.sendKeys("searchProvided");
+        // Click Mag Glass
+        WebElement magGlass = toolWaitForElementWithXpathAfterSecs("//input[@id='store-search-btn']", "clickable", 5);
+        magGlass.click();
+    }
+
+    // ---------------------------------------------------------------------------
+    //    I search and validate no products found           (@uspsScenario12-3)
+    // ---------------------------------------------------------------------------
+    @Then("I search and validate no products found")
+    public void iSearchAndValidateNoProductsFound() {
+        String noResultsXpath = "//div[@class = 'no-results-found']//p[contains(text(),'did not match any products')]";
+        WebElement SrchResultsMsg = toolWaitForElementWithXpathAfterSecs(noResultsXpath, "visible", 5);
+        assertThat(SrchResultsMsg.getText().contains("search did not match any products"));
+    }
+
+    // -------------------------------------------------------------------------------------
+    //  And choose mail service Priority Mail                          (@uspsScenario12-4)
+    // -------------------------------------------------------------------------------------
+    @And("choose mail service Priority Mail")
+    public void chooseMailServicePriorityMail() {
+        JavascriptExecutor jsScrollClick = getExecutor();
+        //Find Priority Mail filter check box (at bottom page)
+        WebElement pmailFilterCBox = getDriver().findElement(By.xpath("//input[contains(@name,'Service-Priority Mail-1')]"));
+        //This will scroll the page till the element is found
+        jsScrollClick.executeScript("arguments[0].scrollIntoView();", pmailFilterCBox);
+        jsScrollClick.executeScript("arguments[0].click();", pmailFilterCBox);
+    }
+
+    // -------------------------------------------------------------------------------------
+    //  "I verify 1 items found"                                  (@uspsScenario12-4)
+    // -------------------------------------------------------------------------------------
+    @Then("I verify {int} items found")
+    public void iVerifyItemsFound(int nbrStampTypes) {
+        //h2[contains(@class,'results-per-page')]
+        WebElement SrchResultsTotal = toolWaitForElementWithXpathAfterSecs("//h2[contains(@class,'results-per-page')]", "visible", 6);
+        //  nbrResults ===> Typically looks like this:   "1 - 1 of 1 Results"
+        String nbrResults = SrchResultsTotal.getText();
+        int posCharF = nbrResults.indexOf("f") + 1;
+        int posCharR = nbrResults.indexOf("R") - 1;
+        String nbrStampsStr = SrchResultsTotal.getText().substring(posCharF, posCharR).strip();
+        int nbrStamps = Integer.parseInt(nbrStampsStr);
+        System.out.println("-------------------------------------------");
+        System.out.println(" Expected Nbr Stamps:   " + nbrStampTypes);
+        System.out.println(" Actual Nbr Stamps:     " + nbrStamps);
+        System.out.println("-------------------------------------------");
+        assertThat(nbrStamps == nbrStampTypes);
+    }
+
+    // -----------------------------------------------------------------------
+    //  "I unselect Stamps checkbox"                     (@uspsScenario12-5)
+    // -----------------------------------------------------------------------
+    @When("I unselect Stamps checkbox")
+    public void iUnselectStampsCheckbox() {
+        WebElement stampsFilter = toolWaitForElementWithXpathAfterSecs("//label[contains(@for,'Category-Stamps')]", "clickable", 6);
+        stampsFilter.click();
+    }
+
+    // -----------------------------------------------------------------------
+    //  "And select Vertical stamp Shape"                 (@uspsScenario12-5)
+    // -----------------------------------------------------------------------
+    @And("select Vertical stamp Shape")
+    public void selectVerticalStampShape() {
+        JavascriptExecutor jsScrollClick = getExecutor();
+        //Find Priority Mail filter check box (at bottom page)
+        WebElement stampsFilter2 = getDriver().findElement(By.xpath("//label[contains(@for,'Shape-Vertical')]"));
+        //This will scroll the page till the element is found
+        jsScrollClick.executeScript("arguments[0].scrollIntoView();", stampsFilter2);
+        jsScrollClick.executeScript("arguments[0].click();", stampsFilter2);
+    }
+
+    // -----------------------------------------------------------------------
+    //  "And I click Blue color"                         (@uspsScenario12-5)
+    // -----------------------------------------------------------------------
+    @And("I click Blue color")
+    public void iClickBlueColor() {
+        JavascriptExecutor jsScrollClick = getExecutor();
+        //Find Priority Mail filter check box (at bottom page)
+        WebElement stampsFilterBlue = getDriver().findElement(By.xpath("//div[contains(@class,'color')]/div[contains(@onclick,'/blue/')]"));
+        //This will scroll the page till the element is found
+        jsScrollClick.executeScript("arguments[0].scrollIntoView();", stampsFilterBlue);
+        jsScrollClick.executeScript("arguments[0].click();", stampsFilterBlue);
+    }
+
+    // -----------------------------------------------------------------------
+    //  "Then I verify "Blue" and "Vertical" filters"     (@uspsScenario12-5)
+    // -----------------------------------------------------------------------
+    @Then("I verify {string} and {string} filters")
+    public void iVerifyAndFilters(String colorFilter, String vertFilter) {
+        String verticalCheckedXpath = "//input[@checked]/following-sibling:: input[contains(@name,'Shape-" + vertFilter + "')]/following-sibling:: label";
+        assertThat(toolWaitForElementWithXpathAfterSecs(verticalCheckedXpath, "visible", 6).isDisplayed());
+
+        String colorCheckedXpath = "//div[contains(@class,'result-facid-holder-grid-color')]/span[@class='hidden']";
+        assertThat(getDriver().findElement(By.xpath(colorCheckedXpath)).getText().equalsIgnoreCase(colorFilter));
+    }
+
+    // ----------------------------------------------------------------------------
+    //  "And I verify that items below 12 dollars exists"     (@uspsScenario12-5)
+    // ----------------------------------------------------------------------------
+    @And("I verify that items below {int} dollars exists")
+    public void iVerifyThatItemsBelowDollarsExists(int expCost) {
+        WebDriverWait waitAllCosts = getWait();
+        String foundCostStr = "";
+        float justCostfloat = 0.0f;
+        int itemCount = 0;
+
+        String allCostsXpath = "//div[contains(@class,'4 results-per-page')]//p[contains(text(),'$')]";
+        List<WebElement> elFoundCostList = waitAllCosts.until(presenceOfAllElementsLocatedBy(By.xpath(allCostsXpath)));
+
+        // Unpack list of Stamp Costs if at least 1 found
+        if (elFoundCostList.size() > 0) {
+            for (WebElement oneStamp : elFoundCostList) {
+                foundCostStr = oneStamp.getText();
+                // Ignore items smaller $0.00 = invalid cost str
+                if (foundCostStr.length() >= 5) {
+                    int posCharDollar = foundCostStr.indexOf("$") + 1;
+                    int posCharMinus = foundCostStr.indexOf("-");
+                    int posCharComma = foundCostStr.indexOf(",");
+
+                    if (posCharComma == -1) {
+                        // Have NO Commas in both of these cases
+                        if (posCharMinus == -1) {
+                            // $56.20
+                            posCharMinus = foundCostStr.length() - 1;
+                        } else {
+                            // $800.00 - $900.00 (default case with '-' already handled above)
+                            posCharMinus = foundCostStr.indexOf("-") - 1;
+                        }
+                    } else {
+                        // Have commas in both cases
+                        if (posCharMinus == -1) {
+                            // $5,600.20
+                            foundCostStr = foundCostStr.replace(",", "");
+                            posCharMinus = foundCostStr.length() - 1;
+                        } else {
+                            // $8,800.00 - $9,000.00 (default case with '-' already handled above)
+                            foundCostStr = foundCostStr.replace(",", "");
+                            posCharMinus = foundCostStr.indexOf("-") - 1;
+                        }
+                    }
+
+                    justCostfloat = Float.parseFloat(foundCostStr.substring(posCharDollar, posCharMinus).strip());
+
+                    // Have to be under expected cost to be counted
+                    if (justCostfloat < (float) expCost) {
+                        itemCount++;
+                    }
+                }
+            }
+        }
+
+        System.out.println("------------------------------------------------");
+        System.out.println(" Expected Cost:   $" + (float) expCost);
+        System.out.println(" Items Below:      " + itemCount);
+        System.out.println("------------------------------------------------");
+        assertThat(itemCount >= 1);
+    }
+
+    // ----------------------------------------------------------------------------
+    //  "And verify "Passport Renewal" service exists"     (@uspsScenario12-6)
+    // ----------------------------------------------------------------------------
+    @And("verify {string} service exists")
+    public void verifyServiceExists(String serviceProvided) {
+        WebElement selectOption = null;
+
+        // Wait until services dropbox list is there
+        WebElement serviceSelector = toolWaitForElementWithXpathAfterSecs("//select[@id='passportappointmentType']", "clickable", 10);
+
+        // Check for and Get Rid of Pop-Up
+        WebElement modalBox = null;
+        try {
+            toolWaitForElementWithXpathAfterSecs("//div[@id='renewalModal']//div[@class='modal-content']", "visible", 2);
+            System.out.println("USPS Modal Alert: 'Eligible to renew?' -- dismiss it.");
+            String xpathCloseButton = "//div[@id='renewalModal']//button[@class='close closeicon'][contains(text(),'×')]";
+            System.out.println("USPS Modal Alert: 'Eligible to renew?' -- dismiss first.");
+            getDriver().findElement(By.xpath(xpathCloseButton)).click();
+        }
+        catch (WebDriverException TimeoutException) {
+            System.out.println("No USPS Modal Alert: 'Eligible to renew?' -- just go check service directly.");
+        }
+
+        // Non-Standard selector code for Gherkin provided service name
+        getActions().moveToElement(serviceSelector).click().perform();
+        try {
+            selectOption = getDriver().findElement(By.xpath("//option[contains(text(),'" + serviceProvided + "')]"));
+        }
+        catch (WebDriverException NoSuchElementException) {
+            System.out.println("------------------------------------------------");
+            System.out.println(" ERROR: Expected Option " + serviceProvided + " not found in page!");
+            System.out.println("------------------------------------------------");
+        }
+        finally {
+            String actualText = selectOption.getText().strip();
+            System.out.println("------------------------------------------------");
+            System.out.println(" Expected Text:   " + serviceProvided);
+            System.out.println(" Actual Text:     " + actualText);
+            System.out.println("------------------------------------------------");
+            assertTrue(actualText.equalsIgnoreCase(serviceProvided));
+        }
+    }
+
+    // ----------------------------------------------------------------------------
+    //  "And I reserve new PO box for "94022""                (@uspsScenario12-7)
+    // ----------------------------------------------------------------------------
+    @And("I reserve new PO box for {string}")
+    public void iReserveNewPOBoxFor(String zipProvided) {
+        WebElement zipSearchBox = toolWaitForElementWithXpathAfterSecs("//input[@id='searchInput']", "clickable", 5);
+
+        //Find PO reserve search by zip box -- by scrolling
+        getDriver().findElement(By.xpath("//input[@id='searchInput']")).sendKeys(zipProvided);                                       // Enter Gherkin provided Zip Code
+        getDriver().findElement(By.xpath("//a[@class='searchBtn']")).click();
+    }
+
+    // ----------------------------------------------------------------------------------------
+    //  "Then I verify that "Los Altos — Post Office™" present"          (@uspsScenario12-7)
+    // ----------------------------------------------------------------------------------------
+    @Then("I verify that {string} present")
+    public void iVerifyThatPresent(String poLocation) {
+        WebElement resultIWant = null;
+        String addressIWant = "";
+        WebElement linkIWant = null;
+
+        // Build Locators for all PO information test needs
+        String xpathPOTableList = "//div[contains(@class,'locations')]/div[@class='row']";    // All result rows
+        String xpathPONamesList = xpathPOTableList + "//span[@class='bold']";                 // Just PO Names
+        String poName = poLocation.substring(0, poLocation.length() - 15);     // Strip away  " — Post Office™" = way easier
+        String xpathPOMyName = xpathPONamesList + "[contains(text(),'" + poName + "')]";      // One PO Name Want
+        String xpathPOMyAddress = xpathPOMyName + "/..//following-sibling:: p";               // One PO Address Want
+        String xpathPOMyBoxLinks = xpathPOMyName + "/../..//following-sibling:: div[contains(@class,'availableCol')]//span[@class='availableSizes']";
+
+        // Wait until all top table search results "fill in"
+        toolWaitForElementWithXpathAfterSecs(xpathPONamesList, "allfull", 10);
+
+        // Then verify results you want
+        try {
+            resultIWant = getDriver().findElement(By.xpath(xpathPOMyName));
+            addressIWant = getDriver().findElement(By.xpath(xpathPOMyAddress)).getText();
+            linkIWant = getDriver().findElement(By.xpath(xpathPOMyBoxLinks));
+        }
+        catch (WebDriverException NoSuchElementException) {
+            System.out.println("------------------------------------------------");
+            System.out.println(" ERROR: Post Office " + poName + " not found in results!");
+            System.out.println("------------------------------------------------");
+        }
+        finally {
+            String actualName = resultIWant.getText().strip();
+            System.out.println("------------------------------------------------");
+            System.out.println(" Expected Name:   " + poName);
+            System.out.println(" Actual Name:     " + actualName);
+            System.out.println(" Actual Address:  " + addressIWant);
+            System.out.println("------------------------------------------------");
+            assertTrue(actualName.equalsIgnoreCase(poName));
+
+            // Set up for next step --- click on available packages link
+            //  Note that all code must pass, and assert must pass to move on which is OK.
+            linkIWant.click();
+        }
+    }
+
+    // ------------------------------------------------------------------------------------------------------------
+    //  "And I verify that "Size 5-XL" PO Box is available in "Los Altos — Post Office™""      (@uspsScenario12-7)
+    // ------------------------------------------------------------------------------------------------------------
+    @And("I verify that {string} PO Box is available in {string}")
+    public void iVerifyThatPOBoxIsAvailableIn(String boxSize, String poLocation) {
+        //div[@id='boxLocation']//span[@class='bold']  =  Post Office Name should be here
+        WebElement verifyPOName = toolWaitForElementWithXpathAfterSecs("//div[@id='boxLocation']//span[@class='bold']", "visible", 5);
+        String actualPOName = verifyPOName.getText().strip();
+        String expectedPOName = poLocation.substring(0, poLocation.length() - 15);     // Strip away  " — Post Office™" = way easier
+        System.out.println("------------------------------------------------");
+        System.out.println(" Expected PO:    " + expectedPOName);
+        System.out.println(" Actual PO:      " + actualPOName);
+        System.out.println(" Looking for box " + boxSize + ": ");
+
+        // Click on the box icon
+        String searchSize = "";
+
+        switch (boxSize) {
+            case "Size 5-XL":
+                searchSize = "boxXL";
+                break;
+            case "Size 4-L":
+                searchSize = "boxL";
+                break;
+            case "Size 3-M":
+                searchSize = "boxM";
+                break;
+            case "Size 2-S":
+                searchSize = "boxS";
+                break;
+            case "Size 1-XS":
+                searchSize = "boxXS";
+                break;
+            default:
+                throw new RuntimeException("Unsupported USPS box size: " + boxSize);
+        }
+
+        // Make actual box selection
+        getDriver().findElement(By.xpath("//div[@id='availableboxes']//div/label[@for='" + searchSize + "']")).click();
+
+        // Xpath tells you if available or not
+        String boxAvailable = getDriver().findElement(By.xpath("//div[@id='availableboxes']//div/input[@value='" + searchSize + "']")).getAttribute("data-availability");
+        boolean haveBox = false;
+
+        if (boxAvailable.equalsIgnoreCase("")) {
+            boxAvailable = "available now!";
+            haveBox = true;
+        } else {
+            haveBox = false;
+        }
+        System.out.println(" Availability: " + boxAvailable);
+        System.out.println("------------------------------------------------");
+        assertTrue("ERROR: Box size " + boxSize + " NOT available at " +  actualPOName, haveBox);
     }
 }
