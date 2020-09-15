@@ -8,7 +8,7 @@ Feature: UPS Test Suite
     Given Tool that goes to the "ups" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "ups" test data from source "file"
+    Given Tool to get "ups" test data from source "No File" "file"
     # ------------------------------------------------------
     And I open Shipping menu
     And I go to Create a Shipment
@@ -23,7 +23,7 @@ Feature: UPS Test Suite
     Given Tool that goes to the "ups" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "ups" test data from source "file"
+    Given Tool to get "ups" test data from source "No File" "file"
     # ------------------------------------------------------
     And I open Shipping menu
     And I go to Create a Shipment

@@ -10,7 +10,7 @@ Feature: USPS Test Suite
     #  Test Environment Set Up
     #     Pages: quote, google (TBD), yahoo (TBD)
     #     Test Data: default, <Windows .CSV file name> (TBD), random generated (TBD)
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     # ------------------------------------------------------
     When I go to Lookup ZIP page by address
     And I fill out "4970 El Camino Real, Suite 110" street, "Los Altos" city, "CA" state
@@ -22,7 +22,7 @@ Feature: USPS Test Suite
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     When I go to Lookup ZIP page by address
     And I fill out "4970 El Camino Real" street, "Los Altos" city, "CA" state
     And I submit the zip lookup by address form
@@ -33,7 +33,7 @@ Feature: USPS Test Suite
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     When I go to Lookup ZIP page by address
     And I fill out "450 Golden Gate Avenue" street, "San Francisco" city, "CA" state
     And I submit the zip lookup by address form
@@ -44,7 +44,7 @@ Feature: USPS Test Suite
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     When I go to Lookup ZIP page by address (lite version)
     And I fill out "450 Golden Gate Avenue" street, "San Francisco" city, "CA" state
     And I submit the zip lookup by address form
@@ -55,7 +55,7 @@ Feature: USPS Test Suite
   Scenario: Verify location
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     # ------------------------------------------------------
     When I perform "Free Boxes" search
     And I set "Mail & Ship" in filters
@@ -68,7 +68,7 @@ Feature: USPS Test Suite
   Scenario: Phone number of the nearest Mail Pickup (Scen 4)
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     When I navigate to Find a Location page
     And I filter by "Post Offices" location types, "Pickup Services" services, "Accountable Mail" available services
     And I provide data as "4970 El Camino Real 110" street, "Los Altos" city, "CA" state
@@ -94,7 +94,7 @@ Feature: USPS Test Suite
       Given Tool that goes to the "usps" page
       When Tool to change resolution to "default"
       And Tool to print all page details "without" source
-      Given Tool to get "usps" test data from source "default"
+      Given Tool to get "usps" test data from source "No File" "default"
       # ------------------------------------------------------
       When I go to "Every Door Direct Mail" under "Business"
       And I search for "4970 El Camino Real, Los Altos, CA 94022"
@@ -108,7 +108,7 @@ Feature: USPS Test Suite
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     # ------------------------------------------------------
     When I go to "Postal Store" tab
     And I enter "12345" into store search
@@ -119,7 +119,7 @@ Feature: USPS Test Suite
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     # ------------------------------------------------------
     When I go to "Stamps" under "Postal Store"
     And choose mail service Priority Mail
@@ -130,7 +130,7 @@ Feature: USPS Test Suite
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     # ------------------------------------------------------
     When I go to "Stamps" under "Postal Store"
     When I unselect Stamps checkbox
@@ -145,7 +145,7 @@ Feature: USPS Test Suite
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     # ------------------------------------------------------
     When I perform "Passports" search
     And I select "Passport Application" in results
@@ -157,7 +157,7 @@ Feature: USPS Test Suite
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     # ------------------------------------------------------
     When I go to "PO Boxes" under "Track & Manage"
     And I reserve new PO box for "94022"
@@ -169,7 +169,7 @@ Feature: USPS Test Suite
     Given Tool that goes to the "usps" page
     When Tool to change resolution to "default"
     And Tool to print all page details "without" source
-    Given Tool to get "usps" test data from source "default"
+    Given Tool to get "usps" test data from source "No File" "default"
     # ------------------------------------------------------
     When I go to "PO Boxes" under "Track & Manage"
     And I reserve new PO box for "94022"

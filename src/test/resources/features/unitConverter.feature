@@ -7,7 +7,7 @@ Feature: Unit Converter Test Suite
     # ------------------------------------------------------
     #  Test Environment Set Up
     When Tool to change resolution to "default"
-    When Tool to get "unit converter" test data from source "default"
+    When Tool to get "unit converter" test data from source "No File" "default"
     Then Tool to print all page details "without" source
     # ------------------------------------------------------
     When I select the conversion tab for "Temperature"

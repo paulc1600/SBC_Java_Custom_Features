@@ -17,7 +17,7 @@ Feature: Market Quote Test Suite
     #     Test Data: default, <Windows .CSV file name> (TBD), random generated (TBD)
     Given Tool that goes to the "quote" page
     When Tool to change resolution to "desktop"
-    Given Tool to get "quote" test data from source "default"
+    Given Tool to get "quote" test data from source "No File" "default"
     Then I display test environment set up
     # ------------------------------------------------------
     When I fill out required fields
@@ -33,7 +33,7 @@ Feature: Market Quote Test Suite
     #     Test Data: default, <Windows .CSV file name> (TBD), random generated (TBD)
     Given Tool that goes to the "quote" page
     When Tool to change resolution to "phone"
-    Given Tool to get "quote" test data from source "default"
+    Given Tool to get "quote" test data from source "No File" "default"
     Then I display test environment set up
     # ------------------------------------------------------
     When I fill out required fields
@@ -48,7 +48,7 @@ Feature: Market Quote Test Suite
     #     Pages: quote, google (TBD), yahoo (TBD)
     #     Test Data: default, <Windows .CSV file name> (TBD), random generated (TBD)
     Given Tool that goes to the "quote" page
-    Given Tool to get "quote" test data from source "default"
+    Given Tool to get "quote" test data from source "No File" "default"
     Then I display test environment set up
     # ------------------------------------------------------
     But I clear "quote" page field "email"
@@ -61,7 +61,7 @@ Feature: Market Quote Test Suite
     # ------------------------------------------------------
     #  Test Environment Set Up
     Given Tool that goes to the "quote" page
-    Given Tool to get "quote" test data from source "default"
+    Given Tool to get "quote" test data from source "No File" "default"
     Then I display test environment set up
     # ------------------------------------------------------
     But I clear "quote" page field "email"
@@ -85,7 +85,7 @@ Feature: Market Quote Test Suite
     # ------------------------------------------------------
     #  Test Environment Set Up
     Given Tool that goes to the "quote" page
-    Given Tool to get "quote" test data from source "default"
+    Given Tool to get "quote" test data from source "No File" "default"
     Then I display test environment set up
     # ------------------------------------------------------
     When I fill out required fields
@@ -98,7 +98,7 @@ Feature: Market Quote Test Suite
     # ------------------------------------------------------
     #  Test Environment Set Up
     Given Tool that goes to the "quote" page
-    Given Tool to get "quote" test data from source "default"
+    Given Tool to get "quote" test data from source "No File" "default"
     Then I display test environment set up
     # ------------------------------------------------------
     When I fill out required fields

@@ -23,7 +23,7 @@ Feature: Unit Converter Test Suite
   Scenario Outline: Scientific Calculator Tests
     Given Tool that goes to the "calculator" page
     When Tool to change resolution to "default"
-    When Tool to get "calculator" test data from source "default"
+    When Tool to get "calculator" test data from source "No File" "default"
     When I start their scientific calculator
     And I enter first number <nbr1>
     And I enter the function <fnct1>

@@ -118,15 +118,22 @@ public class ATestToolBox {
     //   Test Environment -- Test Data Source Provider
     //    (can be called from Gherkin)
     // ===========================================================================
-    @Given("Tool to get {string} test data from source {string}")
-    public static void toolToGetTestDataFromSource(String page, String tdSource) {
+    @Given("Tool to get {string} test data from source {string} {string}")
+    public static void toolToGetTestDataFromSource(String page, String fileName, String tdSource) {
         if (page.equalsIgnoreCase("quote")) {
             switch (tdSource) {
                 case "default":
                     // Variables are already set to defaults when step file called
                     break;
                 case "file":
-                    // Override defaults from test data file -- uses tdFileName = "user";
+                    if (fileName.equalsIgnoreCase("") ||
+                        fileName.equalsIgnoreCase("No File")) {
+                        // If not specified in Gherkin Scenario -- use this yml file
+                        tdFileName = "user";
+                    } else {
+                        // Gherkin Scenario explicitly needs different yml file
+                        tdFileName = fileName;
+                    }
                     tdFileName = "user";
                     System.out.println("================================================");
                     System.out.println(" Test Data Source is: " + tdSource);
@@ -137,10 +144,6 @@ public class ATestToolBox {
                 default:
                     throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
             }
-        } else if (page.equalsIgnoreCase("google")) {
-            // Not implemented yet
-        } else if (page.equalsIgnoreCase("yahoo")) {
-            // Not implemented yet
         } else if (page.equalsIgnoreCase("usps")) {
             switch (tdSource) {
                 case "default":
@@ -166,28 +169,6 @@ public class ATestToolBox {
                     System.out.println(" Active File: " + tdFileName + " on upsData()");
                     System.out.println(" Active File: " + "dataStateNames" + " on stateData()");
                     System.out.println("------------------------------------------------");
-                    break;
-                default:
-                    throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
-            }
-        } else if (page.equalsIgnoreCase("unit converter")) {
-            switch (tdSource) {
-                case "default":
-                    // Variables are already set to defaults when step file called
-                    break;
-                case "file":
-                    // Override defaults from test data file (not implemented)
-                    break;
-                default:
-                    throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
-            }
-        } else if (page.equalsIgnoreCase("calculator")) {
-            switch (tdSource) {
-                case "default":
-                    // Variables are already set to defaults when step file called
-                    break;
-                case "file":
-                    // Override defaults from test data file (not implemented)
                     break;
                 default:
                     throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
