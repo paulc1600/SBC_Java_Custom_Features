@@ -30,6 +30,7 @@ public class ATestToolBox {
     public static String trWindowHandle = "";
     public static String trPageSource = "";
     public static String tdFileName = "";
+    public static Map<String, String> quoteData = null;
     public static Map<String, Object> upsData = null;
     public static Map<String, String> stateData = null;
 
@@ -73,6 +74,7 @@ public class ATestToolBox {
             case "quote":
                 tePageURL = "https://skryabin.com/market/quote.html";
                 tePageTitle = "Quote";
+                tdFileName = "user";
                 break;
             case "google":
                 tePageURL = "https://www.google.com/";
@@ -124,7 +126,13 @@ public class ATestToolBox {
                     // Variables are already set to defaults when step file called
                     break;
                 case "file":
-                    // Override defaults from test data file (not implemented)
+                    // Override defaults from test data file -- uses tdFileName = "user";
+                    tdFileName = "user";
+                    System.out.println("================================================");
+                    System.out.println(" Test Data Source is: " + tdSource);
+                    System.out.println(" Active File: " + tdFileName + " on quoteData()");
+                    System.out.println("------------------------------------------------");
+                    quoteData = getStrData(tdFileName);
                     break;
                 default:
                     throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
@@ -342,7 +350,7 @@ public class ATestToolBox {
     // -------------------------------------------------------------------------------------------
     //   Tool: Wait for WebElement After X seconds
     //      Parameters: (1) xPath of nice element you want
-    //                  (2) waitType     = visible, clickable, allfull
+    //                  (2) waitType     = visible, clickable, selected, allfull
     //                  (3) waitProvided = 0 (no explicit wait / just find element using project
     //                                        implicit wait in Hooks)
     //                      waitProvided > 0 && <  300 (literal number seconds up to 5 minutes)
@@ -367,6 +375,10 @@ public class ATestToolBox {
                     break;
                 case "clickable":
                     elementWanted = waitToAppear.until(elementToBeClickable(byThisXpath));
+                    break;
+                case "selected":
+                    waitToAppear.until(elementToBeSelected(byThisXpath));
+                    elementWanted = null;
                     break;
                 case "allfull":
                     waitToAppear.until(presenceOfAllElementsLocatedBy(byThisXpath));
