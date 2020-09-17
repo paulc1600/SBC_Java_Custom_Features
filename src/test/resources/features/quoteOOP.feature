@@ -51,9 +51,8 @@ Feature: Quote OOP Test Suite 1
     Then I don't see "email" error message
 
   @quoteScenario13-6
-  Scenario: Market password field tests
+  Scenario: Market password field limit tests
     Given I open "quote" page
-    Given Tool to get "quote" test data from source "user" "file"
     When I fill out "password" field with "1234"
     And I submit the form oop
     Then I see "password" error message "Please enter at least 5 characters."
@@ -68,9 +67,8 @@ Feature: Quote OOP Test Suite 1
     Then I don't see "confirmPassword" error message
 
   @quoteScenario13-7
-  Scenario: Market name test oop
+  Scenario: Market name field variations test
     Given I open "quote" page
-    Given Tool to get "quote" test data from source "user" "file"
     When I fill out name field with first name "John" and last name "Doe"
     Then I verify "name" field value "John Doe"
     When I fill out name field with first name "John", middle name "Richard", last name "Doe"

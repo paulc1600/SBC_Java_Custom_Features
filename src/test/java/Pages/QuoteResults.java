@@ -20,6 +20,9 @@ public class QuoteResults {
     @FindBy(xpath = "//b[@name='username']")
     private WebElement qrUsername;
 
+    @FindBy(xpath = "//b[@name='password']")
+    private WebElement qrPassword;
+
     @FindBy(xpath = "//b[@name='email']")
     private WebElement qrEmail;
 
@@ -53,11 +56,22 @@ public class QuoteResults {
     @FindBy(xpath = "//b[@name='currentDate']")
     private WebElement qrDate;
 
+    @FindBy(xpath = "//b[@name='agreedToPrivacyPolicy']")
+    private WebElement qrAgreedToPrivacyPolicy;
+
+    @FindBy(xpath = "//b[@name='allowedToContact']")
+    private WebElement qrAllowedToContact;
+
+
     // ---------------------------------------------------
     //  methods
     // ---------------------------------------------------
     public String readQrUsername() {
         return qrUsername.getText();
+    }
+
+    public String readQrPassword() {
+        return qrPassword.getText();
     }
 
     public String readQrEmail() {
@@ -102,6 +116,14 @@ public class QuoteResults {
 
     public String readQrDate() {
         return qrDate.getText();
+    }
+
+    public String readQrAllowedToContact() {
+        return qrAllowedToContact.getText();
+    }
+
+    public String readQrAgreedToPrivacyPolicy() {
+        return qrAgreedToPrivacyPolicy.getText();
     }
 }
 

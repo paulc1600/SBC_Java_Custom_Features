@@ -1,10 +1,16 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import static definitions.ATestToolBox.getWait;
+import static definitions.ATestToolBox.toolWaitForElementWithXpathAfterSecs;
+import static org.assertj.core.api.Assertions.assertThat;
 import static support.TestContext.getDriver;
 
 public class QuoteForm {
@@ -12,6 +18,7 @@ public class QuoteForm {
     //  constructor
     // ---------------------------------------------------
     public QuoteForm() {
+        // Makes the lazy association annotation possible
         PageFactory.initElements(getDriver(), this);
         url = "https://skryabin.com/market/quote.html";
         title = "Get a Quote";
@@ -23,31 +30,38 @@ public class QuoteForm {
     private String url;
     private String title;
 
-    @FindBy(name = "username")
+    // @FindBy(name = "username") -- fails on 2nd interaction with username with his error label
+    @FindBy(xpath = "//input[@name='username']")
     private WebElement username;
 
     @FindBy(name = "email")
     private WebElement email;
 
-    @FindBy(name = "password")
+    @FindBy(xpath = "//input[@name='password']")
     private WebElement password;
 
-    @FindBy(name = "confirmPassword")
+    @FindBy(xpath = "//input[@name='confirmPassword']")
     private WebElement confirmPassword;
 
-    @FindBy(name = "name")
+    @FindBy(xpath = "//input[@name='name']")
     private WebElement name;
 
-    @FindBy(name = "firstName")
+    @FindBy(xpath = "//div[@role='dialog']")
+    private WebElement nameDialogBox;
+
+    @FindBy(xpath = "//input[@id='firstName']")
     private WebElement firstName;
 
-    @FindBy(name = "lastName")
+    @FindBy(xpath = "//input[@id='middleName']")
+    private WebElement middleName;
+
+    @FindBy(xpath = "//input[@id='lastName']")
     private WebElement lastName;
 
     @FindBy(xpath = "//span[text()='Save']")
     private WebElement saveButton;
 
-    @FindBy(name = "agreedToPrivacyPolicy")
+    @FindBy(xpath = "//input[@name='agreedToPrivacyPolicy']")
     private WebElement privacy;
 
     @FindBy(xpath = "//input[@id='dateOfBirth']")
@@ -107,10 +121,13 @@ public class QuoteForm {
     private WebElement errorEmail;
     @FindBy(xpath = "//label[@id='password-error']")
     private WebElement errorPassword;
+    @FindBy(xpath = "//label[@id='confirmPassword-error']")
+    private WebElement errorConfirmPassword;
     @FindBy(xpath = "//label[@id='name-error']")
     private WebElement errorName;
     @FindBy(xpath = "//label[@id='agreedToPrivacyPolicy-error']")
     private WebElement errorAgreedToPrivacyPolicy;
+
 
     // ---------------------------------------------------
     //  methods
@@ -122,24 +139,79 @@ public class QuoteForm {
     // ---------------------------------------------------
     //                Set Required Fields
     // ---------------------------------------------------
+    // ----------------------------------------------------------------
+    //   General Purpose Field Setter -- API Supports
+    //      username      password            name
+    //      email         confirmPassword     agreedToPrivacyPolicy
+    //      firstName
+    //      middleName
+    //      lastName
+    // ----------------------------------------------------------------
+    private void setFieldValue(String fieldNameProvided, String fieldValueProvided) {
+//        System.out.println("---------------------------------------");
+//        System.out.println(" setFieldValue() field Name:  " + fieldNameProvided);
+//        System.out.println(" setFieldValue() field Value: " + fieldValueProvided);
+        WebElement fieldElement = returnThisElement(fieldNameProvided);
+        if (fieldNameProvided.equalsIgnoreCase("password")) {
+            fieldElement.clear();
+            fieldElement.sendKeys(fieldValueProvided);
+        } else if (fieldNameProvided.equalsIgnoreCase("confirmPassword")) {
+            toolWaitForElementWithXpathAfterSecs("//input[@id='confirmPassword']", "clickable", 3);
+            fieldElement.clear();
+            fieldElement.sendKeys(fieldValueProvided);
+        } else {
+            fieldElement.sendKeys(fieldValueProvided);
+        }
+    }
+
+    // ----------------------------------------------------------------
+    //   Old Code -- to be refactored
+    // ----------------------------------------------------------------
     public void fillUsername(String value) {
-        username.sendKeys(value);
+        setFieldValue("username", value);
     }
-
     public void fillEmail(String value) {
-        email.sendKeys(value);
+        setFieldValue("email", value);
     }
-
     public void fillBothPasswords(String value) {
-        password.sendKeys(value);
-        confirmPassword.sendKeys(value);
+        setFieldValue("password", value);
+        setFieldValue("confirmPassword", value);
     }
-
-    public void fillName(String firstNameValue, String lastNameValue) {
+    public void fillPassword(String value) {
+        setFieldValue("password", value);
+    }
+    public void fillConfirmPassword(String value) {
+        setFieldValue("confirmPassword", value);
+    }
+    public void fillName(String firstNameProvided, String lastNameProvided) {
+        // Wait nameDialogBox to Disappear
+        WebDriverWait waitDialog = getWait(3);
+        waitDialog.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@role='dialog']")));
         name.click();
-        firstName.sendKeys(firstNameValue);
-        lastName.sendKeys(lastNameValue);
+        waitDialog.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@role='dialog']")));
+        setFieldValue("firstName", firstNameProvided);
+        setFieldValue("lastName", lastNameProvided);
         saveButton.click();
+    }
+    public void checkName(String firstNameProvided, String lastNameProvided) {
+        String nameValue = name.getAttribute("value");
+        assertThat(nameValue).isEqualTo(firstNameProvided + " " + lastNameProvided);
+    }
+    public void fillName(String firstNameProvided, String middleNameProvided, String lastNameProvided) {
+        // Wait nameDialogBox to Disappear
+        WebDriverWait waitDialog = getWait(3);
+        waitDialog.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@role='dialog']")));
+        name.click();
+        waitDialog.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@role='dialog']")));
+        setFieldValue("firstName", firstNameProvided);
+        setFieldValue("middleName", middleNameProvided);
+        setFieldValue("lastName", lastNameProvided);
+        saveButton.click();
+    }
+    public void checkName(String firstNameProvided, String middleNameProvided, String lastNameProvided) {
+        String nameValue = name.getAttribute("value");
+        assertThat(nameValue).isEqualTo(firstNameProvided + " " + lastNameProvided);
+        assertThat(nameValue).isEqualTo(firstNameProvided + " " + middleNameProvided + " " + lastNameProvided);
     }
 
     public void agreeWithPrivacyPolicy() {
@@ -151,6 +223,9 @@ public class QuoteForm {
     // ---------------------------------------------------
     //                Set Optional Fields
     // ---------------------------------------------------
+    // ----------------------------------------------------------------
+    //   Also Old Code -- also needs to be refactored
+    // ----------------------------------------------------------------
     public void fillDateOfBirth(String value) {
         // Only sets main dob for testing results -- Not sufficient to test dob UI itself
         dateOfBirth.sendKeys(value);
@@ -201,21 +276,119 @@ public class QuoteForm {
     // ---------------------------------------------------
     //                Read Error Fields
     // ---------------------------------------------------
-    public String readErrorUserName() {
-        return errorUserName.getText();
+    private String xpathErrorUserName = "//label[@id='username-error']";
+    private String xpathErrorEmail = "//label[@id='email-error']";
+    private String xpathErrorPassword = "//label[@id='password-error']";
+    private String xpathErrorConfirmPassword = "//label[@id='confirmPassword-error']";
+    private String xpathErrorName =  "//label[@id='name-error']";
+    private String xpathErrorAgreedPolicy = "//label[@id='agreedToPrivacyPolicy-error']";
+
+    // ---------------------------------------------------------------------------------------
+    //    Handles all errors without "state" problems
+    // ---------------------------------------------------------------------------------------
+    public String readErrorsCorrectly(WebElement errorElement, String xpathErrorElement, String changeTo) {
+        String retValue = "";
+        WebDriverWait changeWait = getWait(3);
+        if (changeTo.equalsIgnoreCase("invisible")) {
+            // Wait to Disappear
+            changeWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpathErrorElement)));
+        } else {
+            // Wait to appear
+            changeWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathErrorElement)));
+        }
+
+        Boolean isPresent = getDriver().findElements(By.xpath(xpathErrorElement)).size() > 0;
+
+        // System.out.println("---------------------------------------");
+        // System.out.println(" Error label xpath: " + xpathErrorElement);
+        if (isPresent) {
+            if (errorElement.isDisplayed()) {
+                retValue = errorElement.getText();
+            } else {
+                retValue = "";
+            }
+            // System.out.println(" Error label visible? " + errorElement.isDisplayed());
+        }
+        // System.out.println(" Error label is present? " + isPresent);
+        // System.out.println(" Error Message? " + retValue);
+        // System.out.println("---------------------------------------");
+        return retValue;
     }
-    public String readErrorEmail() {
-        return errorEmail.getText();
+
+    // -------------------------------------------------------------------------------------
+    //         case "username" -> assertThat(formPage.readErrorUserName()).isEqualTo("");
+    //         case "email" -> assertThat(formPage.readErrorEmail()).isEqualTo("");
+    //         case "password" -> assertThat(formPage.readErrorPassword()).isEqualTo("");
+    //         case "confirmPassword" -> assertThat(formPage.readErrorConfirmPassword()).isEqualTo("");
+    //         case "name" -> assertThat(formPage.readErrorName()).isEqualTo("");
+    //         case "agreedToPrivacyPolicy" -> assertThat(formPage.readErrorAgreedToPrivacyPolicy()).isEqualTo("");
+    // -------------------------------------------------------------------------------------
+    public String readErrorFields(String fieldName, String changeTo) {
+        String neededValue = "";
+
+        switch (fieldName) {
+            case "username":
+                neededValue = readErrorsCorrectly(errorUserName, xpathErrorUserName, changeTo);
+                break;
+            case "email":
+                neededValue = readErrorsCorrectly(errorEmail, xpathErrorEmail, changeTo);
+                break;
+            case "password":
+                neededValue = readErrorsCorrectly(errorPassword, xpathErrorPassword, changeTo);
+                break;
+            case "confirmPassword":
+                neededValue = readErrorsCorrectly(errorConfirmPassword, xpathErrorConfirmPassword, changeTo);
+                break;
+            case "name":
+                neededValue = readErrorsCorrectly(errorName, xpathErrorName, changeTo);
+                break;
+            case "agreedToPrivacyPolicy":
+                neededValue = readErrorsCorrectly(errorAgreedToPrivacyPolicy, xpathErrorAgreedPolicy, changeTo);
+                break;
+            default:
+                throw new IllegalStateException("Error: This form field name is invalid: " + fieldName);
+        }
+        return neededValue;
     }
-    public String readErrorPassword() {
-        return errorPassword.getText();
+
+    // -------------------------------------------------------------------------------------
+    //    Convert Field Name to WebElement
+    public WebElement returnThisElement(String fieldName) {
+        WebElement desiredElement = null;
+        switch (fieldName) {
+            case "username":
+                desiredElement = username;
+                break;
+            case "email":
+                desiredElement = email;
+                break;
+            case "password":
+                desiredElement = password;
+                break;
+            case "confirmPassword":
+                desiredElement = confirmPassword;
+                break;
+            case "name":
+                desiredElement = name;
+                break;
+            case "firstName":
+                desiredElement = firstName;
+                break;
+            case "middleName":
+                desiredElement = middleName;
+                break;
+            case "lastName":
+                desiredElement = lastName;
+                break;
+            case "agreedToPrivacyPolicy":
+                desiredElement = privacy;
+                break;
+            default:
+                throw new IllegalStateException("Error: This form field name is invalid: " + fieldName);
+        }
+        return desiredElement;
     }
-    public String readErrorName() {
-        return errorName.getText();
-    }
-    public String readErrorAgreedToPrivacyPolicy () {
-        return errorAgreedToPrivacyPolicy.getText();
-    }
+
 
     // ---------------------------------------------------
     //                Work with Buttons
