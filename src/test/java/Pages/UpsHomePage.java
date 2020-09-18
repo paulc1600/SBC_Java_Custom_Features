@@ -4,6 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import static definitions.ATestToolBox.toolWaitForXpath;
 import static support.TestContext.getDriver;
 
 public class UpsHomePage {
@@ -69,6 +70,17 @@ public class UpsHomePage {
     //                 shipping links
     // ---------------------------------------------------
     public void goCreateAShipment() {
+        String xpathINeed = lookUpXpath(createAShipment);
+        toolWaitForXpath(xpathINeed, "clickable", 5);
         createAShipment.click();
+    }
+
+    // ---------------------------------------------------
+    //   Return Xpath of Selected WebElement
+    // ---------------------------------------------------
+    public String lookUpXpath(WebElement thisElement) {
+        String desiredXpath = "";
+        if (thisElement.equals(createAShipment)) { desiredXpath = "//a[contains(@href,'ups.com/ship?')][contains(text(),'Create')]"; }
+        return desiredXpath;
     }
 }
