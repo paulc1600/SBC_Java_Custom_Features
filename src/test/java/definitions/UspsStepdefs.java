@@ -431,7 +431,7 @@ public class UspsStepdefs {
     @Then("I verify that {string} results found")
     public void iVerifyThatResultsFound(String totalResultsStr) {
         WebDriverWait waitResults = getWait(5);
-        WebElement hdText = toolWaitForElementWithXpathAfterSecs("//span[@id='searchResultsHeading']", "visible", 5);
+        WebElement hdText = toolWaitForXpath("//span[@id='searchResultsHeading']", "visible", 5);
         assert(hdText.getText().contains(totalResultsStr + " results"));
 
         int nbrTotalResults = Integer.parseInt(totalResultsStr);
@@ -446,7 +446,7 @@ public class UspsStepdefs {
     public void iSelectInResults(String selectedResult) {
         WebElement resultIWant = null;
         // Wait until all search results "fill in"
-        toolWaitForElementWithXpathAfterSecs("//span[contains(@transid,'gadget')]", "allfull", 10);
+        toolWaitForXpath("//span[contains(@transid,'gadget')]", "allfull", 10);
         // Then find results you want (while avoiding intercepted click)
         resultIWant = getDriver().findElement(By.xpath("//span[contains(text(),'" + selectedResult + "')]"));
         try {
@@ -465,7 +465,7 @@ public class UspsStepdefs {
     @And("I click {string} button")
     public void iClickButton(String btnName) throws InterruptedException {
         String buttonXpath = "//a[contains(text(),'" + btnName + "')]";
-        WebElement clickableElement = toolWaitForElementWithXpathAfterSecs(buttonXpath, "clickable", 10);
+        WebElement clickableElement = toolWaitForXpath(buttonXpath, "clickable", 10);
         try {
             // If not intercepted, then it just works
             clickableElement.click();
@@ -534,7 +534,7 @@ public class UspsStepdefs {
 
                 // Only Stamps supported at this time
                 if (linkName.equalsIgnoreCase("Stamps")) {
-                    elementLink = toolWaitForElementWithXpathAfterSecs("//a/div/span[text()='Stamps']", "clickable", 10);
+                    elementLink = toolWaitForXpath("//a/div/span[text()='Stamps']", "clickable", 10);
                     elementLink.click();
                 } else {
                     throw new RuntimeException("Unsupported USPS link name: " + linkName);
@@ -546,7 +546,7 @@ public class UspsStepdefs {
 
                 // Only "Every Door Direct Mail" supported
                 if (linkName.equalsIgnoreCase("Every Door Direct Mail")) {
-                    elementLink = toolWaitForElementWithXpathAfterSecs("//ul[@class='tools']//a[contains(@href,'routeSearch')]", "clickable", 10);
+                    elementLink = toolWaitForXpath("//ul[@class='tools']//a[contains(@href,'routeSearch')]", "clickable", 10);
                     elementLink.click();
                 } else {
                     throw new RuntimeException("Unsupported USPS link name: " + linkName);
@@ -567,7 +567,7 @@ public class UspsStepdefs {
         // Do the search with magnifying glass
         Actions actSearch = new Actions(getDriver());
         String mglassXpath = "//button[@type='submit'][contains(@class,'search')]";
-        WebElement magGlass = toolWaitForElementWithXpathAfterSecs(mglassXpath, "clickable", 10);
+        WebElement magGlass = toolWaitForXpath(mglassXpath, "clickable", 10);
         actSearch.moveToElement(magGlass).click().perform();
     }
 
@@ -579,7 +579,7 @@ public class UspsStepdefs {
         // Check for overlay by "Route Type" box (it's not always "there")
         try {
             String routeBox = "//div[contains(@class,'route-type')]/a[@class='close']";
-            WebElement routeBoxElement = toolWaitForElementWithXpathAfterSecs(routeBox, "clickable", 5);
+            WebElement routeBoxElement = toolWaitForXpath(routeBox, "clickable", 5);
             routeBoxElement.click();
         }
         catch (WebDriverException e) {
@@ -588,7 +588,7 @@ public class UspsStepdefs {
         // No route box -- click through to show table
         // String tableButtonXpath = "//a[@class='route-table-toggle']";  -- hidden label intercepts click
         String tableButtonXpath = "//span[@class='toggle-icon']";
-        WebElement mapTableButton = toolWaitForElementWithXpathAfterSecs(tableButtonXpath, "clickable", 10);
+        WebElement mapTableButton = toolWaitForXpath(tableButtonXpath, "clickable", 10);
         mapTableButton.click();
         // Slava wait until progress spinner visible
         // then wait until progress spinner goes invisible
@@ -601,7 +601,7 @@ public class UspsStepdefs {
     @When("I click {string} on the table")
     public void iClickOnTheTable(String selectorText) {
         String linkSelectAll = "//a[@class='totalsArea'][contains(text(),'" + selectorText + "')]";
-        WebElement linkTableAll = toolWaitForElementWithXpathAfterSecs(linkSelectAll, "visible", 10);
+        WebElement linkTableAll = toolWaitForXpath(linkSelectAll, "visible", 10);
         linkTableAll.click();
         // Slava did not wait. Just found and click
     }
@@ -612,7 +612,7 @@ public class UspsStepdefs {
     @And("I close modal window")
     public void iCloseModalWindow() {
         String doneButtonXpath = "//div[@id='modal-box']//button[@id='dropOffDone']";
-        WebElement doneButton = toolWaitForElementWithXpathAfterSecs(doneButtonXpath, "clickable", 10);
+        WebElement doneButton = toolWaitForXpath(doneButtonXpath, "clickable", 10);
         doneButton.click();
         // Slava did not wait. Just found and click
     }
@@ -672,10 +672,10 @@ public class UspsStepdefs {
     @And("I enter {string} into store search")
     public void iEnterIntoStoreSearch(String searchProvided) {
         // Enter the Postal Store search here
-        WebElement storeSrchBox = toolWaitForElementWithXpathAfterSecs("//input[@id='store-search']", "clickable", 5);
+        WebElement storeSrchBox = toolWaitForXpath("//input[@id='store-search']", "clickable", 5);
         storeSrchBox.sendKeys("searchProvided");
         // Click Mag Glass
-        WebElement magGlass = toolWaitForElementWithXpathAfterSecs("//input[@id='store-search-btn']", "clickable", 5);
+        WebElement magGlass = toolWaitForXpath("//input[@id='store-search-btn']", "clickable", 5);
         magGlass.click();
     }
 
@@ -685,7 +685,7 @@ public class UspsStepdefs {
     @Then("I search and validate no products found")
     public void iSearchAndValidateNoProductsFound() {
         String noResultsXpath = "//div[@class = 'no-results-found']//p[contains(text(),'did not match any products')]";
-        WebElement SrchResultsMsg = toolWaitForElementWithXpathAfterSecs(noResultsXpath, "visible", 5);
+        WebElement SrchResultsMsg = toolWaitForXpath(noResultsXpath, "visible", 5);
         assertThat(SrchResultsMsg.getText().contains("search did not match any products"));
     }
 
@@ -708,7 +708,7 @@ public class UspsStepdefs {
     @Then("I verify {int} items found")
     public void iVerifyItemsFound(int nbrStampTypes) {
         //h2[contains(@class,'results-per-page')]
-        WebElement SrchResultsTotal = toolWaitForElementWithXpathAfterSecs("//h2[contains(@class,'results-per-page')]", "visible", 6);
+        WebElement SrchResultsTotal = toolWaitForXpath("//h2[contains(@class,'results-per-page')]", "visible", 6);
         //  nbrResults ===> Typically looks like this:   "1 - 1 of 1 Results"
         String nbrResults = SrchResultsTotal.getText();
         int posCharF = nbrResults.indexOf("f") + 1;
@@ -727,7 +727,7 @@ public class UspsStepdefs {
     // -----------------------------------------------------------------------
     @When("I unselect Stamps checkbox")
     public void iUnselectStampsCheckbox() {
-        WebElement stampsFilter = toolWaitForElementWithXpathAfterSecs("//label[contains(@for,'Category-Stamps')]", "clickable", 6);
+        WebElement stampsFilter = toolWaitForXpath("//label[contains(@for,'Category-Stamps')]", "clickable", 6);
         stampsFilter.click();
     }
 
@@ -763,7 +763,7 @@ public class UspsStepdefs {
     @Then("I verify {string} and {string} filters")
     public void iVerifyAndFilters(String colorFilter, String vertFilter) {
         String verticalCheckedXpath = "//input[@checked]/following-sibling:: input[contains(@name,'Shape-" + vertFilter + "')]/following-sibling:: label";
-        assertThat(toolWaitForElementWithXpathAfterSecs(verticalCheckedXpath, "visible", 6).isDisplayed());
+        assertThat(toolWaitForXpath(verticalCheckedXpath, "visible", 6).isDisplayed());
 
         String colorCheckedXpath = "//div[contains(@class,'result-facid-holder-grid-color')]/span[@class='hidden']";
         assertThat(getDriver().findElement(By.xpath(colorCheckedXpath)).getText().equalsIgnoreCase(colorFilter));
@@ -839,12 +839,12 @@ public class UspsStepdefs {
         WebElement selectOption = null;
 
         // Wait until services dropbox list is there
-        WebElement serviceSelector = toolWaitForElementWithXpathAfterSecs("//select[@id='passportappointmentType']", "clickable", 10);
+        WebElement serviceSelector = toolWaitForXpath("//select[@id='passportappointmentType']", "clickable", 10);
 
         // Check for and Get Rid of Pop-Up
         WebElement modalBox = null;
         try {
-            toolWaitForElementWithXpathAfterSecs("//div[@id='renewalModal']//div[@class='modal-content']", "visible", 2);
+            toolWaitForXpath("//div[@id='renewalModal']//div[@class='modal-content']", "visible", 2);
             System.out.println("USPS Modal Alert: 'Eligible to renew?' -- dismiss it.");
             String xpathCloseButton = "//div[@id='renewalModal']//button[@class='close closeicon'][contains(text(),'×')]";
             System.out.println("USPS Modal Alert: 'Eligible to renew?' -- dismiss first.");
@@ -879,7 +879,7 @@ public class UspsStepdefs {
     // ----------------------------------------------------------------------------
     @And("I reserve new PO box for {string}")
     public void iReserveNewPOBoxFor(String zipProvided) {
-        WebElement zipSearchBox = toolWaitForElementWithXpathAfterSecs("//input[@id='searchInput']", "clickable", 5);
+        WebElement zipSearchBox = toolWaitForXpath("//input[@id='searchInput']", "clickable", 5);
 
         //Find PO reserve search by zip box -- by scrolling
         getDriver().findElement(By.xpath("//input[@id='searchInput']")).sendKeys(zipProvided);                                       // Enter Gherkin provided Zip Code
@@ -904,7 +904,7 @@ public class UspsStepdefs {
         String xpathPOMyBoxLinks = xpathPOMyName + "/../..//following-sibling:: div[contains(@class,'availableCol')]//span[@class='availableSizes']";
 
         // Wait until all top table search results "fill in"
-        toolWaitForElementWithXpathAfterSecs(xpathPONamesList, "allfull", 10);
+        toolWaitForXpath(xpathPONamesList, "allfull", 10);
 
         // Then verify results you want
         try {
@@ -938,7 +938,7 @@ public class UspsStepdefs {
     @And("I verify that {string} PO Box is available in {string}")
     public void iVerifyThatPOBoxIsAvailableIn(String boxSize, String poLocation) {
         //div[@id='boxLocation']//span[@class='bold']  =  Post Office Name should be here
-        WebElement verifyPOName = toolWaitForElementWithXpathAfterSecs("//div[@id='boxLocation']//span[@class='bold']", "visible", 5);
+        WebElement verifyPOName = toolWaitForXpath("//div[@id='boxLocation']//span[@class='bold']", "visible", 5);
         String actualPOName = verifyPOName.getText().strip();
         String expectedPOName = poLocation.substring(0, poLocation.length() - 15);     // Strip away  " — Post Office™" = way easier
         System.out.println("------------------------------------------------");

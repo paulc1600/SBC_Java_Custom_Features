@@ -341,7 +341,7 @@ public class ATestToolBox {
     //          (called from Gherkin)
     // -------------------------------------------------------------------------------------------
     @And("Tool wait for element with Xpath {string} to appear after {int} secs")
-    public static WebElement toolWaitForElementWithXpathAfterSecs(String thisXpathProvided, String waitType, int waitProvided) {
+    public static WebElement toolWaitForXpath(String thisXpathProvided, String waitType, int waitProvided) {
         WebElement elementWanted;
         if (waitProvided != 0) {
             // Use one of two possible explicit waits (Gherkin or Framework constant)

@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static definitions.ATestToolBox.getWait;
-import static definitions.ATestToolBox.toolWaitForElementWithXpathAfterSecs;
+import static definitions.ATestToolBox.toolWaitForXpath;
 import static org.assertj.core.api.Assertions.assertThat;
 import static support.TestContext.getDriver;
 
@@ -156,7 +156,7 @@ public class QuoteForm {
             fieldElement.clear();
             fieldElement.sendKeys(fieldValueProvided);
         } else if (fieldNameProvided.equalsIgnoreCase("confirmPassword")) {
-            toolWaitForElementWithXpathAfterSecs("//input[@id='confirmPassword']", "clickable", 3);
+            toolWaitForXpath("//input[@id='confirmPassword']", "clickable", 3);
             fieldElement.clear();
             fieldElement.sendKeys(fieldValueProvided);
         } else {
@@ -394,7 +394,7 @@ public class QuoteForm {
     //                Work with Buttons
     // ---------------------------------------------------
     public void submit() {
-        // toolWaitForElementWithXpathAfterSecs("//input[@name='agreedToPrivacyPolicy']", "selected", 3);
+        // toolWaitForXpath("//input[@name='agreedToPrivacyPolicy']", "selected", 3);
         submit.click();
     }
 
