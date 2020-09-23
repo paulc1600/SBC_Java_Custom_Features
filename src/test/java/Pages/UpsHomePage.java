@@ -1,4 +1,4 @@
-package pages;
+package Pages;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -47,13 +47,6 @@ public class UpsHomePage {
     private WebElement createAReturn;
     @FindBy(xpath = "//a[contains(text(),'Explore All Shipping')]")
     private WebElement exploreAllShipping;
-
-    // ---------------------------------------------------
-    //  methods
-    // ---------------------------------------------------
-    public void open() {
-        getDriver().get(url);
-    }
 
     // ---------------------------------------------------
     //                Work with Links

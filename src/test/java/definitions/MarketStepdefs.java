@@ -74,21 +74,21 @@ public class MarketStepdefs  {
         // Test Results of switching to this page
         trPageTitle = getDriver().getTitle();
         trPageURL = getDriver().getCurrentUrl();
-        toolToPrintPageDetails();
+        toolBoxPageDetails();
 
         System.out.println("\n   Navigate: Forward");
         getDriver().navigate().forward();
         // Test Results of switching to this page
         trPageTitle = getDriver().getTitle();
         trPageURL = getDriver().getCurrentUrl();
-        toolToPrintPageDetails();
+        toolBoxPageDetails();
 
         System.out.println("\n   Navigate: Refresh");
         getDriver().navigate().refresh();
         // Test Results of switching to this page
         trPageTitle = getDriver().getTitle();
         trPageURL = getDriver().getCurrentUrl();
-        toolToPrintPageDetails();
+        toolBoxPageDetails();
     }
 
     // ===========================================================================

@@ -1,21 +1,23 @@
 package definitions;
 
+import Pages.Page;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import pages.UpsHomePage;
-import pages.UpsShipForm;
+import Pages.UpsHomePage;
+import Pages.UpsShipForm;
 
 import static org.junit.Assert.assertTrue;
 
 public class UpsOOPStepDefs {
+    Page myPage = new Page();
     UpsHomePage upsHomePage = new UpsHomePage();
     UpsShipForm upsShipForm = new UpsShipForm();
 
     @Given("I open {string} page POM")
     public void iOpenPagePOM(String arg0) {
-        upsHomePage.open();
+        myPage.open();
     }
 
     @And("I open Shipping menu POM")

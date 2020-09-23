@@ -219,7 +219,7 @@ public class ATestToolBox {
     //    (can be called from Gherkin)
     // ===========================================================================
     @And("Tool to print page details")
-    public static void toolToPrintPageDetails() {
+    public static void toolBoxPageDetails() {
         System.out.println("================================================");
         System.out.println(" URL:   " + trPageURL);
         System.out.println(" Title: " + trPageTitle);
@@ -243,7 +243,7 @@ public class ATestToolBox {
     // ===========================================================================
     @Then("Tool to display test environment set up")
     public static void toolToDisplayTestEnvironmentSetUp() {
-        toolToPrintPageDetails();
+        toolBoxPageDetails();
         toolToPrintBrowserSize();
     }
 
