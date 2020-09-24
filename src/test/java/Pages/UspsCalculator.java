@@ -1,15 +1,13 @@
 package Pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
 import static definitions.ATestToolBox.getExecutor;
-import static support.TestContext.getDriver;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UspsCalculator extends Pages.UspsHeader {
-    Page myPage = new Page();
 
     // ------------- Country and Type Panel
     @FindBy(xpath = "//select[@id='CountryID']")
@@ -36,12 +34,14 @@ public class UspsCalculator extends Pages.UspsHeader {
     // ------------- Quantity Panel
     @FindBy(xpath = "//input[@id='quantity-0']")
     private WebElement quantity;
+    @FindBy(xpath = "//div[@id='total']")
+    private WebElement totalPostage;
     @FindBy(xpath = "//input[@value='Calculate'][@type='button']")
     private WebElement calculateButton;
 
     public void selectCountry(String countryValue) {
-        // myPage.waitForClickable(destCountry);  -- does not work -- destCountry always null
-        WebElement destCountry = getDriver().findElement(By.xpath("//select[@name='CountryID']"));
+        waitForClickable(destCountry);
+        // WebElement destCountry = getDriver().findElement(By.xpath("//select[@name='CountryID']"));
         Select selectCountry = new Select(destCountry);
         selectCountry.selectByVisibleText(countryValue);
     }
@@ -69,24 +69,35 @@ public class UspsCalculator extends Pages.UspsHeader {
             default:
                 throw new RuntimeException("Unsupported USPS mail selector type: " + typeValue);
         }
-        // myPage.waitForVisible(selectedIcon); -- not working, always null
-        selectedIcon = getDriver().findElement(By.xpath(selectedXpath));
+
+        // selectedIcon = getDriver().findElement(By.xpath(selectedXpath));
+        waitForVisible(selectedIcon);
         //This will scroll the page till the element is found
         getExecutor().executeScript("arguments[0].scrollIntoView();", selectedIcon);
         // use bullet-proof click
-        myPage.click(selectedIcon);
+        click(selectedIcon);
     }
 
     public void inputQuantity(String providedQuantity) {
-        // myPage.waitForClickable(quantity);  -- not working, always null
-        WebElement quantity = getDriver().findElement(By.xpath("//input[@id='quantity-0']"));
+        waitForClickable(quantity);
+        // WebElement quantity = getDriver().findElement(By.xpath("//input[@id='quantity-0']"));
         quantity.sendKeys(providedQuantity);
     }
 
     public void goCalculatePostage() {
-        // Without findElement always fails with null pointer
-        WebElement calculateButton = getDriver().findElement(By.xpath("//input[@id='quantity-0']"));
-        myPage.click(calculateButton);
+        // WebElement calculateButton = getDriver().findElement(By.xpath("//input[@value='Calculate'][@type='button']"));
+        click(calculateButton);
     }
 
+    // ------------------------------------------------------
+    //  Check totalPostage against Testcase value
+    // ------------------------------------------------------
+    public void checkPostageTotal(String providedTotal) {
+        String uspsCalcOutput = totalPostage.getText();
+        System.out.println("================================================");
+        System.out.println(" Expected Total:  " + providedTotal);
+        System.out.println(" Actual Total:    " + uspsCalcOutput);
+        System.out.println("================================================");
+        assertThat(uspsCalcOutput).isEqualToIgnoringCase(providedTotal);
+    }
 }

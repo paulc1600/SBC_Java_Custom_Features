@@ -123,7 +123,7 @@ public class UspsOOPStepdefs {
     // @usps7                      Scenario: USPS Calculate price with POM
     // ----------------------------------------------------------------------
     @Then("I calculate the price and validate cost is {string} oop")
-    public void iCalculateThePriceAndValidateCostIsOop(String arg0) {
-        System.out.println("*********** Not implemented yet.");
+    public void iCalculateThePriceAndValidateCostIsOop(String providedTotal) {
+        uspsCalculator.checkPostageTotal(providedTotal);
     }
 }
