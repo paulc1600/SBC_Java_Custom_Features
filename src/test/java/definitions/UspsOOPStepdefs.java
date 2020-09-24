@@ -16,6 +16,7 @@ public class UspsOOPStepdefs {
     UspsLookupByZip uspsLookupByZip = new UspsLookupByZip();
     UspsByAddressForm uspsByAddressForm = new UspsByAddressForm();
     UspsByAddressResult uspsByAddressResult = new UspsByAddressResult();
+    UspsCalculator uspsCalculator = new UspsCalculator();
 
     // ----------------------------------------------------------------------
     // @usps6                      Scenario: Validate ZIP code oop
@@ -104,14 +105,18 @@ public class UspsOOPStepdefs {
     // @usps7                      Scenario: USPS Calculate price with POM
     // ----------------------------------------------------------------------
     @And("I select {string} with {string} shape oop")
-    public void iSelectWithShapeOop(String arg0, String arg1) {
+    public void iSelectWithShapeOop(String providedCountry, String providedType) {
+        uspsCalculator.selectCountry(providedCountry);
+        uspsCalculator.selectMailType(providedType);
     }
 
     // ----------------------------------------------------------------------
     // @usps7                      Scenario: USPS Calculate price with POM
     // ----------------------------------------------------------------------
     @And("I define {string} quantity oop")
-    public void iDefineQuantityOop(String arg0) {
+    public void iDefineQuantityOop(String providedQuantity) {
+        uspsCalculator.inputQuantity(providedQuantity);
+        uspsCalculator.goCalculatePostage();
     }
 
     // ----------------------------------------------------------------------
@@ -119,5 +124,6 @@ public class UspsOOPStepdefs {
     // ----------------------------------------------------------------------
     @Then("I calculate the price and validate cost is {string} oop")
     public void iCalculateThePriceAndValidateCostIsOop(String arg0) {
+        System.out.println("*********** Not implemented yet.");
     }
 }

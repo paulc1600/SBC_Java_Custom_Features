@@ -4,7 +4,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 public class UspsHeader extends Pages.Page {
-    Page aPage = new Page();
 
     @FindBy(id="mail-ship-width")
     private WebElement mailAndShip;
@@ -24,7 +23,7 @@ public class UspsHeader extends Pages.Page {
     public void goToCalculatePrice() {
         mouseOver(mailAndShip);
         // use bullet-proof click
-        aPage.click(calculatePrice);
+        click(calculatePrice);
     }
 
 }
