@@ -1,4 +1,4 @@
-package Pages;
+package Pages.Pet;
 
 public abstract class Pet {
     String name;

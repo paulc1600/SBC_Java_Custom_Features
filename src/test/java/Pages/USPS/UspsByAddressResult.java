@@ -1,11 +1,11 @@
-package Pages;
+package Pages.USPS;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-public class UspsByAddressResult extends Pages.UspsHeader {
+public class UspsByAddressResult extends UspsHeader {
 
     @FindBy(id="zipByAddressDiv")
     private WebElement searchResult;

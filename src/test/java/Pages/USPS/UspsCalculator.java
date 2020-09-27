@@ -1,4 +1,4 @@
-package Pages;
+package Pages.USPS;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.Select;
 import static definitions.ATestToolBox.getExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UspsCalculator extends Pages.UspsHeader {
+public class UspsCalculator extends UspsHeader {
 
     // ------------- Country and Type Panel
     @FindBy(xpath = "//select[@id='CountryID']")

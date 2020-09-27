@@ -1,4 +1,4 @@
-package definitions;
+package definitions.Ups;
 
 import Pages.Page;
 import cucumber.api.java.en.And;

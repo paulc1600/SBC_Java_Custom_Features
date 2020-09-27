@@ -1,6 +1,7 @@
 package definitions;
 
 import Pages.*;
+import Pages.USPS.*;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -25,6 +26,10 @@ public class UspsOOPStepdefs {
     @Given("I open {string} page oop")
     public void iOpenPageOop(String url) {
         switch (url) {
+            case "careers":
+                tePageURL = "https://skryabin-careers.herokuapp.com/";
+                tePageTitle = "Careers Portal";
+                break;
             case "quote":
                 tePageURL = "https://skryabin.com/market/quote.html";
                 tePageTitle = "Quote";

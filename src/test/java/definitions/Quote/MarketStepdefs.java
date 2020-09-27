@@ -1,6 +1,7 @@
-package definitions;
+package definitions.Quote;
 
 import cucumber.api.java.en.*;
+import definitions.ATestToolBox;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
 

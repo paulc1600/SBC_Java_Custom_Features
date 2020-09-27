@@ -1,4 +1,4 @@
-package Pages;
+package Pages.Pet;
 
 public class Cat extends Pet {
     public Cat(String name) {

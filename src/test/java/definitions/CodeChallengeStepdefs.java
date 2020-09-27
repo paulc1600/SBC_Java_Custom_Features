@@ -1,8 +1,8 @@
 package definitions;
 
-import Pages.Cat;
-import Pages.Dog;
-import Pages.Pet;
+import Pages.Pet.Cat;
+import Pages.Pet.Dog;
+import Pages.Pet.Pet;
 import aut.TopTwoIntegers;
 import aut.TwoIntegerSum;
 import cucumber.api.java.en.Given;

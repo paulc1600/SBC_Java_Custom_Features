@@ -1,10 +1,10 @@
-package Pages;
+package Pages.USPS;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
-public class UspsByAddressForm extends Pages.UspsHeader {
+public class UspsByAddressForm extends UspsHeader {
 
     @FindBy(id="tAddress")
     private WebElement street;

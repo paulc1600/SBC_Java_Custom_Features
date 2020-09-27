@@ -1,4 +1,4 @@
-package definitions;
+package definitions.Quote;
 
 import cucumber.api.java.en.Then;
 import org.openqa.selenium.By;
