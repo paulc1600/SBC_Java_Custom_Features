@@ -98,6 +98,7 @@ public class UspsCalculator extends Pages.UspsHeader {
         System.out.println(" Expected Total:  " + providedTotal);
         System.out.println(" Actual Total:    " + uspsCalcOutput);
         System.out.println("================================================");
+        // Move to step def !!  Wrong place for it. ...
         assertThat(uspsCalcOutput).isEqualToIgnoringCase(providedTotal);
     }
 }
