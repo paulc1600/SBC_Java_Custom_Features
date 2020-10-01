@@ -1,13 +1,39 @@
 package Pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import static definitions.ATestToolBox.*;
-import static support.TestContext.*;
+import java.util.List;
+import java.util.logging.Level;
 
+import static definitions.ATestToolBox.*;
+import static support.TestContext.getDriver;
+
+/*
+ -------------------------------------------------------------------------------------------------------------
+    Pages.Page                input                 returns     description
+
+    click                     WebElement            void        Wait until can click. Click. Try JS if fails.
+    clickWithJS               WebElement            void        Use JS to click element now.
+    getAllByXpath             String          List WebElements  Find and return WebElement list at Xpath provided
+    getByXpath                String                WebElement  Find and return WebElement at Xpath provided
+    mouseOver                 WebElement            void        Moves to element
+    refresh                       --                void        Refresh current browser page.
+    sendKeys                  WebElement, String    void        Wait until visible. Send string to element
+    waitForClickable          WebElement            void        Explicit wait element clickable state
+    waitForDisappear          WebElement            void        Explicit wait until element goes invisible.
+    waitForVisible            WebElement            void        Explicit wait element is visible
+    waitToBeSelected          WebElement            void        Explicit wait element is selected
+    waitUntilContainsText     WebElement            void        Explicit wait element fills at least one
+
+ -------------------------------------------------------------------------------------------------------------
+*/
 
 public class Page {
 
@@ -29,8 +55,30 @@ public class Page {
         getDriver().get(tePageURL);
     }
 
+    public boolean areErrorsPresent() {
+        LogEntries entries = getDriver().manage().logs().get(LogType.BROWSER);
+        for (LogEntry entry : entries) {
+            if (entry.getLevel().equals(Level.SEVERE)) {
+                System.err.println(entry);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected WebElement getByXpath(String xpath) {
+        return getDriver().findElement(By.xpath(xpath));
+    }
+
+    protected List<WebElement> getAllByXpath(String xpath) {
+        return getDriver().findElements(By.xpath(xpath));
+    }
     protected void mouseOver(WebElement element) {
         getActions().moveToElement(element).perform();
+    }
+
+    public void refresh() {
+        getDriver().navigate().refresh();
     }
 
     protected void waitForVisible(WebElement element) {
@@ -43,6 +91,10 @@ public class Page {
 
     protected void waitForClickable(WebElement element) {
         getWait().until(ExpectedConditions.elementToBeClickable(element));
+    }
+
+    protected void waitForDisappear(WebElement element) {
+        getWait().until(ExpectedConditions.invisibilityOf(element));
     }
 
     protected void waitToBeSelected(WebElement element) {

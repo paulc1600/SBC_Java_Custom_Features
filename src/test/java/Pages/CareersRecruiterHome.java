@@ -20,4 +20,9 @@ public class CareersRecruiterHome extends CareersHome {
     public String verifyLoginName() {
         return userLink.getText();
     }
+
+    public void goToRecruitPage () {
+        // use bullet-proof click
+        click(buttonRecruit);
+    }
 }

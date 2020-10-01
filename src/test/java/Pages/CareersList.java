@@ -23,6 +23,7 @@ public class CareersList extends Pages.Page {
     @FindBy(xpath="//button[contains(text(),'Refresh')]")
     private WebElement buttonRefresh;
 
-    @FindBy(xpath="//ul//li")
+    @FindBy(xpath="//li//span/a[contains(@href,'positions')]//h4")
     private List<WebElement> cardsJobList;
+
 }

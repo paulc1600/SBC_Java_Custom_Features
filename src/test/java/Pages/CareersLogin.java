@@ -26,8 +26,9 @@ public class CareersLogin extends Pages.Page {
         password.sendKeys(passwordProvided);
     }
 
-    public void submitLoginForm() {
+    public CareersLogin submitLoginForm() {
         // use bullet-proof click
         click(buttonSubmit);
+        return new CareersLogin();
     }
 }
