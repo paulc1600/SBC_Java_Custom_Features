@@ -18,27 +18,49 @@ public class CareersStepdefs {
 
     @And("I login as {string}")
     public void iLoginAs(String userProvided) {
-        String unameValue = "";
-        String upassword = "";
-        if (userProvided.equalsIgnoreCase("recruiter")) {
-            unameValue = "owen@example.com";
-            upassword = "welcome";
-            userHome.goToLoginPage();
-            userLogin.fillInLoginForm(unameValue, upassword);
-            userLogin.submitLoginForm();
-        } else {
-            throw new RuntimeException("Unsupported user profile: " + userProvided);
-        }
+        String[] userCredentialsArray = userHome.getCareersUserData(userProvided);   // returns email, pwd, full name
+        String unameValue = userCredentialsArray[0];
+        String upassword = userCredentialsArray[1];
+
+        userHome.goToLoginPage();
+        userLogin.fillInLoginForm(unameValue, upassword);
+        userLogin.submitLoginForm();
     }
 
     @Then("I verify {string} login")
     public void iVerifyLogin(String userType) {
-        String expectedName = "";
-        if (userType.equalsIgnoreCase("recruiter")) {
-            expectedName = "Owen Kelley";
-        }
+        String[] userCredentialsArray = userHome.getCareersUserData(userType);  // returns email, pwd, full name
+        String expectedName = userCredentialsArray[2];
+
         String actualName = recruiterHome.verifyLoginName();
         assertThat(actualName.equalsIgnoreCase(expectedName)).isTrue();
+    }
+
+    // -----------------------------------------------------------
+    //     When   I display my jobs list            -- @careers2
+    // -----------------------------------------------------------
+    @When("I display my jobs list")
+    public void iDisplayMyJobsList() {
+        userHome.displayMyJobsList();
+    }
+
+    @Then("I verify job {string} is there")
+    public void iVerifyJobIsThere(String providedTitle) {
+        boolean isVisible = userHome.isJobPositionVisible(providedTitle);
+        assertThat(isVisible).isTrue();
+    }
+
+    @When("I withdraw my application for {string}")
+    public void iWithdrawMyApplicationFor(String providedTitle) {
+        String actualTitle = userHome.accessMyJobDetails(providedTitle);
+        assertThat(actualTitle.equalsIgnoreCase(providedTitle)).isTrue();
+        userHome.withdrawApplication();
+    }
+
+    @Then("I verify job {string} is not there")
+    public void iVerifyJobIsNotThere(String providedTitle) {
+        boolean isGone = userHome.isJobPositionGone(providedTitle);
+        assertThat(isGone).isTrue();
     }
 
     // -------------------------------------------------------------------------------

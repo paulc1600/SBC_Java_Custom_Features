@@ -16,6 +16,20 @@ import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 import static support.TestContext.getDriver;
 
+/*
+ -------------------------------------------------------------------------------------------------------------
+    definitions.ATestToolBox  input                 returns               description
+
+    getActions                    --                Actions               new Action constructor
+    getExecutor                   --                Javascript Executor   new JS executor returned
+    getWait                   integer               WebDriverWait         explicit wait in seconds provided
+    getWait                       --                WebDriverWait         explicit wait of 5 sec
+
+
+
+ -------------------------------------------------------------------------------------------------------------
+*/
+
 public class ATestToolBox {
     // =============================================
     //  Create test environment variables
@@ -25,11 +39,13 @@ public class ATestToolBox {
     public static Integer teBrowserHeight = 900;
     public static String tePageURL = "";
     public static String tePageTitle = "";
+    public static String teDataSource = "";
     public static String trPageURL = "";
     public static String trPageTitle = "";
     public static String trWindowHandle = "";
     public static String trPageSource = "";
     public static String tdFileName = "";
+    public static Map<String, String> careersData = null;
     public static Map<String, String> quoteData = null;
     public static Map<String, Object> upsData = null;
     public static Map<String, String> stateData = null;
@@ -119,9 +135,10 @@ public class ATestToolBox {
     //    (can be called from Gherkin)
     // ===========================================================================
     @Given("Tool to get {string} test data from source {string} {string}")
-    public static void toolToGetTestDataFromSource(String page, String fileName, String tdSource) {
+    public static void toolToManageTestData(String page, String fileName, String tdSource) {
+        teDataSource = tdSource;
         if (page.equalsIgnoreCase("quote")) {
-            switch (tdSource) {
+            switch (teDataSource) {
                 case "default":
                     // Variables are already set to defaults when step file called
                     break;
@@ -136,16 +153,34 @@ public class ATestToolBox {
                     }
                     tdFileName = "user";
                     System.out.println("================================================");
-                    System.out.println(" Test Data Source is: " + tdSource);
+                    System.out.println(" Test Data Source is: " + teDataSource);
                     System.out.println(" Active File: " + tdFileName + " on quoteData()");
                     System.out.println("------------------------------------------------");
                     quoteData = getStrData(tdFileName);
                     break;
                 default:
+                    throw new IllegalStateException("Error: This test data source is invalid: " + teDataSource);
+            }
+        } else if (page.equalsIgnoreCase("careers")) {
+            switch (teDataSource) {
+                case "default":
+                    // Variables are already set to defaults when step file called
+                    break;
+                case "file":
+                    // Gherkin Scenario explicitly needs different yml file
+                    tdFileName = fileName;
+                    // Override defaults from test data file -- uses tdFileName = "recruiter", or  etc.
+                    careersData = getStrData(tdFileName);
+                    System.out.println("================================================");
+                    System.out.println(" Test Data Source is: " + teDataSource);
+                    System.out.println(" Active File: " + tdFileName + " on careersData()");
+                    System.out.println("------------------------------------------------");
+                    break;
+                default:
                     throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
             }
         } else if (page.equalsIgnoreCase("usps")) {
-            switch (tdSource) {
+            switch (teDataSource) {
                 case "default":
                     // Variables are already set to defaults when step file called
                     break;
@@ -153,10 +188,10 @@ public class ATestToolBox {
                     // Override defaults from test data file (not implemented)
                     break;
                 default:
-                    throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
+                    throw new IllegalStateException("Error: This test data source is invalid: " + teDataSource);
             }
         } else if (page.equalsIgnoreCase("ups")) {
-            switch (tdSource) {
+            switch (teDataSource) {
                 case "default":
                     // Variables are already set to defaults when step file called
                     break;
@@ -165,13 +200,13 @@ public class ATestToolBox {
                     upsData = getData(tdFileName);
                     stateData = getStrData("dataStateNames");
                     System.out.println("================================================");
-                    System.out.println(" Test Data Source is: " + tdSource);
+                    System.out.println(" Test Data Source is: " + teDataSource);
                     System.out.println(" Active File: " + tdFileName + " on upsData()");
                     System.out.println(" Active File: " + "dataStateNames" + " on stateData()");
                     System.out.println("------------------------------------------------");
                     break;
                 default:
-                    throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
+                    throw new IllegalStateException("Error: This test data source is invalid: " + teDataSource);
             }
         } else {
             throw new RuntimeException("Unsupported page: " + page);

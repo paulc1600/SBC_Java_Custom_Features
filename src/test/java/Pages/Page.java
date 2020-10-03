@@ -19,6 +19,7 @@ import static support.TestContext.getDriver;
  -------------------------------------------------------------------------------------------------------------
     Pages.Page                input                 returns     description
 
+    areErrorsPresent              --                boolean     Checks browser logs for ANY severe errors (T/F)
     click                     WebElement            void        Wait until can click. Click. Try JS if fails.
     clickWithJS               WebElement            void        Use JS to click element now.
     getAllByXpath             String          List WebElements  Find and return WebElement list at Xpath provided
@@ -47,6 +48,8 @@ public class Page {
     }
 
     public void open() {
+        url = tePageURL;
+        title = tePageTitle;
         System.out.println("\n   Navigate: Open URL");
         System.out.println("================================================");
         System.out.println(" URL:   " + tePageURL);
@@ -81,7 +84,7 @@ public class Page {
         getDriver().navigate().refresh();
     }
 
-    protected void waitForVisible(WebElement element) {
+    public void waitForVisible(WebElement element) {
         getWait().until(ExpectedConditions.visibilityOf(element));
     }
 
