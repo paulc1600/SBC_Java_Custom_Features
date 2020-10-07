@@ -5,8 +5,8 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import Pages.UpsHomePage;
-import Pages.UpsShipForm;
+import Pages.Ups.UpsHomePage;
+import Pages.Ups.UpsShipForm;
 
 import static org.junit.Assert.assertTrue;
 

@@ -5,8 +5,8 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.openqa.selenium.WebElement;
-import Pages.QuoteForm;
-import Pages.QuoteResults;
+import Pages.Quote.QuoteForm;
+import Pages.Quote.QuoteResults;
 
 import static definitions.ATestToolBox.quoteData;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,4 +1,4 @@
-package definitions;
+package definitions.UspsPOM;
 
 import Pages.*;
 import Pages.USPS.*;
