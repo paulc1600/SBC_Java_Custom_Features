@@ -21,8 +21,8 @@ public class RestClient {
     // --------------------------------------------------------------
     //  POST https://skryabin.com/recruit/api/v1/login
     //     {
-    //        "email": "owen@example.com",
-    //        "password": "welcome"
+    //        "email": "xxxxxxxxxxxxxxxxxx",
+    //        "password": "xxxxxxxxxxxx"
     //     }
     //   returns
     //     {
