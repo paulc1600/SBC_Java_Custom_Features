@@ -4,7 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
-import static definitions.ATestToolBox.getExecutor;
+import static definitions.GuiTestEnvironment.getExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UspsCalculator extends UspsHeader {

@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import Pages.Quote.QuoteForm;
 import Pages.Quote.QuoteResults;
 
-import static definitions.ATestToolBox.quoteData;
+import static definitions.GuiTestEnvironment.quoteData;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class QuoteOOPSteps {

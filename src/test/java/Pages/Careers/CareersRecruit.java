@@ -1,4 +1,4 @@
-package Pages;
+package Pages.Careers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -7,7 +7,7 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-import static definitions.ATestToolBox.getActions;
+import static definitions.GuiTestEnvironment.getActions;
 import static support.TestContext.getDriver;
 
 public class CareersRecruit extends CareersRecruiterHome{

@@ -4,7 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import static definitions.ATestToolBox.toolWaitForXpath;
+import static definitions.GuiTestEnvironment.toolWaitForXpath;
 import static support.TestContext.getDriver;
 
 public class UpsHomePage {

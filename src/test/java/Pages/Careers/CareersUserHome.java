@@ -1,4 +1,4 @@
-package Pages;
+package Pages.Careers;
 
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -6,8 +6,8 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-import static definitions.ATestToolBox.careersData;
-import static definitions.ATestToolBox.teDataSource;
+import static definitions.GuiTestEnvironment.careersData;
+import static definitions.GuiTestEnvironment.teDataSource;
 
 public class CareersUserHome extends CareersHome {
     @FindBy(xpath="//button[contains(text(),'Login')]")

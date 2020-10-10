@@ -1,6 +1,7 @@
-package definitions;
+package definitions.Careers;
 
 import Pages.*;
+import Pages.Careers.*;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;

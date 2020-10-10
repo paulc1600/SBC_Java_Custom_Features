@@ -6,7 +6,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
-import static definitions.ATestToolBox.*;
+import static definitions.GuiTestEnvironment.*;
 import static support.TestContext.getDriver;
 
 public class UpsShipForm {
@@ -97,7 +97,7 @@ public class UpsShipForm {
     public void fillOriginCity(String value) { originCity.sendKeys(value); }
 
     public void selectOriginState(String state2letter) {
-        stateData = getStrData("dataStateNames");
+        stateData = getGuiStrData("dataStateNames");
         if (stateData.containsKey(state2letter)) {
             String longName = stateData.get(state2letter);
             new Select(originState).selectByVisibleText(longName);

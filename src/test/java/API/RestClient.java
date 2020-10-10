@@ -7,16 +7,12 @@ import io.restassured.specification.RequestSpecification;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static support.TestContext.*;
+import static API.RestTestEnvironment.*;
 
 public class RestClient {
 
-    private String baseUrl = "https://skryabin.com/recruit/api/v1/";
+    private String baseUrl;
     private static String loginToken;
-    public static final String CONTENT_TYPE = "Content-Type";
-    public static final String JSON = "application/json";
-    public static final String AUTH = "Authorization";
 
     // --------------------------------------------------------------
     //  POST https://skryabin.com/recruit/api/v1/login
@@ -34,6 +30,7 @@ public class RestClient {
     //    }
     // --------------------------------------------------------------
     public void login(Map<String, String> user) {
+        baseUrl = teBaseUrl;            // RestTestEnvironment
         // prepare -- header tells server how to parse body -- lookup header detail in Postman Header
         RequestSpecification request = RestAssured.given()
                 .log().all()
@@ -82,33 +79,24 @@ public class RestClient {
     //            "id": 2827
     //    }
     // --------------------------------------------------------------
-    public void createPosition(Map<String, String> position) {
-        String title = position.get("title");
-        position.put("title", title + getTimestamp());
-
-        // prepare
-        RequestSpecification request = RestAssured.given()
+    public Map<String, Object> createPosition(Map<String, String> position) {
+        Map<String, Object> result = RestAssured.given()
                 .log().all()
-                .baseUri(baseUrl)
+                .baseUri(baseUrl)                   // prepare
                 .basePath("positions")
                 .header(CONTENT_TYPE, JSON)
                 .header(AUTH, loginToken)
-                .body(position);
-
-        // execute
-        Response response = request.when()
-                .post();
-
-        // verify and extract
-        Map<String, Object> result = response.then()
+                .body(position)
+                .when()                            // execute
+                .post()
+                .then()                            // process response
                 .log().all()
                 .statusCode(201)
                 .extract()
                 .jsonPath()
                 .getMap("");
 
-        setTestData("newPosition", result);
-        setTestData("newPositionID", result.get("id"));
+        return result;
     }
 
     // --------------------------------------------------------------
@@ -128,49 +116,20 @@ public class RestClient {
     //            "candidatesCount": 0
     //    },
     // --------------------------------------------------------------
-    public List<Map<String, Object>> getPositionList(int posID, boolean shouldBeInList) {
-        // prepare
-        RequestSpecification request = RestAssured.given()
+    public List<Map<String, Object>> getPositionList() {
+        List<Map<String, Object>> result = RestAssured.given()
                 .log().all()
                 .baseUri(baseUrl)
-                .basePath("positions");
-
-        // execute
-        Response response = request.when()
-                .get();
-
-        List <Map<String, Object>> result = response.then()
+                .basePath("positions")
+                .when()
+                .get()
+                .then()
                 .log().all()
                 .statusCode(200)
                 .extract()
                 .jsonPath()
                 .getList("");
 
-        // Check all positions in Response Body List -- for position just created
-        boolean isInList = false;
-        String listedPosID = "";
-        for (Map<String, Object> positionOBJ : result) {
-            listedPosID = String.valueOf(positionOBJ.get("id"));
-            System.out.println("List Position = " + listedPosID + " compare " + posID);
-            if (listedPosID.equals(""+posID)) {
-                isInList = true;
-                break;
-            }
-        }
-        if (shouldBeInList) {
-            System.out.println("=========================================");
-            System.out.println(" Target Record ID: " + posID);
-            System.out.println(" Found Record ID:  " + listedPosID);
-            System.out.println(" Was in list?      " + isInList);
-            System.out.println("=========================================");
-            assertThat(isInList);
-        } else {
-            System.out.println("=========================================");
-            System.out.println(" Target Record ID: " + posID);
-            System.out.println(" Was in list?      " + isInList);
-            System.out.println("=========================================");
-            assertThat(isInList).isFalse();
-        }
         return result;
     }
 
@@ -190,43 +149,23 @@ public class RestClient {
     // --------------------------------------------------------------
     public Map<String, Object> updatePosition(Map<String, String> position) {
         String basePath = "positions/" +  getTestDataInteger("newPositionID").toString();
-        String expectedAddress = "258 Very Modified St";
-        String expectedCity = "Modified Village";
 
-        // Needed for compare to actual record get request
-        setTestData("updatedAddress", expectedAddress);
-        setTestData("updatedCity", expectedCity);
-
-        position.put("address", expectedAddress);
-        position.put("city", expectedCity);
-
-        // prepare
-        RequestSpecification request = RestAssured.given()
+        Map<String, Object> result = RestAssured.given()
                 .log().all()
                 .baseUri(baseUrl)
                 .basePath(basePath)
                 .header(CONTENT_TYPE, JSON)
                 .header(AUTH, loginToken)
-                .body(position);
-
-        // execute
-        Response response = request.when()
-                .put();
-
-        // verify and extract
-        Map<String, Object> result = response.then()
+                .body(position)
+                .when()
+                .put()
+                .then()
                 .log().all()
                 .statusCode(200)
                 .extract()
                 .jsonPath()
                 .getMap("");
 
-        String actualAddress = result.get("address").toString();
-        String actualCity = result.get("city").toString();
-
-        // Can verify that response itself has updated fields
-        assertThat(actualAddress.equalsIgnoreCase(expectedAddress));
-        assertThat(actualCity.equalsIgnoreCase(expectedCity));
         return result;
     }
 
@@ -244,33 +183,24 @@ public class RestClient {
     //            "company": "Unknown Working Environment"
     //    }
     // --------------------------------------------------------------
-    public void verifyPositionUpdates(int posID) {
+    public Map<String, Object> verifyPositionUpdates(int posID) {
         String basePath = "positions/" + posID;
 
         // prepare
-        RequestSpecification request = RestAssured.given()
+        Map<String, Object> result = RestAssured.given()
                 .log().all()
                 .baseUri(baseUrl)
-                .basePath(basePath);
-
-        // execute
-        Response response = request.when()
-                .get();
-
-        // verify and extract
-        Map<String, Object> result = response.then()
+                .basePath(basePath)
+                .when()
+                .get()
+                .then()
                 .log().all()
                 .statusCode(200)
                 .extract()
                 .jsonPath()
                 .getMap("");
 
-        String actualAddress = result.get("address").toString();
-        String actualCity = result.get("city").toString();
-
-        // Can verify that response itself has updated fields
-        assertThat(actualAddress.equalsIgnoreCase(getTestDataString("updatedAddress")));
-        assertThat(actualCity.equalsIgnoreCase(getTestDataString("updatedCity")));
+        return result;
     }
 
     // --------------------------------------------------------------

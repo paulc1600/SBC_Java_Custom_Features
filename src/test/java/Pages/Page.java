@@ -12,7 +12,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.util.List;
 import java.util.logging.Level;
 
-import static definitions.ATestToolBox.*;
+import static definitions.GuiTestEnvironment.*;
 import static support.TestContext.getDriver;
 
 /*

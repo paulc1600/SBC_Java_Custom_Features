@@ -4,7 +4,6 @@ Feature: REST API automation for Careers project
   @rest1
   Scenario: REST API Position CRUD
     Given I open rest environment for "careers"
-    Given Tool to get "careers" test data from source "recruiter" "file"
       # POST /login to get token
     Given I login via REST as "recruiter"
       # POST /positions

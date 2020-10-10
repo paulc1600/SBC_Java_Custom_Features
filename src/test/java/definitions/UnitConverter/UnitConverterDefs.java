@@ -1,4 +1,4 @@
-package definitions;
+package definitions.UnitConverter;
 
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 import java.util.HashMap;
 import java.util.Map;
 
-import static definitions.ATestToolBox.toolWaitForElementWithXpath;
+import static definitions.GuiTestEnvironment.toolWaitForElementWithXpath;
 import static support.TestContext.getDriver;
 
 public class UnitConverterDefs {

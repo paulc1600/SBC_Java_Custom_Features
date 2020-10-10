@@ -8,8 +8,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static definitions.ATestToolBox.getWait;
-import static definitions.ATestToolBox.toolWaitForXpath;
+import static definitions.GuiTestEnvironment.getWait;
+import static definitions.GuiTestEnvironment.toolWaitForXpath;
 import static org.assertj.core.api.Assertions.assertThat;
 import static support.TestContext.getDriver;
 

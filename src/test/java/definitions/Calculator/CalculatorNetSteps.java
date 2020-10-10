@@ -1,4 +1,4 @@
-package definitions;
+package definitions.Calculator;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
-import static definitions.ATestToolBox.getWait;
+import static definitions.GuiTestEnvironment.getWait;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static support.TestContext.getDriver;

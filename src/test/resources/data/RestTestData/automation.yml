@@ -3,5 +3,5 @@ description: "We are looking for a highly-skilled Test Automation Engineer to de
 address: 258 First st
 city: New York
 state: NY
-zip: 10912
-dateOpen: 10/07/2020
+zip: "10912"
+dateOpen: 2020-10-07

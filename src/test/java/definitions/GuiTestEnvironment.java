@@ -18,7 +18,7 @@ import static support.TestContext.getDriver;
 
 /*
  -------------------------------------------------------------------------------------------------------------
-    definitions.ATestToolBox  input                 returns               description
+    definitions.GuiTestEnvironment  input                 returns               description
 
     getActions                    --                Actions               new Action constructor
     getExecutor                   --                Javascript Executor   new JS executor returned
@@ -30,7 +30,7 @@ import static support.TestContext.getDriver;
  -------------------------------------------------------------------------------------------------------------
 */
 
-public class ATestToolBox {
+public class GuiTestEnvironment {
     // =============================================
     //  Create test environment variables
     // =============================================
@@ -156,7 +156,7 @@ public class ATestToolBox {
                     System.out.println(" Test Data Source is: " + teDataSource);
                     System.out.println(" Active File: " + tdFileName + " on quoteData()");
                     System.out.println("------------------------------------------------");
-                    quoteData = getStrData(tdFileName);
+                    quoteData = getGuiStrData(tdFileName);
                     break;
                 default:
                     throw new IllegalStateException("Error: This test data source is invalid: " + teDataSource);
@@ -170,7 +170,7 @@ public class ATestToolBox {
                     // Gherkin Scenario explicitly needs different yml file
                     tdFileName = fileName;
                     // Override defaults from test data file -- uses tdFileName = "recruiter", or  etc.
-                    careersData = getStrData(tdFileName);
+                    careersData = getGuiStrData(tdFileName);
                     System.out.println("================================================");
                     System.out.println(" Test Data Source is: " + teDataSource);
                     System.out.println(" Active File: " + tdFileName + " on careersData()");
@@ -197,8 +197,8 @@ public class ATestToolBox {
                     break;
                 case "file":
                     // Override defaults from test data file -- uses tdFileName = "dataUPS";
-                    upsData = getData(tdFileName);
-                    stateData = getStrData("dataStateNames");
+                    upsData = getGuiData(tdFileName);
+                    stateData = getGuiStrData("dataStateNames");
                     System.out.println("================================================");
                     System.out.println(" Test Data Source is: " + teDataSource);
                     System.out.println(" Active File: " + tdFileName + " on upsData()");
@@ -426,14 +426,14 @@ public class ATestToolBox {
     }
 
     // ---------------------------------------------------------------------------
-    //   Tool getData: Get key value pairs from resources/data yml file
+    //   Tool getGuiData: Get key value pairs from resources/data yml file
     //      Parameters: name of yml file = dataUPS.yml
     //      Output:     yml stream
-    //       ====> use getData()  when need to read strings or ints from yml
-    //       ====> use getStrData()  when know you only read strings from yml
+    //       ====> use getGuiData()  when need to read strings or ints from yml
+    //       ====> use getGuiStrData()  when know you only read strings from yml
     //          (called from Gherkin)
     // ---------------------------------------------------------------------------
-    public static Map<String, Object> getData(String fileName) {
+    public static Map<String, Object> getGuiData(String fileName) {
         String path2file = System.getProperty("user.dir") + "/src/test/resources/data/" + fileName + ".yml";
         File fileTD = new File(path2file);
         FileInputStream stream = null;
@@ -448,14 +448,14 @@ public class ATestToolBox {
     }
 
     // ---------------------------------------------------------------------------
-    //   Tool getStrData: Get key value pairs from resources/data yml file
+    //   Tool getGuiStrData: Get key value pairs from resources/data yml file
     //      Parameters: name of yml file = dataUPS.yml
     //      Output:     yml stream
-    //       ====> use getData()  when need to read strings or ints from yml
-    //       ====> use getStrData()  when know you only read strings from yml
+    //       ====> use getGuiData()  when need to read strings or ints from yml
+    //       ====> use getGuiStrData()  when know you only read strings from yml
     //          (called from Gherkin)
     // ---------------------------------------------------------------------------
-    public static Map<String, String> getStrData(String fileName) {
+    public static Map<String, String> getGuiStrData(String fileName) {
         String path2file = System.getProperty("user.dir") + "/src/test/resources/data/" + fileName + ".yml";
         File fileTD = new File(path2file);
         FileInputStream stream = null;

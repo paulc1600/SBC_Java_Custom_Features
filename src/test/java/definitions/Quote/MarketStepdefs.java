@@ -1,11 +1,11 @@
 package definitions.Quote;
 
 import cucumber.api.java.en.*;
-import definitions.ATestToolBox;
+import definitions.GuiTestEnvironment;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
 
-import static definitions.ATestToolBox.*;
+import static definitions.GuiTestEnvironment.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static support.TestContext.getDriver;
 
@@ -39,7 +39,7 @@ public class MarketStepdefs  {
     // ===========================================================================
     @Then("I display test environment set up")
     public void iDisplayTestEnvironmentSetUp() {
-        ATestToolBox.toolToDisplayTestEnvironmentSetUp();
+        GuiTestEnvironment.toolToDisplayTestEnvironmentSetUp();
         System.out.println("       Test Environment Variables               ");
         System.out.println("================================================");
         iDisplayTestDataVariables1();
