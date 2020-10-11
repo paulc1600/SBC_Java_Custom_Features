@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.Integer.parseInt;
+
 public class RestTestEnvironment {
     public static String teBaseUrl = "";
     public static String teApiTitle = "";
@@ -47,8 +49,10 @@ public class RestTestEnvironment {
         return (Map<String, Object>) testData.get(key);
     }
 
-    public static Integer getTestDataInteger(String key) {
-        return (Integer) testData.get(key);
+    public static int getTestDataInteger(String key) {
+        System.out.println("********* Get:: key = " + key + "   Contents = " + testData.get(key) + "   *********");
+        int intTestValue = parseInt(String.valueOf(testData.get(key)));
+        return intTestValue;
     }
 
     public static String getTestDataString(String key) {
@@ -56,6 +60,7 @@ public class RestTestEnvironment {
     }
 
     public static void setTestData(String key, Object value) {
+        System.out.println("********* Put:: key = " + key + "   Contents = " + String.valueOf(value)  + "   *********");
         testData.put(key, value);
     }
 

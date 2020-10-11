@@ -78,18 +78,36 @@ public class RestClient {
     //            "company": "Unknown Working Environment",
     //            "id": 2827
     //    }
+    //  POST https://skryabin.com/recruit/api/v1/candidates
     // --------------------------------------------------------------
-    public Map<String, Object> createPosition(Map<String, String> position) {
-        Map<String, Object> result = RestAssured.given()
-                .log().all()
-                .baseUri(baseUrl)                   // prepare
-                .basePath("positions")
-                .header(CONTENT_TYPE, JSON)
-                .header(AUTH, loginToken)
-                .body(position)
-                .when()                            // execute
-                .post()
-                .then()                            // process response
+    public Map<String, Object> createNewRecord(String recordType, Map<String, String> recordContent) {
+        boolean authNeeded = false;
+        Response response = null;
+        if (recordType.equalsIgnoreCase("positions")) { authNeeded = true; }
+
+        if (authNeeded) {
+            response = RestAssured.given()
+                    .log().all()
+                    .baseUri(baseUrl)                   // prepare
+                    .basePath(recordType)
+                    .header(CONTENT_TYPE, JSON)
+                    .header(AUTH, loginToken)
+                    .body(recordContent)
+                    .when()                            // execute
+                    .post();
+        } else {
+            response = RestAssured.given()
+                    .log().all()
+                    .baseUri(baseUrl)                   // prepare
+                    .basePath(recordType)
+                    .header(CONTENT_TYPE, JSON)
+                    .body(recordContent)
+                    .when()                            // execute
+                    .post();
+        }
+
+        // verify successful completion
+        Map<String, Object> result = response.then()         // process response
                 .log().all()
                 .statusCode(201)
                 .extract()
@@ -116,11 +134,11 @@ public class RestClient {
     //            "candidatesCount": 0
     //    },
     // --------------------------------------------------------------
-    public List<Map<String, Object>> getPositionList() {
+    public List<Map<String, Object>> getRecordsList(String recordType) {
         List<Map<String, Object>> result = RestAssured.given()
                 .log().all()
                 .baseUri(baseUrl)
-                .basePath("positions")
+                .basePath(recordType)
                 .when()
                 .get()
                 .then()
@@ -147,8 +165,8 @@ public class RestClient {
     //    }
     //   returns
     // --------------------------------------------------------------
-    public Map<String, Object> updatePosition(Map<String, String> position) {
-        String basePath = "positions/" +  getTestDataInteger("newPositionID").toString();
+    public Map<String, Object> updateRecord(int newPosID, String recordType, Map<String, String> recordContent) {
+        String basePath = recordType + "/" +  newPosID;
 
         Map<String, Object> result = RestAssured.given()
                 .log().all()
@@ -156,7 +174,7 @@ public class RestClient {
                 .basePath(basePath)
                 .header(CONTENT_TYPE, JSON)
                 .header(AUTH, loginToken)
-                .body(position)
+                .body(recordContent)
                 .when()
                 .put()
                 .then()
@@ -183,8 +201,8 @@ public class RestClient {
     //            "company": "Unknown Working Environment"
     //    }
     // --------------------------------------------------------------
-    public Map<String, Object> verifyPositionUpdates(int posID) {
-        String basePath = "positions/" + posID;
+    public Map<String, Object> verifyRecordUpdates(int posID, String recordType) {
+        String basePath = recordType + "/" + posID;
 
         // prepare
         Map<String, Object> result = RestAssured.given()
@@ -205,11 +223,12 @@ public class RestClient {
 
     // --------------------------------------------------------------
     //  DELETE https://skryabin.com/recruit/api/v1/positions/2887
+    //  DELETE https://skryabin.com/recruit/api/v1/candidates/2887
     //   returns
     //     204 = Successfully deleted
     // --------------------------------------------------------------
-    public void deletePositionRecord(int posID) {
-        String basePath = "positions/" + posID;
+    public void deleteListRecord(String recordType, int posID) {
+        String basePath = recordType + "/" + posID;
 
         // prepare
         RequestSpecification request = RestAssured.given()
