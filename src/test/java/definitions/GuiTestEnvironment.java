@@ -87,18 +87,14 @@ public class GuiTestEnvironment {
     @Given("Tool that goes to the {string} page")
     public void iGoToThePage(String page) {
         switch (page) {
+            case "careers":
+                tePageURL = "https://skryabin-careers.herokuapp.com/";
+                tePageTitle = "Careers Portal";
+                break;
             case "quote":
                 tePageURL = "https://skryabin.com/market/quote.html";
                 tePageTitle = "Quote";
                 tdFileName = "user";
-                break;
-            case "google":
-                tePageURL = "https://www.google.com/";
-                tePageTitle = "Google";
-                break;
-            case "yahoo":
-                tePageURL = "https://www.yahoo.com/";
-                tePageTitle = "Yahoo";
                 break;
             case "usps":
                 tePageURL = "https://www.usps.com/";

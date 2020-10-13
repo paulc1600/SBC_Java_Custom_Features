@@ -1,4 +1,4 @@
-package definitions;
+package definitions.CodeChallengesMiscJava;
 
 import Pages.Pet.Cat;
 import Pages.Pet.Dog;
