@@ -1,4 +1,4 @@
-@quoteOOPSuite1
+@PomEnvironment @quoteOOPSuite1
 Feature: Quote OOP Test Suite 1
 
   @quoteScenario13-0

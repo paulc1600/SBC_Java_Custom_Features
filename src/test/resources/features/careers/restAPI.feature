@@ -1,4 +1,4 @@
-@rest
+@ApiRestEnvironment @rest
 Feature: REST API automation for Careers project
 
   @rest1

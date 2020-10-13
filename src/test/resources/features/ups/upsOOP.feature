@@ -1,4 +1,4 @@
-@upsBrowserTestPOM
+@PomEnvironment @upsBrowserTestPOM
 Feature: UPS Test Suite for POM
   # ------------------------------------------------------
   #  Day 13 Scenarios

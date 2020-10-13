@@ -1,4 +1,4 @@
-@careersTest
+@PomEnvironment @careersTest
 Feature: Careers Portal Test Suites for POM
 
   @careers1
@@ -20,3 +20,13 @@ Feature: Careers Portal Test Suites for POM
     When I withdraw my application for "Director, Product Development"
     And I display my jobs list
     Then I verify job "Director, Product Development" is not there
+
+  @careers3
+  Scenario: Recruiter creates position
+    Given Tool that goes to the "careers" page
+    And I login as "recruiter"
+    Then I verify "recruiter" login
+    When I create new position
+    Then I verify new position is created
+    When I remove new position
+    And I verify new position is removed

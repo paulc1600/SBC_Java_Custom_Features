@@ -1,4 +1,4 @@
-@uspsOOPTest
+@PomEnvironment @uspsOOPTest
 Feature: USPS Test Suites for POM
 
   @usps6
