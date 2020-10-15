@@ -1,4 +1,4 @@
-package API.definitions;
+package definitions.Careers;
 
 import API.RestClient;
 import API.RestTestContext;
@@ -11,7 +11,8 @@ import java.util.Map;
 
 import static API.RestTestContext.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static API.RestTestContext.getTimestamp;
+import static definitions.Careers.CommonStepDefs.*;
+import static support.TestContext.*;
 
 public class RestStepDefs {
     RestClient RC = new RestClient();
@@ -19,27 +20,6 @@ public class RestStepDefs {
     @Given("I open rest environment for {string}")
     public void iOpenRestEnvironmentFor(String environmentName) {
         RestTestContext.EnvironmentSetUp(environmentName);
-    }
-
-    // --------------------------------------------------------------
-    //  Read and Prepare a Position Record -- Careers API Envr
-    // --------------------------------------------------------------
-    public Map<String, String> getPosition(String filename) {
-        Map<String, String> position = getStrData(filename);
-        String title = position.get("title");
-        position.put("title", title + getTimestamp());
-        return position;
-    }
-
-    // --------------------------------------------------------------
-    //  Read and Prepare a Candidate Record -- Careers API Envr
-    // --------------------------------------------------------------
-    public Map<String, String> getCandidate(String filename) {
-        Map<String, String> candidate = getStrData(filename);
-        String email = candidate.get("email");
-        String[] emailComp = email.split("@");
-        candidate.put("email", emailComp[0] + getTimestamp() + "@" + emailComp[1]);
-        return candidate;
     }
 
     // ---------------------------------------------------------------------------
@@ -67,10 +47,10 @@ public class RestStepDefs {
 
         if (recordType.equalsIgnoreCase("positions")) {
             targetID = getTestDataInteger("newPositionID");
-            expectedRecord = getPosition(recordName);
+            expectedRecord = CommonStepDefs.getPosition(recordName);
         } else if (recordType.equalsIgnoreCase("candidates")) {
             targetID = getTestDataInteger("newCandidateID");
-            expectedRecord = getCandidate(recordName);
+            expectedRecord = CommonStepDefs.getCandidate(recordName);
         } else {
             throw new IllegalStateException("Error: recordType "+ recordType + " invalid in this API!");
         }

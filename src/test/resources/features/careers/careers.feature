@@ -26,7 +26,7 @@ Feature: Careers Portal Test Suites for POM
     Given Tool that goes to the "careers" page
     And I login as "recruiter"
     Then I verify "recruiter" login
-    When I create new position
-    Then I verify new position is created
-    When I remove new position
-    And I verify new position is removed
+    When I create new "junior" position
+    Then I verify new "junior" position is "created"
+    When I remove new "junior" position
+    And I verify new "junior" position is "removed"

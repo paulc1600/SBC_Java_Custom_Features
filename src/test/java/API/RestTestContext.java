@@ -5,62 +5,34 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.Map;
 
-import static java.lang.Integer.parseInt;
+import static support.TestContext.teDataDirectory;
 
-public class RestTestEnvironment {
-    public static String teBaseUrl = "";
+public class RestTestContext {
+    public static String teApiBaseUrl = "";
     public static String teApiTitle = "";
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String JSON = "application/json";
     public static final String AUTH = "Authorization";
 
-
+    // ---------------------------------------------------------------
+    //   initialize environment variables
+    // ---------------------------------------------------------------
     public static void EnvironmentSetUp(String environmentName) {
         switch (environmentName) {
             case "careers":
-                teBaseUrl = "https://skryabin.com/recruit/api/v1/";
+                teApiBaseUrl = "https://skryabin.com/recruit/api/v1/";
                 teApiTitle = "Careers Portal";
                 break;
             case "google":
-                teBaseUrl = "https://www.google.com/";
+                teApiBaseUrl = "https://www.google.com/";
                 teApiTitle = "Google";
                 break;
             default:
-                teBaseUrl = "https://skryabin.com/recruit/api/v1/";
+                teApiBaseUrl = "https://skryabin.com/recruit/api/v1/";
                 teApiTitle = "Default";
         }
-
-        System.out.println("================================================");
-        System.out.println(" Base URL:  " + teBaseUrl);
-        System.out.println(" API Title: " + teApiTitle);
-        System.out.println("================================================");
-    }
-
-    // ---------------------------------------------------------------
-    //  Shared TestData Object Support
-    // ---------------------------------------------------------------
-    private static Map<String, Object> testData = new HashMap<>();
-
-    public static Map<String, Object> getTestDataMap(String key) {
-        return (Map<String, Object>) testData.get(key);
-    }
-
-    public static int getTestDataInteger(String key) {
-        System.out.println("********* Get:: key = " + key + "   Contents = " + testData.get(key) + "   *********");
-        int intTestValue = parseInt(String.valueOf(testData.get(key)));
-        return intTestValue;
-    }
-
-    public static String getTestDataString(String key) {
-        return (String) testData.get(key);
-    }
-
-    public static void setTestData(String key, Object value) {
-        System.out.println("********* Put:: key = " + key + "   Contents = " + String.valueOf(value)  + "   *********");
-        testData.put(key, value);
     }
 
     // ---------------------------------------------------------------------------
@@ -75,7 +47,7 @@ public class RestTestEnvironment {
     //          (called from Gherkin)
     // ---------------------------------------------------------------------------
     public static Map<String, Object> getData(String fileName) {
-        String path2file = System.getProperty("user.dir") + "/src/test/resources/data/RestTestData/" + fileName + ".yml";
+        String path2file = System.getProperty("user.dir") + teDataDirectory + fileName + ".yml";
         File fileTD = new File(path2file);
         FileInputStream stream = null;
 
@@ -97,7 +69,7 @@ public class RestTestEnvironment {
     //          (called from Gherkin)
     // ---------------------------------------------------------------------------
     public static Map<String, String> getStrData(String fileName) {
-        String path2file = System.getProperty("user.dir") + "/src/test/resources/data/RestTestData/" + fileName + ".yml";
+        String path2file = System.getProperty("user.dir") + teDataDirectory + fileName + ".yml";
         File fileTD = new File(path2file);
         FileInputStream stream = null;
 

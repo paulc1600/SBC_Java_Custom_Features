@@ -1,11 +1,13 @@
-package PomEnvironment.Careers.Definitions;
+package definitions.Careers;
 
-import PomEnvironment.*;
 import PomEnvironment.Careers.Pages.*;
+import PomEnvironment.Page;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+
+import java.util.Map;
 
 import static definitions.GuiTestEnvironment.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,12 +15,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CareersStepdefs {
     Page myPage = new Page();
     CareersHome home = new CareersHome();
-    CareersList jobsList = new CareersList();
     CareersUserHome userHome = new CareersUserHome();
     CareersLogin userLogin = new CareersLogin();
     CareersRecruiterHome recruiterHome = new CareersRecruiterHome();
     CareersRecruit recruit = new CareersRecruit();
     CareersNewPosition newPosition = new CareersNewPosition();
+
+    Map<String, String> savedNewPosition;
 
     @And("I login as {string}")
     public void iLoginAs(String userProvided) {
@@ -91,11 +94,40 @@ public class CareersStepdefs {
     // -----------------------------------------------------------------------------------
     //    When   When I create new position                               -- @careers3
     // -----------------------------------------------------------------------------------
-    @When("I create new position")
-    public void iCreateNewPosition() {
+    @When("I create new {string} position")
+    public void iCreateNewPosition(String filename) {
         recruiterHome.goToRecruitPage();
         recruiterHome.startNewPosition();
-        newPosition.createNewPosition();
+        savedNewPosition = newPosition.createNewPosition(filename);
+    }
+
+    // -----------------------------------------------------------------------------------
+    //    Then   I verify new {string} position is created or removed      -- @careers3
+    // -----------------------------------------------------------------------------------
+    @Then("I verify new {string} position is {string}")
+    public void iVerifyNewPositionIsCreated(String positionFile, String positionAction) {
+        String posTitle = savedNewPosition.get("title");
+        System.out.println("--- Looking for position: " + posTitle);
+        // Force refresh of Job Card List
+        recruiterHome.returnToHomePage();
+        recruiterHome.returnPageLabel("Careers");
+        recruiterHome.goToRecruitPage();
+        recruiterHome.returnPageLabel("Recruit");
+        boolean isVisible = recruit.isPositionVisible(posTitle);
+        if (positionAction.equalsIgnoreCase("created")) {
+            assertThat(isVisible).isTrue();
+        } else if (positionAction.equalsIgnoreCase("removed")) {
+            assertThat(isVisible).isFalse();
+        }
+    }
+
+    // -----------------------------------------------------------------------------------
+    //    When   I remove new {string} position                           -- @careers3
+    // -----------------------------------------------------------------------------------
+    @When("I remove new {string} position")
+    public void iRemoveNewPosition(String positionFile) {
+        String posTitle = savedNewPosition.get("title");
+        recruit.removePosition(posTitle);
     }
 
     @Given("I get {string} test data from source {string} {string}")

@@ -7,7 +7,7 @@ import io.restassured.specification.RequestSpecification;
 import java.util.List;
 import java.util.Map;
 
-import static API.RestTestEnvironment.*;
+import static API.RestTestContext.*;
 
 public class RestClient {
 
@@ -30,7 +30,7 @@ public class RestClient {
     //    }
     // --------------------------------------------------------------
     public void login(Map<String, String> user) {
-        baseUrl = teBaseUrl;            // RestTestEnvironment
+        baseUrl = teApiBaseUrl;            // RestTestContext
         // prepare -- header tells server how to parse body -- lookup header detail in Postman Header
         RequestSpecification request = RestAssured.given()
                 .log().all()

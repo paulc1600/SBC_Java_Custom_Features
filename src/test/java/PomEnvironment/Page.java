@@ -1,4 +1,4 @@
-package Pages;
+package PomEnvironment;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
@@ -76,6 +76,7 @@ public class Page {
     protected List<WebElement> getAllByXpath(String xpath) {
         return getDriver().findElements(By.xpath(xpath));
     }
+
     protected void mouseOver(WebElement element) {
         getActions().moveToElement(element).perform();
     }
@@ -90,6 +91,10 @@ public class Page {
 
     protected void waitUntilContainsText(WebElement element) {
         getWait().until(driver -> !element.getText().isEmpty());
+    }
+
+    protected void waitForTextIn(WebElement element, String targetText) {
+        getWait().until(ExpectedConditions.textToBePresentInElement(element, targetText));
     }
 
     protected void waitForClickable(WebElement element) {

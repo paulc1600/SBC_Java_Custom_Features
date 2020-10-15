@@ -1,4 +1,4 @@
-package Pages.Careers;
+package PomEnvironment.Careers.Pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -56,6 +56,7 @@ public class CareersRecruit extends CareersRecruiterHome{
 
     public boolean isPositionVisible(String title) {
         try {
+            waitForVisible(positionCard(title));
             return positionCard(title).isDisplayed();
         } catch (NoSuchElementException e) {
             return false;

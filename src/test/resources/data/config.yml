@@ -1,0 +1,11 @@
+!!support.Config
+testFramework: ApiRestEnvironment
+browser: chrome
+testEnv: local
+isHeadless: false
+implicitTimeout: 2
+pageLoadTimeout: 300
+explicitTimeout: 5
+supportedOSList:
+  - mac
+  - win

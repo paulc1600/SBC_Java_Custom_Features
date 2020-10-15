@@ -1,9 +1,9 @@
-package Pages.Careers;
+package PomEnvironment.Careers.Pages;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-public class CareersLogin extends Pages.Page {
+public class CareersLogin extends PomEnvironment.Page {
     // Get page factory and common project routines from Pages.page
 
     @FindBy(xpath="//button[contains(text(),'Careers')]")

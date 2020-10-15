@@ -6,15 +6,12 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
-import static support.TestContext.getDriver;
+import static support.TestContext.*;
 
 /*
  -------------------------------------------------------------------------------------------------------------
@@ -166,11 +163,12 @@ public class GuiTestEnvironment {
                     // Gherkin Scenario explicitly needs different yml file
                     tdFileName = fileName;
                     // Override defaults from test data file -- uses tdFileName = "recruiter", or  etc.
-                    careersData = getGuiStrData(tdFileName);
                     System.out.println("================================================");
                     System.out.println(" Test Data Source is: " + teDataSource);
-                    System.out.println(" Active File: " + tdFileName + " on careersData()");
+                    System.out.println(" Base Directory:     " + teDataDirectory);
+                    System.out.println(" Active File:        " + tdFileName + " on careersData()");
                     System.out.println("------------------------------------------------");
+                    careersData = getGuiStrData(tdFileName);
                     break;
                 default:
                     throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
@@ -426,42 +424,26 @@ public class GuiTestEnvironment {
     //      Parameters: name of yml file = dataUPS.yml
     //      Output:     yml stream
     //       ====> use getGuiData()  when need to read strings or ints from yml
-    //       ====> use getGuiStrData()  when know you only read strings from yml
     //          (called from Gherkin)
     // ---------------------------------------------------------------------------
     public static Map<String, Object> getGuiData(String fileName) {
-        String path2file = System.getProperty("user.dir") + "/src/test/resources/data/" + fileName + ".yml";
-        File fileTD = new File(path2file);
-        FileInputStream stream = null;
-
-        try {
-            stream = new FileInputStream(fileTD);
-        }
-        catch (FileNotFoundException exception) {
-            System.err.println(exception.getMessage());
-        }
-        return new Yaml().load(stream);
+        String myDataDir = teDataDirectory;
+        String myFilename = fileName;
+        String myExtension = "yml";
+        return new Yaml().load(getStream(myDataDir, myFilename, myExtension));
     }
 
     // ---------------------------------------------------------------------------
     //   Tool getGuiStrData: Get key value pairs from resources/data yml file
     //      Parameters: name of yml file = dataUPS.yml
     //      Output:     yml stream
-    //       ====> use getGuiData()  when need to read strings or ints from yml
     //       ====> use getGuiStrData()  when know you only read strings from yml
     //          (called from Gherkin)
     // ---------------------------------------------------------------------------
     public static Map<String, String> getGuiStrData(String fileName) {
-        String path2file = System.getProperty("user.dir") + "/src/test/resources/data/" + fileName + ".yml";
-        File fileTD = new File(path2file);
-        FileInputStream stream = null;
-
-        try {
-            stream = new FileInputStream(fileTD);
-        }
-        catch (FileNotFoundException exception) {
-            System.err.println(exception.getMessage());
-        }
-        return new Yaml().load(stream);
+        String myDataDir = teDataDirectory;
+        String myFilename = fileName;
+        String myExtension = "yml";
+        return new Yaml().load(getStream(myDataDir, myFilename, myExtension));
     }
 }
