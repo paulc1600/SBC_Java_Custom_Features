@@ -1,11 +1,13 @@
-package definitions.Careers;
+package PomEnvironment.Careers.Definitions;
 
-import Pages.*;
-import Pages.Careers.*;
+import PomEnvironment.*;
+import PomEnvironment.Careers.Pages.*;
 import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
+import static definitions.GuiTestEnvironment.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CareersStepdefs {
@@ -16,6 +18,7 @@ public class CareersStepdefs {
     CareersLogin userLogin = new CareersLogin();
     CareersRecruiterHome recruiterHome = new CareersRecruiterHome();
     CareersRecruit recruit = new CareersRecruit();
+    CareersNewPosition newPosition = new CareersNewPosition();
 
     @And("I login as {string}")
     public void iLoginAs(String userProvided) {
@@ -83,5 +86,94 @@ public class CareersStepdefs {
         boolean errorsPresent = recruit.areErrorsPresent();
         assertThat(errorsPresent).isFalse();
         assertThat(isVisible).isFalse();
+    }
+
+    // -----------------------------------------------------------------------------------
+    //    When   When I create new position                               -- @careers3
+    // -----------------------------------------------------------------------------------
+    @When("I create new position")
+    public void iCreateNewPosition() {
+        recruiterHome.goToRecruitPage();
+        recruiterHome.startNewPosition();
+        newPosition.createNewPosition();
+    }
+
+    @Given("I get {string} test data from source {string} {string}")
+    public void iGetTestDataFromSource(String page, String fileName, String tdSource) {
+        teDataSource = tdSource;
+        if (page.equalsIgnoreCase("quote")) {
+            switch (teDataSource) {
+                case "default":
+                    // Variables are already set to defaults when step file called
+                    break;
+                case "file":
+                    if (fileName.equalsIgnoreCase("") ||
+                            fileName.equalsIgnoreCase("No File")) {
+                        // If not specified in Gherkin Scenario -- use this yml file
+                        tdFileName = "user";
+                    } else {
+                        // Gherkin Scenario explicitly needs different yml file
+                        tdFileName = fileName;
+                    }
+                    tdFileName = "user";
+                    System.out.println("================================================");
+                    System.out.println(" Test Data Source is: " + teDataSource);
+                    System.out.println(" Active File: " + tdFileName + " on quoteData()");
+                    System.out.println("------------------------------------------------");
+                    quoteData = getGuiStrData(tdFileName);
+                    break;
+                default:
+                    throw new IllegalStateException("Error: This test data source is invalid: " + teDataSource);
+            }
+        } else if (page.equalsIgnoreCase("careers")) {
+            switch (teDataSource) {
+                case "default":
+                    // Variables are already set to defaults when step file called
+                    break;
+                case "file":
+                    // Gherkin Scenario explicitly needs different yml file
+                    tdFileName = fileName;
+                    // Override defaults from test data file -- uses tdFileName = "recruiter", or  etc.
+                    careersData = getGuiStrData(tdFileName);
+                    System.out.println("================================================");
+                    System.out.println(" Test Data Source is: " + teDataSource);
+                    System.out.println(" Active File: " + tdFileName + " on careersData()");
+                    System.out.println("------------------------------------------------");
+                    break;
+                default:
+                    throw new IllegalStateException("Error: This test data source is invalid: " + tdSource);
+            }
+        } else if (page.equalsIgnoreCase("usps")) {
+            switch (teDataSource) {
+                case "default":
+                    // Variables are already set to defaults when step file called
+                    break;
+                case "file":
+                    // Override defaults from test data file (not implemented)
+                    break;
+                default:
+                    throw new IllegalStateException("Error: This test data source is invalid: " + teDataSource);
+            }
+        } else if (page.equalsIgnoreCase("ups")) {
+            switch (teDataSource) {
+                case "default":
+                    // Variables are already set to defaults when step file called
+                    break;
+                case "file":
+                    // Override defaults from test data file -- uses tdFileName = "dataUPS";
+                    upsData = getGuiData(tdFileName);
+                    stateData = getGuiStrData("dataStateNames");
+                    System.out.println("================================================");
+                    System.out.println(" Test Data Source is: " + teDataSource);
+                    System.out.println(" Active File: " + tdFileName + " on upsData()");
+                    System.out.println(" Active File: " + "dataStateNames" + " on stateData()");
+                    System.out.println("------------------------------------------------");
+                    break;
+                default:
+                    throw new IllegalStateException("Error: This test data source is invalid: " + teDataSource);
+            }
+        } else {
+            throw new RuntimeException("Unsupported page: " + page);
+        }
     }
 }

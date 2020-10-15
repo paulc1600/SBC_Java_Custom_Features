@@ -1,4 +1,4 @@
-package Pages.Pet;
+package PomEnvironment.Pet;
 
 public abstract class Pet {
     String name;

@@ -1,4 +1,4 @@
-package Pages.Pet;
+package PomEnvironment.Pet;
 
 public class Cat extends Pet {
     public Cat(String name) {

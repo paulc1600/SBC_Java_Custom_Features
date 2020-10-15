@@ -1,4 +1,4 @@
-package Pages.Ups;
+package PomEnvironment.Ups;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;

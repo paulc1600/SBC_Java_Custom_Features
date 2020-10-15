@@ -1,12 +1,12 @@
 package definitions.Ups;
 
-import Pages.Page;
+import PomEnvironment.Page;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import Pages.Ups.UpsHomePage;
-import Pages.Ups.UpsShipForm;
+import PomEnvironment.Ups.UpsHomePage;
+import PomEnvironment.Ups.UpsShipForm;
 
 import static org.junit.Assert.assertTrue;
 

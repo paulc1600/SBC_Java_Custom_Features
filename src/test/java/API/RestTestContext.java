@@ -33,7 +33,6 @@ public class RestTestEnvironment {
                 teApiTitle = "Default";
         }
 
-        System.out.println("\n   Navigate: Open URL");
         System.out.println("================================================");
         System.out.println(" Base URL:  " + teBaseUrl);
         System.out.println(" API Title: " + teApiTitle);

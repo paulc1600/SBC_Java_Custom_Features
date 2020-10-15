@@ -1,9 +1,9 @@
-package Pages.USPS;
+package PomEnvironment.USPS;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-public class UspsHeader extends Pages.Page {
+public class UspsHeader extends PomEnvironment.Page {
 
     @FindBy(id="mail-ship-width")
     private WebElement mailAndShip;

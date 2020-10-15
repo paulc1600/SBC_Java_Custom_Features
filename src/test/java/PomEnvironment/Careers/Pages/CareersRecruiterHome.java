@@ -17,12 +17,20 @@ public class CareersRecruiterHome extends CareersHome {
     @FindBy(xpath="//button[contains(text(),'Recruit')]")
     private WebElement buttonRecruit;
 
+    @FindBy(xpath="//h4[contains(text(),'New Position')]")
+    private WebElement buttonNewPosition;
+
     public String verifyLoginName() {
         return userLink.getText();
     }
 
-    public void goToRecruitPage () {
+    public void goToRecruitPage() {
         // use bullet-proof click
         click(buttonRecruit);
+    }
+
+    public void startNewPosition() {
+        // use bullet-proof click
+        click(buttonNewPosition);
     }
 }

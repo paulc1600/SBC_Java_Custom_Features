@@ -1,7 +1,7 @@
-package definitions.Careers;
+package API.definitions;
 
 import API.RestClient;
-import API.RestTestEnvironment;
+import API.RestTestContext;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -9,16 +9,16 @@ import cucumber.api.java.en.When;
 import java.util.List;
 import java.util.Map;
 
-import static API.RestTestEnvironment.*;
+import static API.RestTestContext.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static support.TestContext.getTimestamp;
+import static API.RestTestContext.getTimestamp;
 
 public class RestStepDefs {
     RestClient RC = new RestClient();
 
     @Given("I open rest environment for {string}")
     public void iOpenRestEnvironmentFor(String environmentName) {
-        RestTestEnvironment.EnvironmentSetUp(environmentName);
+        RestTestContext.EnvironmentSetUp(environmentName);
     }
 
     // --------------------------------------------------------------

@@ -1,8 +1,8 @@
 package definitions.CodeChallengesMiscJava;
 
-import Pages.Pet.Cat;
-import Pages.Pet.Dog;
-import Pages.Pet.Pet;
+import PomEnvironment.Pet.Cat;
+import PomEnvironment.Pet.Dog;
+import PomEnvironment.Pet.Pet;
 import aut.TopTwoIntegers;
 import aut.TwoIntegerSum;
 import cucumber.api.java.en.Given;

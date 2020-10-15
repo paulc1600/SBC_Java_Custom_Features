@@ -1,4 +1,4 @@
-package Pages.USPS;
+package PomEnvironment.USPS;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;

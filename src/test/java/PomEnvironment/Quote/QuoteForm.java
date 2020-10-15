@@ -1,4 +1,4 @@
-package Pages.Quote;
+package PomEnvironment.Quote;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;

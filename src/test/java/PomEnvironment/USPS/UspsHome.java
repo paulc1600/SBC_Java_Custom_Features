@@ -1,4 +1,4 @@
-package Pages.USPS;
+package PomEnvironment.USPS;
 
 public class UspsHome extends UspsHeader {
 

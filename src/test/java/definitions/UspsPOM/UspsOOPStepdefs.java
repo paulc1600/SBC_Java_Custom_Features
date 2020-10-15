@@ -1,7 +1,7 @@
 package definitions.UspsPOM;
 
-import Pages.*;
-import Pages.USPS.*;
+import PomEnvironment.*;
+import PomEnvironment.USPS.*;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
