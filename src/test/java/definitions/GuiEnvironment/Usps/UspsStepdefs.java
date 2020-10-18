@@ -1,4 +1,4 @@
-package definitions.UspsPOM;
+package definitions.GuiEnvironment.Usps;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;

@@ -1,4 +1,4 @@
-package definitions.Ups;
+package definitions.PomEnvironment.Ups;
 
 import PomEnvironment.Page;
 import cucumber.api.java.en.And;

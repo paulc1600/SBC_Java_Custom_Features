@@ -1,4 +1,4 @@
-package definitions.CodeChallengesMiscJava;
+package definitions.UnitTestEnvironment.CodeChallengesMiscJava;
 
 import PomEnvironment.Pet.Cat;
 import PomEnvironment.Pet.Dog;

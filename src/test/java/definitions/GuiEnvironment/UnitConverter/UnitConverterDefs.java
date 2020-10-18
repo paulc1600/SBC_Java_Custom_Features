@@ -1,4 +1,4 @@
-package definitions.UnitConverter;
+package definitions.GuiEnvironment.UnitConverter;
 
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;

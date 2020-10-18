@@ -1,4 +1,4 @@
-package definitions.CodeChallengesMiscJava;
+package definitions.UnitTestEnvironment.CodeChallengesMiscJava;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;

@@ -1,4 +1,4 @@
-package definitions.Quote;
+package definitions.GuiEnvironment.Quote;
 
 import cucumber.api.java.en.*;
 import definitions.GuiTestEnvironment;

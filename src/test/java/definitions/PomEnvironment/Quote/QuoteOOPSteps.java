@@ -1,4 +1,4 @@
-package definitions.Quote;
+package definitions.PomEnvironment.Quote;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;

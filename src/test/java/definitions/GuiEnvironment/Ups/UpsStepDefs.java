@@ -1,4 +1,4 @@
-package definitions.Ups;
+package definitions.GuiEnvironment.Ups;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;

@@ -1,7 +1,6 @@
-package definitions.Careers;
+package definitions;
 
-import API.RestClient;
-import API.RestTestContext;
+import ApiRestEnvironment.RestClient;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -9,18 +8,14 @@ import cucumber.api.java.en.When;
 import java.util.List;
 import java.util.Map;
 
-import static API.RestTestContext.*;
+import static ApiRestEnvironment.RestTestContext.getStrData;
+import static definitions.CommonStepDefs.getCandidate;
+import static definitions.CommonStepDefs.getPosition;
 import static org.assertj.core.api.Assertions.assertThat;
-import static definitions.Careers.CommonStepDefs.*;
 import static support.TestContext.*;
 
 public class RestStepDefs {
     RestClient RC = new RestClient();
-
-    @Given("I open rest environment for {string}")
-    public void iOpenRestEnvironmentFor(String environmentName) {
-        RestTestContext.EnvironmentSetUp(environmentName);
-    }
 
     // ---------------------------------------------------------------------------
     //  Get Test Data Record ID for Newly created record -- Careers API Envr

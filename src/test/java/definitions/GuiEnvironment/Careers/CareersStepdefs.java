@@ -1,4 +1,4 @@
-package definitions.Careers;
+package definitions.GuiEnvironment.Careers;
 
 import PomEnvironment.Careers.Pages.*;
 import PomEnvironment.Page;

@@ -1,8 +1,8 @@
-package definitions.Careers;
+package definitions;
 
 import java.util.Map;
 
-import static API.RestTestContext.getStrData;
+import static ApiRestEnvironment.RestTestContext.getStrData;
 import static support.TestContext.getTimestamp;
 
 public class CommonStepDefs {
@@ -26,4 +26,16 @@ public class CommonStepDefs {
         candidate.put("email", emailComp[0] + getTimestamp() + "@" + emailComp[1]);
         return candidate;
     }
+
+    // --------------------------------------------------------------
+    //  Read and Prepare a Application Record -- Careers API Envr
+    // --------------------------------------------------------------
+    public static Map<String, String> getApplication(String filename) {
+        Map<String, String> application = getStrData(filename);
+        // String email = application.get("email");
+        // String[] emailComp = email.split("@");
+        // application.put("email", emailComp[0] + getTimestamp() + "@" + emailComp[1]);
+        return application;
+    }
+
 }

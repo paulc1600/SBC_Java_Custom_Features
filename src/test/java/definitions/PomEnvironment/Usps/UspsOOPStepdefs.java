@@ -1,4 +1,4 @@
-package definitions.UspsPOM;
+package definitions.PomEnvironment.Usps;
 
 import PomEnvironment.*;
 import PomEnvironment.USPS.*;

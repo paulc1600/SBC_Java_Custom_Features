@@ -6,7 +6,7 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.Map;
 
-import static definitions.Careers.CommonStepDefs.getPosition;
+import static definitions.CommonStepDefs.getPosition;
 import static definitions.GuiTestEnvironment.getActions;
 import static support.TestContext.getDriver;
 
