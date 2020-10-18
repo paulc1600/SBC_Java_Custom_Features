@@ -1,13 +1,16 @@
-package API;
+package ApiRestEnvironment;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static API.RestTestContext.*;
+import static ApiRestEnvironment.RestTestContext.*;
+import static support.TestContext.teApiBaseUrl;
 
 public class RestClient {
 
@@ -29,7 +32,7 @@ public class RestClient {
     //         "expiresAt": 1602186531
     //    }
     // --------------------------------------------------------------
-    public void login(Map<String, String> user) {
+    public Map<String, Object> login(Map<String, String> user) {
         baseUrl = teApiBaseUrl;            // RestTestContext
         // prepare -- header tells server how to parse body -- lookup header detail in Postman Header
         RequestSpecification request = RestAssured.given()
@@ -52,6 +55,37 @@ public class RestClient {
 
         loginToken = "Bearer " + result.get("token");
         System.out.println(loginToken);
+        return result;
+    }
+
+    // --------------------------------------------------------------
+    //  POST https://skryabin.com/recruit/api/v1/verify
+    //   returns
+    //     {
+    //         "authenticated": true,
+    //         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im9
+    //              YXQiOjE2MDI.....blah, blah,"
+    //         "issuedAt": 1602100131,
+    //         "expiresAt": 1602186531
+    //    }
+    // --------------------------------------------------------------
+    public Map<String, Object> verify() {
+        baseUrl = teApiBaseUrl;            // RestTestContext
+        Map<String, Object> result = RestAssured.given()
+                .log().all()
+                .baseUri(baseUrl)
+                .basePath("verify")
+                .header(CONTENT_TYPE, JSON)
+                .header(AUTH, loginToken)
+                .when()
+                .post()
+                .then()
+                .log().all()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getMap("");
+        return result;
     }
 
     // --------------------------------------------------------------
@@ -149,6 +183,51 @@ public class RestClient {
                 .getList("");
 
         return result;
+    }
+
+    // --------------------------------------------------------------
+    //  POST https://skryabin.com/recruit/api/v1/candidates/2887/resume
+    //            .multiPart("file", new File("/path/to/file.json"))
+    //            .multiPart("resume", resumeFilePath)
+    //   returns 201
+    // --------------------------------------------------------------
+    public void addResumeForRecord(int newPosID, String recordType, File resumeFilePath) {
+        String basePath = recordType + "/" +  newPosID + "/resume" ;
+
+        RestAssured.given()
+                .log().all()
+                .baseUri(baseUrl)
+                .basePath(basePath)
+                .header(AUTH, loginToken)
+                .multiPart("resume", resumeFilePath)
+                .when()
+                .post()
+                .then()
+                .statusCode(201);
+    }
+
+    // --------------------------------------------------------------
+    //  POST https://skryabin.com/recruit/api/v1/candidates/2887/resume
+    //            .multiPart("file", new File("/path/to/file.json"))
+    //            .multiPart("resume", resumeFilePath)
+    //   returns 201
+    // --------------------------------------------------------------
+    public ExtractableResponse<Response> getResumeFromRecord(int newPosID, String recordType) {
+        String basePath = recordType + "/" +  newPosID + "/resume" ;
+
+        ExtractableResponse<Response> response = null;
+
+        response = RestAssured.given()
+                .log().all()
+                .baseUri(baseUrl)
+                .basePath(basePath)
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract();
+
+        return response;
     }
 
     // --------------------------------------------------------------

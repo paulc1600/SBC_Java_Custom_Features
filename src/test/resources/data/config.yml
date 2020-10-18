@@ -1,5 +1,23 @@
 !!support.Config
+# ---------------------------------------------------------------------------------
+#  SBC-Java-Custom-Features
+#      Supported Frameworks: ApiRestEnvironment, PomEnvironment, GuiEnvironment, UnitTestEnvironment
+#                          (if not one of above get default or UnitTestEnvironment)
+#
+#      Supported Projects: Calculator, Careers, CodeChallenges, Quote
+#                          UnitConverter, Ups, Usps, default
+#                          (see definitions directory)
+#      If isWebDriverUsed = true
+#             Supported Browsers: firefox, chrome, safari, edge, ie
+#             WebDriver Test Environment: local, grid
+#             WebDriver Parameters: isHeadless: false
+#                                   implicitTimeout: 2
+#                                   pageLoadTimeout: 300
+#                                   explicitTimeout: 5
+# ---------------------------------------------------------------------------------
 testFramework: ApiRestEnvironment
+projectName: Careers
+isWebDriverUsed: false
 browser: chrome
 testEnv: local
 isHeadless: false
