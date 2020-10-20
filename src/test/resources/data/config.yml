@@ -15,9 +15,9 @@
 #                                   pageLoadTimeout: 300
 #                                   explicitTimeout: 5
 # ---------------------------------------------------------------------------------
-testFramework: ApiRestEnvironment
+testFramework: PomEnvironment
 projectName: Careers
-isWebDriverUsed: false
+isWebDriverUsed: true
 browser: chrome
 testEnv: local
 isHeadless: false

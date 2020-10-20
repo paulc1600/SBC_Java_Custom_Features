@@ -7,7 +7,7 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-import static definitions.GuiTestEnvironment.getActions;
+import static PomEnvironment.PomTestEnvironment.*;
 import static support.TestContext.getDriver;
 
 public class CareersRecruit extends CareersRecruiterHome{

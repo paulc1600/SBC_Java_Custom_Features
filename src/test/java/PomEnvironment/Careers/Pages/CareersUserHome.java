@@ -6,8 +6,7 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-import static definitions.GuiTestEnvironment.careersData;
-import static definitions.GuiTestEnvironment.teDataSource;
+import static PomEnvironment.PomTestEnvironment.*;
 
 public class CareersUserHome extends CareersHome {
     @FindBy(xpath="//button[contains(text(),'Login')]")

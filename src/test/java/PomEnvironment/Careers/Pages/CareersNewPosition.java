@@ -6,11 +6,11 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.Map;
 
-import static definitions.CommonStepDefs.getPosition;
-import static definitions.GuiTestEnvironment.getActions;
+import static definitions.CommonPomStepDefs.getPosition;
+import static PomEnvironment.PomTestEnvironment.getActions;
 import static support.TestContext.getDriver;
 
-public class CareersNewPosition extends CareersRecruiterHome {
+public class CareersNewPosition extends PomEnvironment.Careers.Pages.CareersRecruiterHome {
     @FindBy(xpath="//div[@class='row']//input[contains(@placeholder,'Title')]")
     private WebElement textBoxTitle;
 

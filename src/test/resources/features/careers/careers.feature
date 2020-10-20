@@ -12,7 +12,7 @@ Feature: Careers Portal Test Suites for POM
   @careers2
   Scenario: Candy withdraws from Director Job
     Given I open "careers" page oop
-    Given Tool to get "careers" test data from source "candy" "file"
+    Given POM Tool to get "careers" test data from source "candy" "file"
     And I login as "candy"
     Then I verify "candy" login
     When I display my jobs list
@@ -23,7 +23,7 @@ Feature: Careers Portal Test Suites for POM
 
   @careers3
   Scenario: Recruiter creates position
-    Given Tool that goes to the "careers" page
+    Given I open "careers" page oop
     And I login as "recruiter"
     Then I verify "recruiter" login
     When I create new "junior" position
